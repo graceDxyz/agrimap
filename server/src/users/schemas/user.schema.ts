@@ -1,4 +1,14 @@
 import * as mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
+
+export interface User extends mongoose.Document {
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+  userRole: string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
 
 export const UserSchema = new mongoose.Schema(
   {
@@ -10,9 +20,10 @@ export const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    username: {
+    email: {
       type: String,
       required: true,
+      unique: true,
     },
     password: {
       type: String,
@@ -26,3 +37,25 @@ export const UserSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+UserSchema.pre('save', async function (next) {
+  const user = this as unknown as User;
+
+  if (!user.isModified('password')) {
+    return next();
+  }
+
+  const hash = await bcrypt.hash(user.password, 10);
+
+  user.password = hash;
+
+  return next();
+});
+
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string,
+): Promise<boolean> {
+  const user = this as User;
+  //return false if password not correct
+  return await bcrypt.compare(candidatePassword, user.password);
+};

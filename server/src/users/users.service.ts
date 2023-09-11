@@ -2,7 +2,7 @@ import { Model } from 'mongoose';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class UsersService {
@@ -11,24 +11,36 @@ export class UsersService {
     private userModel: Model<User>,
   ) {}
 
-  create(createUserInput: CreateUserInput): Promise<User> {
+  async create(createUserInput: CreateUserInput): Promise<User> {
     const createdUser = new this.userModel(createUserInput);
-    return createdUser.save();
+    return await createdUser.save();
   }
 
-  findAll() {
-    return this.userModel.find().exec();
+  async findAll(): Promise<User[]> {
+    return await this.userModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User | null> {
+    return await this.userModel.findById(id).exec();
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+  ): Promise<User | null> {
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(id, updateUserInput, { new: true })
+      .exec();
+    if (!updatedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return updatedUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<void> {
+    const deletedUser = await this.userModel.findByIdAndRemove(id).exec();
+    if (!deletedUser) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
   }
 }
