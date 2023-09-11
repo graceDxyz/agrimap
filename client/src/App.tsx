@@ -1,7 +1,9 @@
-import { usePosts } from "./services/user.services";
+import SignInPage from "@/pages/SignInPage";
+import { useGetUsers } from "@/services/user.services";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 function App() {
-  const { data, error, isLoading } = usePosts();
+  const { data, error, isLoading } = useGetUsers();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -10,7 +12,15 @@ function App() {
     console.log({ error });
   }
   console.log({ data });
-  return <>Hello world </>;
+
+  const routes = createBrowserRouter([
+    {
+      index: true,
+      element: <SignInPage />,
+    },
+  ]);
+
+  return <RouterProvider router={routes} />;
 }
 
 export default App;

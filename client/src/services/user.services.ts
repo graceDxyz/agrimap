@@ -1,35 +1,25 @@
+import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import { SERVER } from "@/constant/server.constant";
+import { User } from "@/types/user.type";
 import { useQuery } from "@tanstack/react-query";
 import { request, gql } from "graphql-request";
-
-const endpoint = "http://192.168.254.180:5000/graphql";
-
-export interface User {
-  id: string;
-  firstname: string;
-  lastname: string;
-  username: string;
-  userRole: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 interface UsersQueryResponse {
   users: User[];
 }
 
-export function usePosts() {
+export function useGetUsers() {
   return useQuery({
-    queryKey: ["users"],
+    queryKey: [QUERY_USERS_KEY],
     queryFn: async () => {
       const data = await request<UsersQueryResponse>(
-        endpoint,
+        SERVER,
         gql`
           query {
             users {
               id
               firstname
               lastname
-              username
+              email
               userRole
               createdAt
               updatedAt
