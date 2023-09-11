@@ -2,16 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Auth {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input CreateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 input CreateUserInput {
   """The email of the user"""
   email: String!
@@ -35,24 +25,25 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
-  createAuth(createAuthInput: CreateAuthInput!): Auth!
   createUser(createUserInput: CreateUserInput!): User!
-  removeAuth(id: Int!): Auth!
   removeUser(id: ID!): User!
-  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
+  signInUser(signInInput: SignInInput!): SignInResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
-  auth(id: Int!): Auth!
   user(id: ID!): User!
   users: [User!]!
 }
 
-input UpdateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+type SignInResponse {
+  accessToken: String!
+  user: User!
 }
 
 input UpdateUserInput {

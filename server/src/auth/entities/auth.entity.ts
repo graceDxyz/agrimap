@@ -1,7 +1,7 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ExecutionContext } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
 
-@ObjectType()
-export class Auth {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+export interface IGqlContext extends ExecutionContext {
+  user?: User; // Add your custom property here, such as the user object
+  // Add other custom properties if needed
 }

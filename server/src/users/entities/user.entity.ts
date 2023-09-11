@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Exclude } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
 
 @ObjectType()
 export class User {
@@ -29,4 +30,8 @@ export class User {
 
   @Field({ description: 'The timestamp when the user record was last updated' })
   updatedAt: Date;
+
+  async comparePassword(candidatePassword: string): Promise<boolean> {
+    return await bcrypt.compare(candidatePassword, this.password);
+  }
 }
