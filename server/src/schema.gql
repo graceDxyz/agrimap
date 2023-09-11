@@ -1,0 +1,77 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateUserInput {
+  """The first name of the user"""
+  firstname: String!
+
+  """The last name of the user"""
+  lastname: String!
+
+  """The password of the user"""
+  password: String!
+
+  """The role of the user (USER or ADMIN)"""
+  userRole: String! = "USER"
+
+  """The username of the user"""
+  username: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  removeUser(id: Int!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+}
+
+type Query {
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+input UpdateUserInput {
+  """The first name of the user"""
+  firstname: String
+  id: Int!
+
+  """The last name of the user"""
+  lastname: String
+
+  """The password of the user"""
+  password: String
+
+  """The role of the user (USER or ADMIN)"""
+  userRole: String = "USER"
+
+  """The username of the user"""
+  username: String
+}
+
+type User {
+  """The timestamp when the user record was created"""
+  createdAt: DateTime!
+
+  """The first name of the user"""
+  firstname: String!
+
+  """The last name of the user"""
+  lastname: String!
+
+  """The password of the user"""
+  password: String!
+
+  """The timestamp when the user record was last updated"""
+  updatedAt: DateTime!
+
+  """The role of the user (USER or ADMIN)"""
+  userRole: String!
+
+  """The username of the user"""
+  username: String!
+}
