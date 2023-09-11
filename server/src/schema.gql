@@ -91,9 +91,6 @@ type User {
   """The last name of the user"""
   lastname: String!
 
-  """The password of the user"""
-  password: String!
-
   """The timestamp when the user record was last updated"""
   updatedAt: DateTime!
 
