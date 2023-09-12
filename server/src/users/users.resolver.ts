@@ -1,8 +1,10 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
+import { UseGuards } from '@nestjs/common';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { User } from './entities/user.entity';
+import { UsersService } from './users.service';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -14,6 +16,7 @@ export class UsersResolver {
   }
 
   @Query(() => [User], { name: 'users' })
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.usersService.findAll();
   }

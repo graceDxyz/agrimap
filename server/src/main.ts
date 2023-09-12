@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'http://http://192.168.254.180/:5173'],
     credentials: true,
     allowedHeaders:
       'Content-Type,Accept,Authorization,Access-Control-Allow-Origin',
