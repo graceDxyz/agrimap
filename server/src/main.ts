@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import config from "config";
-import connect from "@/utils/connect";
+import connect from "@/util/connect";
 
 dotenv.config();
 const port = config.get<number>("port");
@@ -9,6 +9,7 @@ const port = config.get<number>("port");
 const app = express();
 
 app.use(express.json());
+
 app.get("/healthcheck", (req, res) => {
   res.send({ message: "☁☁☁" });
 });
