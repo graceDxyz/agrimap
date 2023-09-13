@@ -13,7 +13,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
   const user = await validatePassword(req.body);
 
   if (!user) {
-    return res.status(401).send("Invalid email or password");
+    return res.status(401).send({ message: "Invalid email or password" });
   }
 
   // create a session
@@ -29,17 +29,29 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
   // create a refresh token
   const refreshToken = signJwt(
-    { ...user, session: session._id },
+    { sub: session._id },
     "refreshTokenPrivateKey",
     { expiresIn: config.get("refreshTokenTtl") }, // 15 minutes
   );
 
   // return access & refresh tokens
+  res.cookie("X-Agrimap-Session", refreshToken, {
+    httpOnly: true,
+    sameSite: "none",
+  });
 
-  return res.send({ accessToken, refreshToken });
+  return res.send({ user, accessToken });
 }
 
 export async function getUserSessionsHandler(req: Request, res: Response) {
+  const userId = res.locals.user._id;
+
+  const sessions = await findSessions({ user: userId, valid: true });
+
+  return res.send(sessions);
+}
+
+export async function getUserSessionHandler(req: Request, res: Response) {
   const userId = res.locals.user._id;
 
   const sessions = await findSessions({ user: userId, valid: true });
