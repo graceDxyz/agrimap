@@ -14,8 +14,21 @@ import { authSchema } from "@/lib/validations/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import api from "@/lib/api";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 type Inputs = z.infer<typeof authSchema>;
+
+function signInUserMutation(data: Inputs) {
+  return api.post("/sessions", JSON.stringify(data), {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+}
+
 export function SignInForm() {
   // react-hook-form
   const form = useForm<Inputs>({
@@ -26,10 +39,18 @@ export function SignInForm() {
     },
   });
 
-  const isLoading = false;
+  const { mutate, isLoading } = useMutation({
+    mutationFn: signInUserMutation,
+    onSuccess: (response) => {
+      console.log(response);
+    },
+    onError: (error: AxiosError) => {
+      console.log({ error });
+    },
+  });
 
   async function onSubmit(data: Inputs) {
-    console.log(data);
+    mutate(data);
   }
 
   return (
