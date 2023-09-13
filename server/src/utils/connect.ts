@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 import config from "config";
-import logger from "@/util/logger";
+import logger from "@/utils/logger";
 
 async function connect() {
   const dbUri = config.get<string>("dbUri");
-
   try {
     await mongoose.connect(dbUri);
     logger.info("DB connection established");
