@@ -1,7 +1,7 @@
 import { get } from "lodash";
 import config from "config";
 import { FilterQuery, UpdateQuery } from "mongoose";
-import SessionModel, { SessionDocument } from "@/models/session.model";
+import SessionModel, { ISession } from "@/models/session.model";
 import { verifyJwt, signJwt } from "@/utils/jwt.util";
 import { findUser } from "./user.service";
 
@@ -11,13 +11,17 @@ export async function createSession(userId: string, userAgent: string) {
   return session.toJSON();
 }
 
-export async function findSessions(query: FilterQuery<SessionDocument>) {
+export async function findSessions(query: FilterQuery<ISession>) {
   return SessionModel.find(query).lean();
 }
 
+export async function findSession(query: FilterQuery<ISession>) {
+  return SessionModel.findOne(query).lean().populate("user");
+}
+
 export async function updateSession(
-  query: FilterQuery<SessionDocument>,
-  update: UpdateQuery<SessionDocument>,
+  query: FilterQuery<ISession>,
+  update: UpdateQuery<ISession>,
 ) {
   return SessionModel.updateOne(query, update);
 }

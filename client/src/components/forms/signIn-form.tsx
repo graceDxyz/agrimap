@@ -11,12 +11,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { authSchema } from "@/lib/validations/auth";
-import { useForm } from "react-hook-form";
+import { ErrorOption, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import api from "@/lib/api";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { activeUserSchema } from "@/lib/validations/user";
+import { QUERY_USERS_KEY } from "@/constant/query.constant";
 
 type Inputs = z.infer<typeof authSchema>;
 
@@ -30,6 +32,7 @@ function signInUserMutation(data: Inputs) {
 }
 
 export function SignInForm() {
+  const queryClient = useQueryClient();
   // react-hook-form
   const form = useForm<Inputs>({
     resolver: zodResolver(authSchema),
@@ -42,10 +45,14 @@ export function SignInForm() {
   const { mutate, isLoading } = useMutation({
     mutationFn: signInUserMutation,
     onSuccess: (response) => {
-      console.log(response);
+      const user = activeUserSchema.parse(response.data);
+      queryClient.setQueryData([QUERY_USERS_KEY], user);
     },
     onError: (error: AxiosError) => {
-      console.log({ error });
+      const data = error.response?.data as ErrorOption;
+
+      form.setError("email", data, { shouldFocus: true });
+      form.setError("password", { message: "" });
     },
   });
 

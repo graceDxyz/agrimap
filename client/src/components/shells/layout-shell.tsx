@@ -1,4 +1,10 @@
 import { Outlet } from "react-router-dom";
+import { Button } from "../ui/button";
+import api from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import { ActiveUser } from "@/lib/validations/user";
+import { SiteHeader } from "../layouts/site-header";
 
 // import { MainNav } from "@/components/layouts/main-nav";
 // import { SidebarNav } from "@/components/layouts/sidebar-nav";
@@ -10,34 +16,49 @@ import { Outlet } from "react-router-dom";
 // import { dashboardConfig } from "@/config/siteconfig";
 // import { useAuth0 } from "@auth0/auth0-react";
 
-// export function DashboardShell() {
-//   const auth = useAuth0();
+function logoutMutation(accessToken: string) {
+  return api.post(
+    "/sessions/current",
+    {},
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+}
 
-//   if (!auth.isAuthenticated && !auth.isLoading) {
-//     auth.loginWithRedirect();
-//     return <DashboardShellLoader />;
-//   }
+export function DashboardShell() {
+  const queryClient = useQueryClient();
+  const { data } = useQuery<ActiveUser>([QUERY_USERS_KEY]);
+  const { mutate, isLoading } = useMutation({
+    mutationFn: logoutMutation,
+    onMutate: () => {
+      queryClient.setQueryData([QUERY_USERS_KEY], null);
+    },
+  });
 
-//   if (auth.isLoading) {
-//     return <DashboardShellLoader />;
-//   }
-
-//   return (
-//     <div className="flex min-h-screen flex-col">
-//       <SiteHeader auth={auth} />
-//       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
-//         <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
-//           <ScrollArea className="py-6 pr-6 lg:py-8">
-//             <SidebarNav items={dashboardConfig.sidebarNav} className="p-1" />
-//           </ScrollArea>
-//         </aside>
-//         <main className="flex w-full flex-col overflow-hidden pl-5">
-//           <Outlet />
-//         </main>
-//       </div>
-//     </div>
-//   );
-// }
+  function handleLogoutClick() {
+    mutate(data?.accessToken ?? "");
+  }
+  return (
+    <div className="flex min-h-screen flex-col">
+      {data ? <SiteHeader activeUser={data} /> : <></>}
+      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
+        <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
+          <Button disabled={isLoading} onClick={handleLogoutClick}>
+            Logout
+          </Button>
+        </aside>
+        <main className="flex w-full flex-col overflow-hidden pl-5">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
 
 // function DashboardShellLoader() {
 //   return (

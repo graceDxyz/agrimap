@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import config from "config";
 import {
   createSession,
-  findSessions,
+  findSession,
   updateSession,
 } from "@/services/session.service";
 import { validatePassword } from "@/services/user.service";
-import { signJwt } from "@/utils/jwt.util";
+import { signJwt, verifyJwt } from "@/utils/jwt.util";
+import { get, omit } from "lodash";
 
 export async function createUserSessionHandler(req: Request, res: Response) {
   // Validate the user's password
@@ -34,29 +35,46 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     { expiresIn: config.get("refreshTokenTtl") }, // 15 minutes
   );
 
+  const mapBoxKey = config.get<string>("mapBoxKey");
+
   // return access & refresh tokens
   res.cookie("X-Agrimap-Session", refreshToken, {
     httpOnly: true,
-    sameSite: "none",
   });
 
-  return res.send({ user, accessToken });
-}
-
-export async function getUserSessionsHandler(req: Request, res: Response) {
-  const userId = res.locals.user._id;
-
-  const sessions = await findSessions({ user: userId, valid: true });
-
-  return res.send(sessions);
+  return res.send({ user, mapBoxKey, accessToken });
 }
 
 export async function getUserSessionHandler(req: Request, res: Response) {
-  const userId = res.locals.user._id;
+  const refreshToken = get(req, "cookies.X-Agrimap-Session");
 
-  const sessions = await findSessions({ user: userId, valid: true });
+  if (refreshToken) {
+    const result = verifyJwt(refreshToken as string, "refreshTokenPublicKey");
+    if (result.expired) {
+      return res.send();
+    }
+    const sessionId = result.decoded?.sub;
+    const session = await findSession({ _id: sessionId, valid: true });
 
-  return res.send(sessions);
+    if (session && session.user) {
+      const user = omit(session.user, ["password"]);
+      const accessToken = signJwt(
+        { ...user, session: session._id },
+        "accessTokenPrivateKey",
+        { expiresIn: config.get("accessTokenTtl") }, // 15 minutes,
+      );
+
+      const mapBoxKey = config.get<string>("mapBoxKey");
+
+      return res.send({
+        user: { ...user, id: user._id },
+        mapBoxKey,
+        accessToken,
+      });
+    }
+  }
+
+  return res.send();
 }
 
 export async function deleteSessionHandler(req: Request, res: Response) {
@@ -64,8 +82,9 @@ export async function deleteSessionHandler(req: Request, res: Response) {
 
   await updateSession({ _id: sessionId }, { valid: false });
 
-  return res.send({
-    accessToken: null,
-    refreshToken: null,
+  res.cookie("X-Agrimap-Session", "", {
+    httpOnly: true,
   });
+
+  return res.send();
 }

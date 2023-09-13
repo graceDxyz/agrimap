@@ -5,4 +5,5 @@ export default {
   refreshTokenPublicKey: "REFRESH_PUBLIC_KEY",
   dbUri: "DB_CONNECTION",
   port: "PORT",
+  mapBoxKey: "MAPBOX_KEY",
 };

@@ -15,8 +15,8 @@ function SessionRoutes(app: Express) {
     createUserSessionHandler,
   );
 
-  app.get("/api/sessions", requireUser, getUserSessionHandler);
-  app.delete("/api/sessions", requireUser, deleteSessionHandler);
+  app.get("/api/sessions/current", getUserSessionHandler);
+  app.post("/api/sessions/current", requireUser, deleteSessionHandler);
 }
 
 export default SessionRoutes;

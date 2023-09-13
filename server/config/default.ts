@@ -1,8 +1,9 @@
 export default {
   port: 5000,
   dbUri: ``,
+  mapBoxKey: ``,
   saltWorkFactor: 10,
-  accessTokenTtl: "15m",
+  accessTokenTtl: "1d",
   refreshTokenTtl: "1y",
   accessTokenPrivateKey: ``,
   accessTokenPublicKey: ``,
