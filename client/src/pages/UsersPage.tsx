@@ -1,3 +1,5 @@
+import { userColumns } from "@/components/data-table/columns";
+import { DataTable } from "@/components/data-table/table";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -14,14 +16,6 @@ function UsersPage() {
   const { data, isLoading } = useGetUsers({
     token: user?.accessToken ?? "",
   });
-
-  if (isLoading) {
-    console.log("Loading...");
-  }
-
-  if (!isLoading) {
-    console.log(data);
-  }
 
   return (
     <Shell variant="sidebar">
@@ -42,7 +36,14 @@ function UsersPage() {
       <section
         id="dashboard-stores-page-stores"
         aria-labelledby="dashboard-stores-page-stores-heading"
-      ></section>
+      >
+        <DataTable
+          data={data ?? []}
+          columns={userColumns}
+          searchPlaceHolder="Filter categories..."
+          isLoading={isLoading}
+        />
+      </section>
     </Shell>
   );
 }

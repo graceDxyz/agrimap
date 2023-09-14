@@ -44,6 +44,7 @@ function App() {
         },
         {
           path: "logout",
+
           element: <div>Loading...</div>,
         },
       ],

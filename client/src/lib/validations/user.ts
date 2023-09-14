@@ -7,6 +7,8 @@ export const userSchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
   userRole: z.string(),
+  createAt: z.string().nullish(),
+  updatedAt: z.string().nullish(),
 });
 
 export const activeUserSchema = z.object({
