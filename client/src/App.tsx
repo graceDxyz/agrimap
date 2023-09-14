@@ -7,6 +7,9 @@ import {
 import { useGetSession } from "./services/session.service";
 import { DashboardShell } from "./components/shells/layout-shell";
 import DashboardPage from "./pages/DashboardPage";
+import UsersPage from "./pages/UsersPage";
+import LandsPage from "./pages/LandsPage";
+import ReportsPage from "./pages/ReportsPage";
 
 function App() {
   const { data, isLoading } = useGetSession();
@@ -26,6 +29,22 @@ function App() {
         {
           index: true,
           element: <DashboardPage />,
+        },
+        {
+          path: "lands",
+          element: <LandsPage />,
+        },
+        {
+          path: "reports",
+          element: <ReportsPage />,
+        },
+        {
+          path: "users",
+          element: <UsersPage />,
+        },
+        {
+          path: "logout",
+          element: <div>Loading...</div>,
         },
       ],
     },

@@ -1,20 +1,14 @@
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { Button } from "../ui/button";
 import api from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
 import { ActiveUser } from "@/lib/validations/user";
-import { SiteHeader } from "../layouts/site-header";
-
-// import { MainNav } from "@/components/layouts/main-nav";
-// import { SidebarNav } from "@/components/layouts/sidebar-nav";
-// import { SiteHeader } from "@/components/layouts/site-header";
-// import { PageHeader } from "@/components/page-header";
-// import { Shell } from "@/components/shells/shell";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-// import { Skeleton } from "@/components/ui/skeleton";
-// import { dashboardConfig } from "@/config/siteconfig";
-// import { useAuth0 } from "@auth0/auth0-react";
+import { ScrollArea } from "../ui/scroll-area";
+import { SidebarNav } from "../layouts/sidebar-nav";
+import { dashboardConfig } from "@/config/siteConfig";
+import { Icons } from "../icons";
+import { Separator } from "../ui/separator";
 
 function logoutMutation(accessToken: string) {
   return api.post(
@@ -45,12 +39,25 @@ export function DashboardShell() {
   }
   return (
     <div className="flex min-h-screen flex-col">
-      {data ? <SiteHeader activeUser={data} /> : <></>}
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
-        <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
-          <Button disabled={isLoading} onClick={handleLogoutClick}>
-            Logout
-          </Button>
+        <aside className="fixed  z-30 -ml-2 hidden h-screen w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
+          <ScrollArea className="py-6 pr-6 lg:py-8">
+            <div className="h-20 flex bg-red-200">
+              <Link
+                aria-label="Home page"
+                to="/"
+                className="hidden items-center space-x-2 lg:flex"
+              >
+                <Icons.logo className="h-6 w-6" aria-hidden="true" />
+                <span className="hidden font-bold lg:inline-block">
+                  Budgetto
+                </span>
+              </Link>
+            </div>
+
+            <Separator />
+            <SidebarNav items={dashboardConfig.sidebarNav} className="p-1" />
+          </ScrollArea>
         </aside>
         <main className="flex w-full flex-col overflow-hidden pl-5">
           <Outlet />
