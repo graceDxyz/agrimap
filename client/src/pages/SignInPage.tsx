@@ -2,8 +2,8 @@ import { SignInForm } from "@/components/forms/signIn-form";
 import { Shell } from "@/components/shells/shell";
 import { Card, CardContent } from "@/components/ui/card";
 import image from "@/assets/agrimap.png";
-import { ActiveUser } from "@/lib/validations/user";
 import { Navigate } from "react-router-dom";
+import { ActiveUser } from "@/types/user.type";
 
 interface Props {
   activeUser?: ActiveUser | null;
@@ -14,7 +14,7 @@ function SignInPage(props: Props) {
     return <Navigate to={"/dashboard"} />;
   }
 
-    return (
+  return (
     <Shell>
       <div className="container min-h-screen flex justify-center items-center">
         <Card className="py-10">

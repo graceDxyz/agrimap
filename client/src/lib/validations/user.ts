@@ -13,7 +13,6 @@ export const userSchema = z.object({
 
 export const activeUserSchema = z.object({
   user: userSchema,
-  mapBoxKey: z.string(),
   accessToken: z.string(),
 });
 

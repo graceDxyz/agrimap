@@ -29,6 +29,8 @@ export function useGetSession() {
       }
       return null;
     },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
 

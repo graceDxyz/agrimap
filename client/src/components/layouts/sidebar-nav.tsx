@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 import { Icons } from "@/components/icons";
+import { useGetAuth } from "@/services/session.service";
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[];
@@ -19,6 +20,8 @@ export function SidebarNav({
   ...props
 }: SidebarNavProps) {
   const location = useLocation();
+
+  const { logout } = useGetAuth();
 
   if (!items?.length) return null;
 
@@ -70,6 +73,17 @@ export function SidebarNav({
           </span>
         );
       })}
+      <Link aria-label={"logout"} to={"/"} onClick={logout}>
+        <span
+          className={cn(
+            "group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:bg-muted hover:text-foreground",
+            "text-muted-foreground",
+          )}
+        >
+          <Icons.logout className="mr-2 h-4 w-4" aria-hidden="true" />
+          <span>logout</span>
+        </span>
+      </Link>
     </div>
   );
 }

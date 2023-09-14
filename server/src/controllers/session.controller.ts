@@ -35,14 +35,12 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     { expiresIn: config.get("refreshTokenTtl") }, // 15 minutes
   );
 
-  const mapBoxKey = config.get<string>("mapBoxKey");
-
   // return access & refresh tokens
   res.cookie("X-Agrimap-Session", refreshToken, {
     httpOnly: true,
   });
 
-  return res.send({ user, mapBoxKey, accessToken });
+  return res.send({ user, accessToken });
 }
 
 export async function getUserSessionHandler(req: Request, res: Response) {
@@ -64,11 +62,8 @@ export async function getUserSessionHandler(req: Request, res: Response) {
         { expiresIn: config.get("accessTokenTtl") }, // 15 minutes,
       );
 
-      const mapBoxKey = config.get<string>("mapBoxKey");
-
       return res.send({
         user: { ...user, id: user._id },
-        mapBoxKey,
         accessToken,
       });
     }

@@ -30,11 +30,5 @@ export const dashboardConfig: DashboardConfig = {
       icon: "users",
       items: [],
     },
-    {
-      title: "Logout",
-      href: "/dashboard/logout",
-      icon: "logout",
-      items: [],
-    },
   ],
 };

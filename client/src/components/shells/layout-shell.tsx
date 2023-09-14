@@ -4,12 +4,8 @@ import { SidebarNav } from "../layouts/sidebar-nav";
 import { dashboardConfig } from "@/config/siteConfig";
 import { Icons } from "../icons";
 import { Separator } from "../ui/separator";
-import { useGetAuth } from "@/services/session.service";
-import { Button } from "../ui/button";
 
 export function DashboardShell() {
-  const { user, logout } = useGetAuth();
-
   return (
     <div className="flex min-h-screen flex-col">
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
@@ -23,15 +19,12 @@ export function DashboardShell() {
               >
                 <Icons.logo className="h-6 w-6" aria-hidden="true" />
                 <span className="hidden font-bold lg:inline-block">
-                  Budgetto
+                  AgriMap
                 </span>
               </Link>
             </div>
 
             <Separator />
-            <Button className="w-full" onClick={logout}>
-              Logout
-            </Button>
             <SidebarNav items={dashboardConfig.sidebarNav} className="p-1" />
           </ScrollArea>
         </aside>
