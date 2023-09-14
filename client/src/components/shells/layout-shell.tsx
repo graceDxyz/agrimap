@@ -2,8 +2,8 @@ import { Link, Outlet } from "react-router-dom";
 import { ScrollArea } from "../ui/scroll-area";
 import { SidebarNav } from "../layouts/sidebar-nav";
 import { dashboardConfig } from "@/config/siteConfig";
-import { Icons } from "../icons";
 import { Separator } from "../ui/separator";
+import logoimg from "@/assets/logo-leaf.png";
 
 export function DashboardShell() {
   return (
@@ -11,13 +11,13 @@ export function DashboardShell() {
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
         <aside className="fixed  z-30 -ml-2 hidden h-screen w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
           <ScrollArea className="py-6 pr-6 lg:py-8">
-            <div className="h-20 flex bg-red-200">
+            <div className="h-20 flex">
               <Link
                 aria-label="Home page"
                 to="/"
                 className="hidden items-center space-x-2 lg:flex"
               >
-                <Icons.logo className="h-6 w-6" aria-hidden="true" />
+                <img className="h-20 w-20" src={logoimg} alt="agrimap" />
                 <span className="hidden font-bold lg:inline-block">
                   AgriMap
                 </span>

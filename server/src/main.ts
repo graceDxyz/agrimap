@@ -18,7 +18,11 @@ const port = config.get<number>("port");
 
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  }),
+);
 app.use(cookieParser());
 app.use(
   cors({
@@ -34,7 +38,11 @@ app.use(morgan("common"));
 app.use(express.static(path.join(__dirname, "../..", "client", "dist")));
 
 // Handle any additional routes and return the React app
-app.get("*", (req, res) => {
+app.get("*", (req, res, next) => {
+  if (req.originalUrl.includes("/api")) {
+    // Skip the React app handling for routes containing "/api"
+    return next();
+  }
   res.sendFile(path.join(__dirname, "../..", "client", "dist", "index.html"));
 });
 

@@ -1,9 +1,13 @@
 import axios from "axios";
 
 // const BE_BASE_URL = "http://192.168.254.126:5000/api";
-const BE_BASE_URL = `http://${window.location.hostname}:5000/api`;
+const isProd = import.meta.env.PROD;
+const origin = isProd
+  ? `${window.location.origin}`
+  : `http://${window.location.hostname}:5000`;
+
 const api = axios.create({
-  baseURL: BE_BASE_URL,
+  baseURL: origin + "/api",
   withCredentials: true,
 });
 
