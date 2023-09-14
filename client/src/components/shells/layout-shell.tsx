@@ -1,42 +1,15 @@
 import { Link, Outlet } from "react-router-dom";
-import { Button } from "../ui/button";
-import api from "@/lib/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QUERY_USERS_KEY } from "@/constant/query.constant";
-import { ActiveUser } from "@/lib/validations/user";
 import { ScrollArea } from "../ui/scroll-area";
 import { SidebarNav } from "../layouts/sidebar-nav";
 import { dashboardConfig } from "@/config/siteConfig";
 import { Icons } from "../icons";
 import { Separator } from "../ui/separator";
-
-function logoutMutation(accessToken: string) {
-  return api.post(
-    "/sessions/current",
-    {},
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
-  );
-}
+import { useGetAuth } from "@/services/session.service";
+import { Button } from "../ui/button";
 
 export function DashboardShell() {
-  const queryClient = useQueryClient();
-  const { data } = useQuery<ActiveUser>([QUERY_USERS_KEY]);
-  const { mutate, isLoading } = useMutation({
-    mutationFn: logoutMutation,
-    onMutate: () => {
-      queryClient.setQueryData([QUERY_USERS_KEY], null);
-    },
-  });
+  const { user, logout } = useGetAuth();
 
-  function handleLogoutClick() {
-    mutate(data?.accessToken ?? "");
-  }
   return (
     <div className="flex min-h-screen flex-col">
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
@@ -56,6 +29,9 @@ export function DashboardShell() {
             </div>
 
             <Separator />
+            <Button className="w-full" onClick={logout}>
+              Logout
+            </Button>
             <SidebarNav items={dashboardConfig.sidebarNav} className="p-1" />
           </ScrollArea>
         </aside>

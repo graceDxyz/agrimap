@@ -15,4 +15,6 @@ export const activeUserSchema = z.object({
   accessToken: z.string(),
 });
 
-export type ActiveUser = z.infer<typeof activeUserSchema>;
+export const usersSchema = z.object({
+  users: z.array(userSchema),
+});

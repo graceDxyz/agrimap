@@ -1,4 +1,4 @@
-import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import { QUERY_ACTIVE_USER_KEY } from "@/constant/query.constant";
 import { ActiveUser } from "@/lib/validations/user";
 import { useQuery } from "@tanstack/react-query";
 import mapboxgl from "mapbox-gl";
@@ -20,7 +20,7 @@ type DrawEvent = {
 };
 
 export function MapContainer() {
-  const { data } = useQuery<ActiveUser>([QUERY_USERS_KEY]);
+  const { data } = useQuery<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {

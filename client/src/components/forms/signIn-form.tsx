@@ -10,15 +10,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authSchema } from "@/lib/validations/auth";
-import { ErrorOption, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { QUERY_ACTIVE_USER_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
+import { authSchema } from "@/lib/validations/auth";
+import { activeUserSchema } from "@/lib/validations/user";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { activeUserSchema } from "@/lib/validations/user";
-import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import { ErrorOption, useForm } from "react-hook-form";
+import * as z from "zod";
 
 type Inputs = z.infer<typeof authSchema>;
 
@@ -46,7 +46,7 @@ export function SignInForm() {
     mutationFn: signInUserMutation,
     onSuccess: (response) => {
       const user = activeUserSchema.parse(response.data);
-      queryClient.setQueryData([QUERY_USERS_KEY], user);
+      queryClient.setQueryData([QUERY_ACTIVE_USER_KEY], user);
     },
     onError: (error: AxiosError) => {
       const data = error.response?.data as ErrorOption;
