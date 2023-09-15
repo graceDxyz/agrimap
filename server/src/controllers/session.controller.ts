@@ -40,7 +40,9 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     httpOnly: true,
   });
 
-  return res.send({ user, accessToken });
+  const omitedUser = omit(user, ["password"]);
+
+  return res.send({ user: omitedUser, accessToken });
 }
 
 export async function getUserSessionHandler(req: Request, res: Response) {

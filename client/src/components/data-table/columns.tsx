@@ -10,7 +10,9 @@ export const userColumns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Firstname" />
     ),
     cell: ({ row }) => (
-      <div className="w-[100px] font-medium">{row.getValue("firstname")}</div>
+      <div className="w-[100px] capitalize font-medium">
+        {row.getValue("firstname")}
+      </div>
     ),
   },
   {
@@ -21,7 +23,7 @@ export const userColumns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate ">
+          <span className="max-w-[500px] truncate capitalize">
             {row.getValue("lastname")}
           </span>
         </div>
@@ -37,6 +39,15 @@ export const userColumns: ColumnDef<User>[] = [
     ),
     cell: ({ row }) => (
       <div className="w-[100px] font-medium">{row.getValue("email")}</div>
+    ),
+  },
+  {
+    accessorKey: "password",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Password" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[100px] font-medium">{row.getValue("password")}</div>
     ),
   },
 ];
