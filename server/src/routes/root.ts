@@ -1,9 +1,9 @@
-import { Request, Response, Express } from "express";
-import UserRoutes from "./user.route";
+import { Express, Request, Response } from "express";
 import SessionRoutes from "./session.route";
+import UserRoutes from "./user.route";
 
 function root(app: Express) {
-  app.get("/", (req: Request, res: Response) => {
+  app.get("/api/ping", (req: Request, res: Response) => {
     const userAgent = req.get("user-agent") || "";
     res.status(200).send({
       message: "☁☁☁",

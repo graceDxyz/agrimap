@@ -18,7 +18,7 @@ import morgan from "morgan";
 const port = config.get<number>("port");
 const node_env = config.get<string>("env");
 
-const root_dir = node_env === "production" ? "../../.." : "../../;";
+const root_dir = node_env === "production" ? "../../.." : "../..";
 
 const app = express();
 
