@@ -6,4 +6,5 @@ export default {
   dbUri: "DB_CONNECTION",
   port: "PORT",
   mapBoxKey: "MAPBOX_KEY",
+  env: "ENV",
 };

@@ -16,6 +16,9 @@ import path from "path";
 import morgan from "morgan";
 
 const port = config.get<number>("port");
+const node_env = config.get<string>("env");
+
+const root_dir = node_env === "production" ? "../../.." : "../../;";
 
 const app = express();
 
@@ -27,7 +30,12 @@ app.use(
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://192.168.254.126:5173", "http://localhost:5173"],
+    origin: [
+      "http://192.168.254.126:5173",
+      "http://localhost:5173",
+      "http://192.168.254.126:5000",
+      "http://localhost:5000",
+    ],
     credentials: true,
   }),
 );
@@ -36,7 +44,7 @@ app.use(deserializeUser);
 app.use(morgan("common"));
 
 // Serve static files from the React build folder
-app.use(express.static(path.join(__dirname, "../..", "client", "dist")));
+app.use(express.static(path.join(__dirname, root_dir, "client", "dist")));
 
 // Handle any additional routes and return the React app
 app.get("*", (req, res, next) => {
@@ -44,7 +52,7 @@ app.get("*", (req, res, next) => {
     // Skip the React app handling for routes containing "/api"
     return next();
   }
-  res.sendFile(path.join(__dirname, "../..", "client", "dist", "index.html"));
+  res.sendFile(path.join(__dirname, root_dir, "client", "dist", "index.html"));
 });
 
 app.listen(port, async () => {

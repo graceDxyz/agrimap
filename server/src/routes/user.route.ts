@@ -11,7 +11,7 @@ function UserRoutes(app: Express) {
       createUser({
         firstname: "john",
         lastname: "doe",
-        email: "john.doe..example.com",
+        email: "john.doe@example.com",
         password: "Password",
         userRole: "ADMIN",
       });

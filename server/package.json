@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development  nodemon",
+    "dev": "cross-env ENV=development  nodemon",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node -r tsconfig-paths/register src/app.ts",
     "build": "tsc"
