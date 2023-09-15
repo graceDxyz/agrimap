@@ -1,16 +1,17 @@
 import UserModel, { IUser, UserInput } from "../models/user.model";
-import { omit } from "lodash";
+// import { omit } from "lodash";
 import { FilterQuery } from "mongoose";
 
 export async function getAllUser() {
-  return UserModel.find().select("-password");
+  return UserModel.find(); //.select("-password");
 }
 
 export async function createUser(input: UserInput) {
   try {
     const user = await UserModel.create(input);
 
-    return omit(user.toJSON(), "password");
+    // return omit(user.toJSON(), "password");
+    return user.toJSON();
   } catch (e: any) {
     throw new Error(e);
   }
@@ -33,7 +34,8 @@ export async function validatePassword({
 
   if (!isValid) return false;
 
-  return omit(user.toJSON(), "password");
+  // return omit(user.toJSON(), "password");
+  return user.toJSON();
 }
 
 export async function findUser(query: FilterQuery<IUser>) {

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import * as bcrypt from "bcrypt";
-import config from "config";
+// import * as bcrypt from "bcrypt";
+// import config from "config";
 
 export interface UserInput {
   firstname: string;
@@ -51,17 +51,17 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  let user = this as IUser;
+  // let user = this as IUser;
 
-  if (!user.isModified("password")) {
-    return next();
-  }
+  // if (!user.isModified("password")) {
+  //   return next();
+  // }
 
-  const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
+  // const salt = await bcrypt.genSalt(config.get<number>("saltWorkFactor"));
 
-  const hash = bcrypt.hashSync(user.password, salt);
+  // const hash = bcrypt.hashSync(user.password, salt);
 
-  user.password = hash;
+  // user.password = hash;
 
   return next();
 });
@@ -71,7 +71,9 @@ userSchema.methods.comparePassword = async function (
 ): Promise<boolean> {
   const user = this as IUser;
 
-  return bcrypt.compare(candidatePassword, user.password).catch(() => false);
+  // return bcrypt.compare(candidatePassword, user.password).catch(() => false);
+
+  return user.password === candidatePassword;
 };
 
 const UserModel = mongoose.model<IUser>("User", userSchema);
