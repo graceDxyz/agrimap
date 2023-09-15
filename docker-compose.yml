@@ -1,0 +1,20 @@
+version: "3"
+services:
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+  agrimap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file: server/.env
+    depends_on:
+      - mongo
+    environment:
+      - PORT=5000
+      - ENV=production
+      - DATABASE_URL=mongodb://mongo:27017/agrimap

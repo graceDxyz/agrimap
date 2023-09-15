@@ -3,10 +3,11 @@ import dotenv from "dotenv";
 dotenv.config();
 import config from "config";
 
-import deserializeUser from "@/middlewares/deserializeUser";
-import route from "@/routes/root";
-import connect from "@/utils/connect";
-import logger from "@/utils/logger";
+import deserializeUser from "./middlewares/deserializeUser";
+import route from "./routes/root";
+import connect from "./utils/connect";
+import logger from "./utils/logger";
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";

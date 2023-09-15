@@ -4,9 +4,9 @@ import {
   createSession,
   findSession,
   updateSession,
-} from "@/services/session.service";
-import { validatePassword } from "@/services/user.service";
-import { signJwt, verifyJwt } from "@/utils/jwt.util";
+} from "../services/session.service";
+import { validatePassword } from "../services/user.service";
+import { signJwt, verifyJwt } from "../utils/jwt.util";
 import { get, omit } from "lodash";
 
 export async function createUserSessionHandler(req: Request, res: Response) {

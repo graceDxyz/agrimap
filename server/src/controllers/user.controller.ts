@@ -1,4 +1,4 @@
-import { getAllUser } from "@/services/user.service";
+import { getAllUser } from "../services/user.service";
 import { Request, Response } from "express";
 
 const getAllUserHandler = async (req: Request, res: Response) => {

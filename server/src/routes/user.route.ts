@@ -1,6 +1,6 @@
-import { getAllUserHandler } from "@/controllers/user.controller";
-import requiredAdmin from "@/middlewares/requireAdmin";
-import { createUser, getAllUser } from "@/services/user.service";
+import { getAllUserHandler } from "../controllers/user.controller";
+import requiredAdmin from "../middlewares/requireAdmin";
+import { createUser, getAllUser } from "../services/user.service";
 import { Express } from "express";
 
 function UserRoutes(app: Express) {
@@ -11,7 +11,7 @@ function UserRoutes(app: Express) {
       createUser({
         firstname: "john",
         lastname: "doe",
-        email: "john.doe@example.com",
+        email: "john.doe..example.com",
         password: "Password",
         userRole: "ADMIN",
       });

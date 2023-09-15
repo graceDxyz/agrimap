@@ -1,4 +1,4 @@
-import UserModel, { IUser, UserInput } from "@/models/user.model";
+import UserModel, { IUser, UserInput } from "../models/user.model";
 import { omit } from "lodash";
 import { FilterQuery } from "mongoose";
 
