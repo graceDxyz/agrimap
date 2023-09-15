@@ -1,7 +1,7 @@
+import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
-import { Request, Response, NextFunction } from "express";
+import { findSession, reIssueAccessToken } from "../services/session.service";
 import { verifyJwt } from "../utils/jwt.util";
-import { reIssueAccessToken } from "../services/session.service";
 
 const deserializeUser = async (
   req: Request,
@@ -22,7 +22,10 @@ const deserializeUser = async (
   const { decoded, expired } = verifyJwt(accessToken, "accessTokenPublicKey");
 
   if (decoded) {
-    res.locals.user = decoded;
+    const sessionId = decoded?.sub;
+    const session = await findSession({ _id: sessionId, valid: true });
+
+    res.locals.user = session?.user;
     return next();
   }
 
