@@ -14,21 +14,17 @@ import { QUERY_ACTIVE_USER_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { authSchema } from "@/lib/validations/auth";
 import { activeUserSchema } from "@/lib/validations/user";
+import { User } from "@/types/user.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { ErrorOption, useForm } from "react-hook-form";
 import * as z from "zod";
 
 type Inputs = z.infer<typeof authSchema>;
 
 function signInUserMutation(data: Inputs) {
-  return api.post("/sessions", JSON.stringify(data), {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  });
+  return api.post<User>("/sessions", JSON.stringify(data));
 }
 
 export function SignInForm() {
@@ -69,7 +65,6 @@ export function SignInForm() {
         <FormField
           control={form.control}
           name="email"
-          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -83,7 +78,6 @@ export function SignInForm() {
         <FormField
           control={form.control}
           name="password"
-          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>

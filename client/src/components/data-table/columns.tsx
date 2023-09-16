@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { User } from "@/types/user.type";
+import { UserDataTableRowActions } from "./data-table-row-actions";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -20,18 +21,29 @@ export const userColumns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Lastname" />
     ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate capitalize">
-            {row.getValue("lastname")}
-          </span>
-        </div>
-      );
-    },
-    enableSorting: false,
-    enableHiding: false,
+    cell: ({ row }) => (
+      <div className="w-[100px] capitalize font-medium">
+        {row.getValue("lastname")}
+      </div>
+    ),
   },
+  // {
+  //   accessorKey: "lastname",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Lastname" />
+  //   ),
+  //   cell: ({ row }) => {
+  //     return (
+  //       <div className="flex space-x-2">
+  //         <span className="max-w-[500px] truncate capitalize">
+  //           {row.getValue("lastname")}
+  //         </span>
+  //       </div>
+  //     );
+  //   },
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "email",
     header: ({ column }) => (
@@ -49,5 +61,18 @@ export const userColumns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <div className="w-[100px] font-medium">{row.getValue("password")}</div>
     ),
+  },
+  {
+    accessorKey: "role",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Role" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[100px] font-medium">{row.getValue("role")}</div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <UserDataTableRowActions row={row} />,
   },
 ];

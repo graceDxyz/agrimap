@@ -1,9 +1,9 @@
 import UserModel, { IUser, UserInput } from "../models/user.model";
 // import { omit } from "lodash";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 
 export async function getAllUser() {
-  return UserModel.find(); //.select("-password");
+  return UserModel.find().sort({ firstname: 1 }); //.select("-password");
 }
 
 export async function createUser(input: UserInput) {
@@ -40,4 +40,16 @@ export async function validatePassword({
 
 export async function findUser(query: FilterQuery<IUser>) {
   return UserModel.findOne(query).lean();
+}
+
+export async function updateUser(
+  query: FilterQuery<IUser>,
+  update: UpdateQuery<IUser>,
+  options: QueryOptions
+) {
+  return UserModel.findByIdAndUpdate(query, update, options);
+}
+
+export async function deleteUser(query: FilterQuery<IUser>) {
+  return UserModel.deleteOne(query);
 }

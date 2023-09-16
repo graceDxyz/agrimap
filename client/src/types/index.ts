@@ -1,5 +1,7 @@
 import { type Icons } from "@/components/icons";
 
+export type Mode = "view" | "create" | "update" | "delete";
+
 export interface NavItem {
   title: string;
   href?: string;
@@ -30,3 +32,7 @@ export interface FooterItem {
 export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;
+
+export interface Message {
+  message: string;
+}
