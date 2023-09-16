@@ -1,5 +1,7 @@
 import * as z from "zod";
 
+export const Role = z.enum(["USER", "ADMIN"]);
+
 export const userSchema = z.object({
   id: z.string(),
   _id: z.string(),
@@ -7,7 +9,7 @@ export const userSchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
   password: z.string().nullish(),
-  role: z.string(),
+  role: Role,
   createAt: z.string().nullish(),
   updatedAt: z.string().nullish(),
 });
@@ -26,5 +28,5 @@ export const createUserSchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
   password: z.string(),
-  role: z.string(),
+  role: Role,
 });

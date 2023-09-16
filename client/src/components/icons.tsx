@@ -18,6 +18,7 @@ import {
   MoreHorizontal,
   MoreVertical,
   MoveLeft,
+  Plus,
   Search,
   Settings,
   ShoppingBag,
@@ -58,6 +59,7 @@ export const Icons = {
   users: Users,
   table: Table,
   fileSpreadSheet: FileSpreadsheet,
+  plus: Plus,
   logo: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />

@@ -9,6 +9,10 @@ const origin = isProd
 const api = axios.create({
   baseURL: origin + "/api",
   withCredentials: true,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
 });
 
 // api.interceptors.request.use(async (request) => {

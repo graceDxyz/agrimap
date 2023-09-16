@@ -28,7 +28,7 @@ export function DashboardShell() {
             <SidebarNav items={dashboardConfig.sidebarNav} className="p-1" />
           </ScrollArea>
         </aside>
-        <main className="flex w-full flex-col overflow-hidden pl-5">
+        <main className="flex w-full flex-col overflow-hidden">
           <Outlet />
         </main>
       </div>
