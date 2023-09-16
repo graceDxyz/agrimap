@@ -24,7 +24,7 @@ const getUserHandler = async (
 ) => {
   const userId = req.params.userId;
 
-  const user = await findUser({ userId });
+  const user = await findUser({ _id: userId });
 
   if (!user) {
     return res.sendStatus(404);
@@ -58,17 +58,18 @@ const updateUserHandler = async (
   const userId = req.params.userId;
   const update = req.body;
 
-  const user = await findUser({ userId });
+  const user = await findUser({ _id: userId });
 
   if (!user) {
     return res.sendStatus(404);
   }
 
   try {
-    const updatedUser = await updateUser({ userId }, update, {
+    const updatedUser = await updateUser({ _id: userId }, update, {
       new: true,
     });
-    return updatedUser;
+
+    return res.send(updatedUser);
   } catch (error: any) {
     logger.error(error);
     return res.status(409).send(error.message);
@@ -80,14 +81,14 @@ const deleteUserHandler = async (
   res: Response
 ) => {
   const userId = req.params.userId;
-  const user = await findUser({ userId });
+  const user = await findUser({ _id: userId });
 
   if (!user) {
     return res.sendStatus(404);
   }
 
   try {
-    await deleteUser({ userId });
+    await deleteUser({ _id: userId });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);

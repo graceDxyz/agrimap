@@ -260,11 +260,16 @@ function UpdateUserForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateUser,
     onSuccess: ({ data }) => {
+      console.log(data);
       queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const categories = prev as User[];
-        return [data, ...categories];
+        const users = prev as User[];
+        return users.map((item) => {
+          if (item.id === data.id) {
+            return data;
+          }
+          return item;
+        });
       });
-
       handleCancelClick();
       toast({
         title: "User successfully",
@@ -394,9 +399,9 @@ function UpdateUserForm({ token }: { token: string }) {
                 aria-hidden="true"
               />
             ) : (
-              <Icons.plus className="mr-2 h-4 w-4" aria-hidden="true" />
+              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
             )}
-            Add
+            Update
             <span className="sr-only">Add</span>
           </Button>
         </AlertDialogFooter>
@@ -414,8 +419,8 @@ function DeleteUserForm({ token }: { token: string }) {
     mutationFn: deleteUser,
     onSuccess: ({ data }) => {
       queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const categories = prev as User[];
-        return [data, ...categories];
+        const users = prev as User[];
+        return users.filter((item) => item.id !== user?.id);
       });
 
       handleCancelClick();
