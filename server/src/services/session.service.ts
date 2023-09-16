@@ -33,15 +33,21 @@ export async function reIssueAccessToken({
 }) {
   const { decoded } = verifyJwt(refreshToken, "refreshTokenPublicKey");
 
-  if (!decoded || !get(decoded, "session")) return false;
+  if (!decoded || !get(decoded, "session")) {
+    return { user: null, sub: null, accessToken: null };
+  }
 
-  const session = await SessionModel.findById(get(decoded, "session"));
+  const session = await findSession({ _id: get(decoded, "session") });
 
-  if (!session || !session.valid) return false;
+  if (!session || !session.valid) {
+    return { user: null, sub: null, accessToken: null };
+  }
 
-  const user = await findUser({ _id: session.user });
+  const user = session.user;
 
-  if (!user) return false;
+  if (!user) {
+    return { user, sub: null, accessToken: null };
+  }
 
   const accessToken = signJwt(
     { ...user, session: session._id },
@@ -49,5 +55,5 @@ export async function reIssueAccessToken({
     { expiresIn: config.get("accessTokenTtl") }, // 15 minutes
   );
 
-  return accessToken;
+  return { user, sub: session._id, accessToken };
 }
