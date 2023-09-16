@@ -7,7 +7,7 @@ export const userSchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
   password: z.string().nullish(),
-  userRole: z.string(),
+  role: z.string(),
   createAt: z.string().nullish(),
   updatedAt: z.string().nullish(),
 });
@@ -19,4 +19,12 @@ export const activeUserSchema = z.object({
 
 export const usersSchema = z.object({
   users: z.array(userSchema),
+});
+
+export const createUserSchema = z.object({
+  email: z.string().email(),
+  firstname: z.string(),
+  lastname: z.string(),
+  password: z.string(),
+  role: z.string(),
 });
