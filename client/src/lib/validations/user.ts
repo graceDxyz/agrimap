@@ -27,6 +27,11 @@ export const createUserSchema = z.object({
   email: z.string().email(),
   firstname: z.string(),
   lastname: z.string(),
-  password: z.string(),
+  password: z
+    .string()
+    .min(8, {
+      message: "Password must be at least 8 characters long",
+    })
+    .max(100),
   role: Role,
 });
