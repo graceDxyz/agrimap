@@ -1,6 +1,6 @@
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import MapboxDraw, { DrawEventType } from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import { MAP_POLYGON_BORDER_KEY } from "@/constant/map.constant";
@@ -33,7 +33,6 @@ export function MapContainer() {
     ],
   ];
 
-  const center = calculatePolygonCenter(polygonCoordinates[0]);
   useEffect(() => {
     if (ref?.current && typeof ref?.current !== undefined) {
       const map = new mapboxgl.Map({
@@ -82,41 +81,10 @@ export function MapContainer() {
         //   zoom: 13.259085067438566,
         // });
       });
-
-      function updateArea(event: DrawEvent) {
-        console.log(event);
-      }
     }
-  }, [ref]);
-
-  return <div className="h-screen w-full overflow-hidden" ref={ref} />;
-}
-
-function calculatePolygonCenter(coordinates: number[][]): number[] {
-  let x = 0;
-  let y = 0;
-  let z = 0;
-
-  for (const point of coordinates) {
-    const latitude = (point[1] * Math.PI) / 180;
-    const longitude = (point[0] * Math.PI) / 180;
-
-    x += Math.cos(latitude) * Math.cos(longitude);
-    y += Math.cos(latitude) * Math.sin(longitude);
-    z += Math.sin(latitude);
+  }, [ref, polygonCoordinates]);
+  function updateArea(event: DrawEvent) {
+    console.log(event);
   }
-
-  const totalPoints = coordinates.length;
-  x = x / totalPoints;
-  y = y / totalPoints;
-  z = z / totalPoints;
-
-  const centralLongitude = Math.atan2(y, x);
-  const centralSquareRoot = Math.sqrt(x * x + y * y);
-  const centralLatitude = Math.atan2(z, centralSquareRoot);
-
-  return [
-    (centralLongitude * 180) / Math.PI,
-    (centralLatitude * 180) / Math.PI,
-  ];
+  return <div className="h-screen w-full overflow-hidden" ref={ref} />;
 }

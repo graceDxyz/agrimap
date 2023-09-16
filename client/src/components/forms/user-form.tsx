@@ -417,7 +417,7 @@ function DeleteUserForm({ token }: { token: string }) {
 
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteUser,
-    onSuccess: ({ data }) => {
+    onSuccess: () => {
       queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
         const users = prev as User[];
         return users.filter((item) => item.id !== user?.id);

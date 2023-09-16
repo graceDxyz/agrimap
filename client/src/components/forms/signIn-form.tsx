@@ -17,7 +17,7 @@ import { activeUserSchema } from "@/lib/validations/user";
 import { User } from "@/types/user.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import { ErrorOption, useForm } from "react-hook-form";
 import * as z from "zod";
 
