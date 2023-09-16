@@ -25,20 +25,24 @@ const deserializeUser = async (
     const sessionId = decoded?.sub;
     const session = await findSession({ _id: sessionId, valid: true });
 
-    res.locals.user = session?.user;
+    res.locals.user = { ...session?.user, sub: sessionId };
     return next();
   }
 
   if (expired && refreshToken) {
-    const newAccessToken = await reIssueAccessToken({ refreshToken });
+    const {
+      user,
+      sub,
+      accessToken: newAccessToken,
+    } = await reIssueAccessToken({
+      refreshToken,
+    });
 
     if (newAccessToken) {
       res.setHeader("x-access-token", newAccessToken);
     }
 
-    const result = verifyJwt(newAccessToken as string, "accessTokenPublicKey");
-
-    res.locals.user = result.decoded;
+    res.locals.user = { ...user, sub };
     return next();
   }
 

@@ -13,7 +13,7 @@ function UserRoutes(app: Express) {
         lastname: "doe",
         email: "john.doe@example.com",
         password: "Password",
-        userRole: "ADMIN",
+        role: "ADMIN",
       });
     }
   });

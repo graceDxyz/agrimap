@@ -75,12 +75,13 @@ export async function getUserSessionHandler(req: Request, res: Response) {
 }
 
 export async function deleteSessionHandler(req: Request, res: Response) {
-  const sessionId = res.locals.user.session;
+  const sessionId = res.locals.user?.sub;
 
   await updateSession({ _id: sessionId }, { valid: false });
 
   res.cookie("X-Agrimap-Session", "", {
     httpOnly: true,
+    expires: new Date(0),
   });
 
   return res.send();
