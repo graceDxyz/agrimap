@@ -17,7 +17,7 @@ function LandsPage() {
           <PageHeaderHeading size="sm" className="flex-1">
             Mortgage land
           </PageHeaderHeading>
-          <Button size="sm">Add User</Button>
+          <Button size="sm">Add mortgage land</Button>
         </div>
         <PageHeaderDescription size="sm">
           Manage the mortgage land
