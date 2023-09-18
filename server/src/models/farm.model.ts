@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { IUser } from "./user.model";
+import { IFarmer } from "./farmer.model";
 
 export interface FarmInput {
-  owner: IUser["_id"];
+  owner: IFarmer["_id"];
   proof: string;
   hectar: number;
   coordinates: [number, number][];
@@ -15,7 +15,11 @@ export interface IFarm extends FarmInput, mongoose.Document {
 
 const farmSchema = new mongoose.Schema(
   {
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "Farmer" },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Farmer",
+      required: true,
+    },
     proof: { type: String },
     hectar: { type: Number, required: true, default: 0 },
     coordinates: {

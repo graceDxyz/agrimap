@@ -2,7 +2,7 @@ import FarmModel, { IFarm, FarmInput } from "../models/farm.model";
 import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 
 export async function getAllFarm() {
-  return FarmModel.find().sort({ firstname: 1 }); //.select("-password");
+  return FarmModel.find().populate("owner").sort({ "owner.firstname": 1 });
 }
 
 export async function createFarm(input: FarmInput) {

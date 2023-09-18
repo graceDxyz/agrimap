@@ -1,6 +1,8 @@
 import { Express, Request, Response } from "express";
 import SessionRoutes from "./session.route";
 import UserRoutes from "./user.route";
+import FarmRoutes from "./farm.route";
+import FarmerRoutes from "./farmers.route";
 
 function root(app: Express) {
   app.get("/api/ping", (req: Request, res: Response) => {
@@ -13,6 +15,8 @@ function root(app: Express) {
 
   UserRoutes(app);
   SessionRoutes(app);
+  FarmerRoutes(app);
+  FarmRoutes(app);
 }
 
 export default root;
