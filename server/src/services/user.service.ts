@@ -3,7 +3,9 @@ import UserModel, { IUser, UserInput } from "../models/user.model";
 import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 
 export async function getAllUser() {
-  return UserModel.find().sort({ lastname: 1, firstname: 1 }); //.select("-password");
+  return UserModel.find()
+    .collation({ locale: "en_US", strength: 1 })
+    .sort({ lastname: 1, firstname: 1 }); //.select("-password");
 }
 
 export async function createUser(input: UserInput) {
@@ -24,7 +26,9 @@ export async function validatePassword({
   email: string;
   password: string;
 }) {
-  const user = await UserModel.findOne({ email });
+  const user = await UserModel.findOne({
+    email: { $regex: new RegExp(email, "i") },
+  });
 
   if (!user) {
     return false;
@@ -45,7 +49,7 @@ export async function findUser(query: FilterQuery<IUser>) {
 export async function updateUser(
   query: FilterQuery<IUser>,
   update: UpdateQuery<IUser>,
-  options: QueryOptions,
+  options: QueryOptions
 ) {
   return UserModel.findByIdAndUpdate(query, update, options);
 }
