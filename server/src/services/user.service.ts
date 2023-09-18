@@ -45,7 +45,7 @@ export async function findUser(query: FilterQuery<IUser>) {
 export async function updateUser(
   query: FilterQuery<IUser>,
   update: UpdateQuery<IUser>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return UserModel.findByIdAndUpdate(query, update, options);
 }
