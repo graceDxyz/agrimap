@@ -6,6 +6,18 @@ import { UserDataTableRowActions } from "./data-table-row-actions";
 
 export const userColumns: ColumnDef<User>[] = [
   {
+    accessorKey: "lastname",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Lastname" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-[100px] capitalize font-medium">
+        {row.getValue("lastname")}
+      </div>
+    ),
+    enableHiding: false,
+  },
+  {
     accessorKey: "firstname",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Firstname" />
@@ -16,41 +28,14 @@ export const userColumns: ColumnDef<User>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "lastname",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Lastname" />
-    ),
-    cell: ({ row }) => (
-      <div className="w-[100px] capitalize font-medium">
-        {row.getValue("lastname")}
-      </div>
-    ),
-  },
-  // {
-  //   accessorKey: "lastname",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Lastname" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div className="flex space-x-2">
-  //         <span className="max-w-[500px] truncate capitalize">
-  //           {row.getValue("lastname")}
-  //         </span>
-  //       </div>
-  //     );
-  //   },
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
+
   {
     accessorKey: "email",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => (
-      <div className="w-[100px] font-medium">{row.getValue("email")}</div>
+      <div className="font-medium">{row.getValue("email")}</div>
     ),
   },
   {

@@ -7,6 +7,7 @@ import {
   ChevronRight,
   ChevronsLeft,
   ChevronsRight,
+  ChevronsUpDown,
   Contact,
   CreditCard,
   DollarSign,
@@ -24,6 +25,7 @@ import {
   Plus,
   Search,
   Settings,
+  Settings2,
   ShoppingBag,
   Sun,
   Table,
@@ -66,6 +68,8 @@ export const Icons = {
   penLine: PenLine,
   contact: Contact,
   locateFixed: LocateFixed,
+  settings2: Settings2,
+  chevronsUpDown: ChevronsUpDown,
   logo: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />
