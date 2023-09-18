@@ -1,0 +1,17 @@
+import * as z from "zod";
+
+export const farmerSchema = z.object({
+  _id: z.string(),
+  id: z.string(),
+  firstname: z.string(),
+  lastname: z.string(),
+  address: z.string(),
+  phoneNumber: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  totalHectars: z.number().nullish(),
+});
+
+export const farmersSchema = z.object({
+  farmers: z.array(farmerSchema),
+});

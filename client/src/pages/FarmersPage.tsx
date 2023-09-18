@@ -5,8 +5,22 @@ import {
 } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
+import { useGetFarmers } from "@/services/farmer.service";
+import { useGetAuth } from "@/services/session.service";
 
 function FarmersPage() {
+  const { user } = useGetAuth();
+
+  const { data, isLoading } = useGetFarmers({
+    token: user?.accessToken ?? "",
+  });
+
+  if (isLoading) {
+    return <>Loading...</>;
+  }
+
+  console.log(data);
+
   return (
     <Shell variant="sidebar">
       <PageHeader
