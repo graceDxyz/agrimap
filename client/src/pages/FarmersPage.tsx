@@ -1,6 +1,6 @@
 import { farmerColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { FarmDialog } from "@/components/forms/farm-form";
+import { FarmerDialog } from "@/components/forms/farmer-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -8,9 +8,9 @@ import {
 } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
+import { useBoundStore } from "@/lib/store";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
-import { useBoundStore } from "@/lib/store";
 
 function FarmersPage() {
   const { user } = useGetAuth();
@@ -56,7 +56,7 @@ function FarmersPage() {
           isLoading={isLoading}
         />
       </section>
-      <FarmDialog />
+      <FarmerDialog />
     </Shell>
   );
 }

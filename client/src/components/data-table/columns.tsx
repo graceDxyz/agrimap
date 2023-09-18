@@ -1,12 +1,14 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { User } from "@/types/user.type";
 import {
   FarmerDataTableRowActions,
   UserDataTableRowActions,
-} from "./data-table-row-actions";
+} from "@/components/data-table/data-table-row-actions";
+import { Badge } from "@/components/ui/badge";
+import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
+import { User } from "@/types/user.type";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -57,7 +59,9 @@ export const userColumns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Role" />
     ),
     cell: ({ row }) => (
-      <div className="w-[100px] font-medium">{row.getValue("role")}</div>
+      <div className="w-[100px] font-medium">
+        <Badge>{row.getValue("role")} </Badge>
+      </div>
     ),
   },
   {
@@ -118,6 +122,38 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
       <div className="font-medium">{row.getValue("totalHectars") ?? 0}</div>
     ),
   },
+  {
+    id: "actions",
+    cell: ({ row }) => <FarmerDataTableRowActions row={row} />,
+  },
+];
+
+export const farmColumns: ColumnDef<Farm>[] = [
+  {
+    accessorKey: "owner",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Owner" />
+    ),
+    cell: ({ row }) => {
+      const owner = row.getValue<Farmer>("owner");
+      return (
+        <div className="w-auto capitalize font-medium">
+          {owner.lastname + ", " + owner.firstname}
+        </div>
+      );
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "hectar",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Hectars" />
+    ),
+    cell: ({ row }) => (
+      <div className="font-medium">{row.getValue("hectar")}</div>
+    ),
+  },
+
   {
     id: "actions",
     cell: ({ row }) => <FarmerDataTableRowActions row={row} />,

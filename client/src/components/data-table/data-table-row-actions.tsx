@@ -13,6 +13,7 @@ import {
 import { useBoundStore } from "@/lib/store";
 import { User } from "@/types/user.type";
 import { Farmer } from "@/types/farmer.type";
+import { Farm } from "@/types/farm.type";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -67,6 +68,43 @@ export function FarmerDataTableRowActions<TData>({
 
   function handleDeleteClick() {
     setMode({ mode: "delete", farmer: original });
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+        >
+          <Icons.horizontalThreeDots className="h-4 w-4" />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleDeleteClick}>
+          Delete
+          <DropdownMenuShortcut></DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+export function FarmDataTableRowActions<TData>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const { setMode } = useBoundStore((state) => state.farm);
+  const original = row.original as object as Farm;
+
+  function handleEditClick() {
+    setMode({ mode: "update", farm: original });
+  }
+
+  function handleDeleteClick() {
+    setMode({ mode: "delete", farm: original });
   }
 
   return (

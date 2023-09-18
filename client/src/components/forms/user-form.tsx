@@ -52,17 +52,17 @@ export function UserDialog() {
     create: {
       title: "Add User",
       description: "Create a new user.",
-      form: <CreateUserForm token={user?.accessToken ?? ""} />,
+      form: <CreateForm token={user?.accessToken ?? ""} />,
     },
     update: {
       title: "Update User",
       description: "Update user information.",
-      form: <UpdateUserForm token={user?.accessToken ?? ""} />,
+      form: <UpdateForm token={user?.accessToken ?? ""} />,
     },
     delete: {
       title: "Are you absolutely sure?",
       description: "Delete user data (cannot be undone).",
-      form: <DeleteUserForm token={user?.accessToken ?? ""} />,
+      form: <DeleteForm token={user?.accessToken ?? ""} />,
     },
   };
 
@@ -82,7 +82,7 @@ export function UserDialog() {
   );
 }
 
-function CreateUserForm({ token }: { token: string }) {
+function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.user);
@@ -98,15 +98,17 @@ function CreateUserForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: createUser,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const categories = prev as User[];
-        return [data, ...categories];
+      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
+        if (items) {
+          return [data, ...items];
+        }
+        return items;
       });
 
       handleCancelClick();
       toast({
-        title: "User successfully",
-        description: `user ${data.email} created successfully`,
+        title: "Created",
+        description: `User ${data.email} created successfully!`,
       });
     },
     onError: (error) => {
@@ -234,7 +236,7 @@ function CreateUserForm({ token }: { token: string }) {
   );
 }
 
-function UpdateUserForm({ token }: { token: string }) {
+function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, user } = useBoundStore((state) => state.user);
@@ -254,19 +256,21 @@ function UpdateUserForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateUser,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const users = prev as User[];
-        return users.map((item) => {
-          if (item.id === data.id) {
-            return data;
-          }
-          return item;
-        });
+      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
+        if (items) {
+          return items.map((item) => {
+            if (item.id === data.id) {
+              return data;
+            }
+            return item;
+          });
+        }
+        return items;
       });
       handleCancelClick();
       toast({
-        title: "User successfully",
-        description: `user ${data.email} created successfully`,
+        title: "Updted",
+        description: `User ${data.email} updated successfully!`,
       });
     },
     onError: (error) => {
@@ -403,7 +407,7 @@ function UpdateUserForm({ token }: { token: string }) {
   );
 }
 
-function DeleteUserForm({ token }: { token: string }) {
+function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user, setMode } = useBoundStore((state) => state.user);
@@ -411,15 +415,17 @@ function DeleteUserForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteUser,
     onSuccess: () => {
-      queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const users = prev as User[];
-        return users.filter((item) => item.id !== user?.id);
+      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
+        if (items) {
+          return items.filter((item) => item.id !== user?.id);
+        }
+        return items;
       });
 
       handleCancelClick();
       toast({
-        title: "Deleted successfully",
-        // description: response.message,
+        title: "Deleted",
+        description: `User ${user?._id} deleted successfully!`,
       });
     },
     onError: (error) => {

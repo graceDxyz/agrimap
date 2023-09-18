@@ -20,41 +20,45 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { QUERY_FARMERS_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { createFarmSchema } from "@/lib/validations/farm";
-import { createFarm, deleteFarm, updateFarm } from "@/services/farm.service";
+import { createFarmerSchema } from "@/lib/validations/farmer";
+import {
+  createFarmer,
+  deleteFarmer,
+  updateFarmer,
+} from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateFarmInput, Farm } from "@/types/farm.type";
+import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export function FarmDialog() {
+export function FarmerDialog() {
   const { user } = useGetAuth();
-  const { mode } = useBoundStore((state) => state.farm);
+  const { mode } = useBoundStore((state) => state.farmer);
   const isOpen = mode !== "view";
 
   const modeToTitle: Record<Mode, DialogHeaderDetail> = {
     view: {
-      title: "View Farm",
-      description: "View farm details.",
+      title: "View Farmer",
+      description: "View farmer details.",
     },
     create: {
-      title: "Add Farm",
-      description: "add a new farm.",
+      title: "Add Farmer",
+      description: "add a new farmer.",
       form: <CreateForm token={user?.accessToken ?? ""} />,
     },
     update: {
-      title: "Update Farm",
-      description: "Update farm information.",
+      title: "Update Farmer",
+      description: "Update farmer information.",
       form: <UpdateForm token={user?.accessToken ?? ""} />,
     },
     delete: {
       title: "Are you absolutely sure?",
-      description: "Delete farm data (cannot be undone).",
+      description: "Delete farmer data (cannot be undone).",
       form: <DeleteForm token={user?.accessToken ?? ""} />,
     },
   };
@@ -78,25 +82,32 @@ export function FarmDialog() {
 function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode } = useBoundStore((state) => state.farm);
+  const { setMode } = useBoundStore((state) => state.farmer);
 
-  const form = useForm<CreateFarmInput>({
-    resolver: zodResolver(createFarmSchema),
-    defaultValues: { ownerId: "", hectar: 0, proof: "", coordinates: [] },
+  const form = useForm<CreateFarmerInput>({
+    resolver: zodResolver(createFarmerSchema),
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      address: "",
+      phoneNumber: "",
+    },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: createFarm,
+    mutationFn: createFarmer,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData([QUERY_FARMS_KEY], (prev: unknown) => {
-        const categories = prev as Farm[];
-        return [data, ...categories];
+      queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
+        if (items) {
+          return [data, ...items];
+        }
+        return items;
       });
 
       handleCancelClick();
       toast({
         title: "Created",
-        description: `Farm ${data._id} created successfully!`,
+        description: `Farmer ${data.lastname} created successfully!`,
       });
     },
     onError: (error) => {
@@ -104,7 +115,7 @@ function CreateForm({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: CreateFarmInput) {
+  function onSubmit(data: CreateFarmerInput) {
     mutate({ token, data });
   }
 
@@ -121,7 +132,7 @@ function CreateForm({ token }: { token: string }) {
       >
         <FormField
           control={form.control}
-          name="ownerId"
+          name="firstname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Firstname</FormLabel>
@@ -134,12 +145,12 @@ function CreateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="hectar"
+          name="lastname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Lastname</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="lastname" {...field} />
+                <Input placeholder="lastname" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -147,12 +158,26 @@ function CreateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="proof"
+          name="address"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Address</FormLabel>
               <FormControl>
                 <Input placeholder="address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="phoneNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="phone number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -188,30 +213,36 @@ function CreateForm({ token }: { token: string }) {
 function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode, farm } = useBoundStore((state) => state.farm);
+  const { setMode, farmer } = useBoundStore((state) => state.farmer);
 
-  const form = useForm<CreateFarmInput>({
-    resolver: zodResolver(createFarmSchema),
-    defaultValues: { ownerId: "", hectar: 0, proof: "", coordinates: [] },
+  const form = useForm<CreateFarmerInput>({
+    resolver: zodResolver(createFarmerSchema),
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      address: "",
+      phoneNumber: "",
+    },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: updateFarm,
+    mutationFn: updateFarmer,
     onSuccess: ({ data }) => {
-      console.log(data);
-      queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (prev) => {
-        const farms = prev as Farm[];
-        return farms.map((item) => {
-          if (item.id === data.id) {
-            return data;
-          }
-          return item;
-        });
+      queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
+        if (items) {
+          return items.map((item) => {
+            if (item.id === data.id) {
+              return data;
+            }
+            return item;
+          });
+        }
+        return items;
       });
       handleCancelClick();
       toast({
         title: "Updated",
-        description: `Farm ${data._id} updated successfully!`,
+        description: `Farmer ${data.lastname} updated successfully!`,
       });
     },
     onError: (error) => {
@@ -219,8 +250,8 @@ function UpdateForm({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: CreateFarmInput) {
-    mutate({ token, id: farm?._id as string, data });
+  function onSubmit(data: CreateFarmerInput) {
+    mutate({ token, id: farmer?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -229,12 +260,12 @@ function UpdateForm({ token }: { token: string }) {
   }
 
   useEffect(() => {
-    if (farm) {
+    if (farmer) {
       form.reset({
-        ...farm,
+        ...farmer,
       });
     }
-  }, [farm, form]);
+  }, [farmer, form]);
 
   return (
     <Form {...form}>
@@ -244,7 +275,7 @@ function UpdateForm({ token }: { token: string }) {
       >
         <FormField
           control={form.control}
-          name="ownerId"
+          name="firstname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Firstname</FormLabel>
@@ -257,12 +288,12 @@ function UpdateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="hectar"
+          name="lastname"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Lastname</FormLabel>
               <FormControl>
-                <Input type="number" placeholder="lastname" {...field} />
+                <Input placeholder="lastname" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -270,7 +301,7 @@ function UpdateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="proof"
+          name="address"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Address</FormLabel>
@@ -280,7 +311,21 @@ function UpdateForm({ token }: { token: string }) {
               <FormMessage />
             </FormItem>
           )}
-        />{" "}
+        />
+
+        <FormField
+          control={form.control}
+          name="phoneNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="phone number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <AlertDialogFooter>
           <Button
             type="button"
@@ -311,20 +356,22 @@ function UpdateForm({ token }: { token: string }) {
 function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { farm, setMode } = useBoundStore((state) => state.farm);
+  const { farmer, setMode } = useBoundStore((state) => state.farmer);
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: deleteFarm,
+    mutationFn: deleteFarmer,
     onSuccess: () => {
-      queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (prev) => {
-        const farms = prev as Farm[];
-        return farms.filter((item) => item.id !== farm?._id);
+      queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (prev) => {
+        if (prev) {
+          return prev.filter((item) => item.id !== farmer?._id);
+        }
+        return prev;
       });
 
       handleCancelClick();
       toast({
         title: "Deleted",
-        description: `Farm ${farm?._id} deleted successfully!`,
+        description: `Farmer ${farmer?._id} deleted successfully!`,
       });
     },
     onError: (error) => {
@@ -333,7 +380,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: farm?._id ?? "" });
+    mutate({ token, id: farmer?._id ?? "" });
   }
 
   function handleCancelClick() {
