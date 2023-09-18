@@ -3,7 +3,7 @@ import UserModel, { IUser, UserInput } from "../models/user.model";
 import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 
 export async function getAllUser() {
-  return UserModel.find().sort({ firstname: 1 }); //.select("-password");
+  return UserModel.find().sort({ lastname: 1, firstname: 1 }); //.select("-password");
 }
 
 export async function createUser(input: UserInput) {
