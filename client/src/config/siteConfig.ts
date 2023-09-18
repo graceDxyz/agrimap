@@ -17,12 +17,14 @@ export const dashboardConfig: DashboardConfig = {
       href: "/dashboard/farmers",
       icon: "contact",
       items: [],
+      audience: ["ADMIN"],
     },
     {
       title: "Farm Coordinates",
       href: "/dashboard/farms",
       icon: "locateFixed",
       items: [],
+      audience: ["ADMIN"],
     },
     {
       title: "Martgage Land",

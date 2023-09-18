@@ -18,51 +18,48 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import { QUERY_FARMERS_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { Role, createUserSchema } from "@/lib/validations/user";
+import { createFarmerSchema } from "@/lib/validations/farmer";
+import {
+  createFarmer,
+  deleteFarmer,
+  updateFarmer,
+} from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
-import { createUser, deleteUser, updateUser } from "@/services/user.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateUserInput, User } from "@/types/user.type";
+import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export function UserDialog() {
+export function FarmDialog() {
   const { user } = useGetAuth();
-  const { mode } = useBoundStore((state) => state.user);
+  const { mode } = useBoundStore((state) => state.farmer);
   const isOpen = mode !== "view";
 
   const modeToTitle: Record<Mode, DialogHeaderDetail> = {
     view: {
-      title: "View User",
-      description: "View user details.",
+      title: "View Farmer",
+      description: "View farmer details.",
     },
     create: {
-      title: "Add User",
-      description: "Create a new user.",
-      form: <CreateUserForm token={user?.accessToken ?? ""} />,
+      title: "Add Farmer",
+      description: "add a new farmer.",
+      form: <CreateForm token={user?.accessToken ?? ""} />,
     },
     update: {
-      title: "Update User",
-      description: "Update user information.",
-      form: <UpdateUserForm token={user?.accessToken ?? ""} />,
+      title: "Update Farmer",
+      description: "Update farmer information.",
+      form: <UpdateForm token={user?.accessToken ?? ""} />,
     },
     delete: {
       title: "Are you absolutely sure?",
-      description: "Delete user data (cannot be undone).",
-      form: <DeleteUserForm token={user?.accessToken ?? ""} />,
+      description: "Delete farmer data (cannot be undone).",
+      form: <DeleteForm token={user?.accessToken ?? ""} />,
     },
   };
 
@@ -82,31 +79,33 @@ export function UserDialog() {
   );
 }
 
-function CreateUserForm({ token }: { token: string }) {
+function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode } = useBoundStore((state) => state.user);
-  const roles = Object.values(Role.Values);
+  const { setMode } = useBoundStore((state) => state.farmer);
 
-  const form = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+  const form = useForm<CreateFarmerInput>({
+    resolver: zodResolver(createFarmerSchema),
     defaultValues: {
-      role: "USER",
+      firstname: "",
+      lastname: "",
+      address: "",
+      phoneNumber: "",
     },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: createUser,
+    mutationFn: createFarmer,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const categories = prev as User[];
+      queryClient.setQueriesData([QUERY_FARMERS_KEY], (prev: unknown) => {
+        const categories = prev as Farmer[];
         return [data, ...categories];
       });
 
       handleCancelClick();
       toast({
-        title: "User successfully",
-        description: `user ${data.email} created successfully`,
+        title: "Created successfully",
+        description: `farmer ${data.lastname} created successfully`,
       });
     },
     onError: (error) => {
@@ -114,7 +113,7 @@ function CreateUserForm({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: CreateUserInput) {
+  function onSubmit(data: CreateFarmerInput) {
     mutate({ token, data });
   }
 
@@ -157,52 +156,27 @@ function CreateUserForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Address</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input placeholder="address" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div>
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+
         <FormField
           control={form.control}
-          name="role"
+          name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {roles.map((value, index) => (
-                    <SelectItem key={index} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="phone number" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -234,30 +208,28 @@ function CreateUserForm({ token }: { token: string }) {
   );
 }
 
-function UpdateUserForm({ token }: { token: string }) {
+function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode, user } = useBoundStore((state) => state.user);
-  const roles = Object.values(Role.Values);
+  const { setMode, farmer } = useBoundStore((state) => state.farmer);
 
-  const form = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+  const form = useForm<CreateFarmerInput>({
+    resolver: zodResolver(createFarmerSchema),
     defaultValues: {
       firstname: "",
       lastname: "",
-      email: "",
-      password: "",
-      role: "USER",
+      address: "",
+      phoneNumber: "",
     },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: updateUser,
+    mutationFn: updateFarmer,
     onSuccess: ({ data }) => {
       console.log(data);
-      queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const users = prev as User[];
-        return users.map((item) => {
+      queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (prev) => {
+        const farmers = prev as Farmer[];
+        return farmers.map((item) => {
           if (item.id === data.id) {
             return data;
           }
@@ -266,8 +238,8 @@ function UpdateUserForm({ token }: { token: string }) {
       });
       handleCancelClick();
       toast({
-        title: "User successfully",
-        description: `user ${data.email} created successfully`,
+        title: "Updated successfully",
+        description: `farmer ${data.lastname} updated successfully`,
       });
     },
     onError: (error) => {
@@ -275,8 +247,8 @@ function UpdateUserForm({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: CreateUserInput) {
-    mutate({ token, id: user?.id as string, data });
+  function onSubmit(data: CreateFarmerInput) {
+    mutate({ token, id: farmer?.id as string, data });
   }
 
   function handleCancelClick() {
@@ -285,13 +257,12 @@ function UpdateUserForm({ token }: { token: string }) {
   }
 
   useEffect(() => {
-    if (user) {
+    if (farmer) {
       form.reset({
-        ...user,
-        password: user.password as string,
+        ...farmer,
       });
     }
-  }, [user]);
+  }, [farmer, form]);
 
   return (
     <Form {...form}>
@@ -327,52 +298,27 @@ function UpdateUserForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Address</FormLabel>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input placeholder="address" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div>
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+
         <FormField
           control={form.control}
-          name="role"
+          name="phoneNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {roles.map((value, index) => (
-                    <SelectItem key={index} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="phone number" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
@@ -404,17 +350,17 @@ function UpdateUserForm({ token }: { token: string }) {
   );
 }
 
-function DeleteUserForm({ token }: { token: string }) {
+function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { user, setMode } = useBoundStore((state) => state.user);
+  const { farmer, setMode } = useBoundStore((state) => state.farmer);
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: deleteUser,
+    mutationFn: deleteFarmer,
     onSuccess: () => {
-      queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
-        const users = prev as User[];
-        return users.filter((item) => item.id !== user?.id);
+      queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (prev) => {
+        const farmers = prev as Farmer[];
+        return farmers.filter((item) => item.id !== farmer?.id);
       });
 
       handleCancelClick();
@@ -429,7 +375,7 @@ function DeleteUserForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: user?.id ?? "" });
+    mutate({ token, id: farmer?.id ?? "" });
   }
 
   function handleCancelClick() {

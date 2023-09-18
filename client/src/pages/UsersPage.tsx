@@ -42,14 +42,11 @@ function UsersPage() {
           Manage the users
         </PageHeaderDescription>
       </PageHeader>
-      <section
-        id="dashboard-stores-page-stores"
-        aria-labelledby="dashboard-stores-page-stores-heading"
-      >
+      <section id="dashboard-users" aria-labelledby="dashboard-users-heading">
         <DataTable
           data={data ?? []}
           columns={userColumns}
-          searchPlaceHolder="Filter categories..."
+          searchPlaceHolder="Filter users..."
           isLoading={isLoading}
         />
       </section>

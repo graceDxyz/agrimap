@@ -1,7 +1,8 @@
 import { QUERY_FARMERS_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { farmersSchema } from "@/lib/validations/farmer";
-import { Farmer } from "@/types/farmer.type";
+import { Message } from "@/types";
+import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
@@ -27,48 +28,48 @@ export function useGetFarmers({
   });
 }
 
-// export async function createUser({
-//   token,
-//   data,
-// }: {
-//   token: string;
-//   data: CreateInputs;
-// }) {
-//   return await api.post<User>("/users", JSON.stringify(data), {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// }
+export async function createFarmer({
+  token,
+  data,
+}: {
+  token: string;
+  data: CreateFarmerInput;
+}) {
+  return await api.post<Farmer>("/farmers", JSON.stringify(data), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 
-// export async function updateUser({
-//   token,
-//   id,
-//   data,
-// }: {
-//   token: string;
-//   id: string;
-//   data: CreateInputs;
-// }) {
-//   return await api.put<User>(`/users/${id}`, JSON.stringify(data), {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-// }
+export async function updateFarmer({
+  token,
+  id,
+  data,
+}: {
+  token: string;
+  id: string;
+  data: CreateFarmerInput;
+}) {
+  return await api.put<Farmer>(`/farmers/${id}`, JSON.stringify(data), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 
-// export const deleteUser = async ({
-//   token,
-//   id,
-// }: {
-//   token: string;
-//   id: string;
-// }) => {
-//   const res = await api.delete<Message>(`/users/${id}`, {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
+export async function deleteFarmer({
+  token,
+  id,
+}: {
+  token: string;
+  id: string;
+}) {
+  const res = await api.delete<Message>(`/farmers/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-//   return res;
-// };
+  return res;
+}

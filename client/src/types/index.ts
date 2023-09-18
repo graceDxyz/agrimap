@@ -38,3 +38,9 @@ export type SidebarNavItem = NavItemWithChildren;
 export interface Message {
   message: string;
 }
+
+export interface DialogHeaderDetail {
+  title: string;
+  description?: string;
+  form?: JSX.Element;
+}

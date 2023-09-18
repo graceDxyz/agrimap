@@ -1,7 +1,7 @@
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { usersSchema } from "@/lib/validations/user";
-import { CreateInputs, User } from "@/types/user.type";
+import { CreateUserInput, User } from "@/types/user.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Message } from "react-hook-form";
@@ -33,7 +33,7 @@ export async function createUser({
   data,
 }: {
   token: string;
-  data: CreateInputs;
+  data: CreateUserInput;
 }) {
   return await api.post<User>("/users", JSON.stringify(data), {
     headers: {
@@ -49,7 +49,7 @@ export async function updateUser({
 }: {
   token: string;
   id: string;
-  data: CreateInputs;
+  data: CreateUserInput;
 }) {
   return await api.put<User>(`/users/${id}`, JSON.stringify(data), {
     headers: {
@@ -58,13 +58,7 @@ export async function updateUser({
   });
 }
 
-export const deleteUser = async ({
-  token,
-  id,
-}: {
-  token: string;
-  id: string;
-}) => {
+export async function deleteUser({ token, id }: { token: string; id: string }) {
   const res = await api.delete<Message>(`/users/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -72,4 +66,4 @@ export const deleteUser = async ({
   });
 
   return res;
-};
+}

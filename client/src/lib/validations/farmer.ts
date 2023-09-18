@@ -15,3 +15,10 @@ export const farmerSchema = z.object({
 export const farmersSchema = z.object({
   farmers: z.array(farmerSchema),
 });
+
+export const createFarmerSchema = z.object({
+  firstname: z.string().nonempty({ message: "Please input a firstname" }),
+  lastname: z.string().nonempty({ message: "Please input a lastname" }),
+  address: z.string(),
+  phoneNumber: z.string(),
+});
