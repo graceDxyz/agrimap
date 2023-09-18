@@ -1,13 +1,8 @@
+import { SERVER } from "@/constant/server.constant";
 import axios from "axios";
 
-// const BE_BASE_URL = "http://192.168.254.126:5000/api";
-const isProd = import.meta.env.PROD;
-const origin = isProd
-  ? `${window.location.origin}`
-  : `http://${window.location.hostname}:5000`;
-
 const api = axios.create({
-  baseURL: origin + "/api",
+  baseURL: SERVER + "/api",
   withCredentials: true,
   headers: {
     Accept: "application/json",
