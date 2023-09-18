@@ -254,7 +254,6 @@ function UpdateUserForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateUser,
     onSuccess: ({ data }) => {
-      console.log(data);
       queryClient.setQueriesData([QUERY_USERS_KEY], (prev: unknown) => {
         const users = prev as User[];
         return users.map((item) => {
@@ -276,7 +275,7 @@ function UpdateUserForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateUserInput) {
-    mutate({ token, id: user?.id as string, data });
+    mutate({ token, id: user?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -291,7 +290,7 @@ function UpdateUserForm({ token }: { token: string }) {
         password: user.password as string,
       });
     }
-  }, [user]);
+  }, [user, form]);
 
   return (
     <Form {...form}>
@@ -429,7 +428,7 @@ function DeleteUserForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: user?.id ?? "" });
+    mutate({ token, id: user?._id ?? "" });
   }
 
   function handleCancelClick() {

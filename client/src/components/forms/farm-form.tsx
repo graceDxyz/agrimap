@@ -248,7 +248,7 @@ function UpdateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateFarmerInput) {
-    mutate({ token, id: farmer?.id as string, data });
+    mutate({ token, id: farmer?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -360,7 +360,7 @@ function DeleteForm({ token }: { token: string }) {
     onSuccess: () => {
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (prev) => {
         const farmers = prev as Farmer[];
-        return farmers.filter((item) => item.id !== farmer?.id);
+        return farmers.filter((item) => item.id !== farmer?._id);
       });
 
       handleCancelClick();
@@ -375,7 +375,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: farmer?.id ?? "" });
+    mutate({ token, id: farmer?._id ?? "" });
   }
 
   function handleCancelClick() {
