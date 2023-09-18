@@ -7,6 +7,7 @@ import {
 import { DashboardShell } from "@/components/shells/layout-shell";
 import DashboardPage from "@/pages/DashboardPage";
 import FarmersPage from "@/pages/FarmersPage";
+import FarmPage from "@/pages/FarmPage";
 import LandsPage from "@/pages/LandsPage";
 import ReportsPage from "@/pages/ReportsPage";
 import SignInPage from "@/pages/SignInPage";
@@ -36,6 +37,10 @@ function App() {
         {
           path: "farmers",
           element: <FarmersPage />,
+        },
+        {
+          path: "farms",
+          element: <FarmPage />,
         },
         {
           path: "lands",

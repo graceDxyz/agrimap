@@ -19,6 +19,12 @@ export const dashboardConfig: DashboardConfig = {
       items: [],
     },
     {
+      title: "Farm Coordinates",
+      href: "/dashboard/farms",
+      icon: "locateFixed",
+      items: [],
+    },
+    {
       title: "Martgage Land",
       href: "/dashboard/lands",
       icon: "table",
