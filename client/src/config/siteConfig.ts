@@ -13,6 +13,12 @@ export const dashboardConfig: DashboardConfig = {
       items: [],
     },
     {
+      title: "Farmers",
+      href: "/dashboard/farmers",
+      icon: "contact",
+      items: [],
+    },
+    {
       title: "Martgage Land",
       href: "/dashboard/lands",
       icon: "table",
@@ -29,6 +35,7 @@ export const dashboardConfig: DashboardConfig = {
       href: "/dashboard/users",
       icon: "users",
       items: [],
+      audience: ["ADMIN"],
     },
   ],
 };

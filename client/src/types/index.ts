@@ -1,4 +1,5 @@
 import { type Icons } from "@/components/icons";
+import { Role } from "./user.type";
 
 export type Mode = "view" | "create" | "update" | "delete";
 
@@ -10,6 +11,7 @@ export interface NavItem {
   icon?: keyof typeof Icons;
   label?: string;
   description?: string;
+  audience?: Array<Role>;
 }
 
 export interface NavItemWithChildren extends NavItem {

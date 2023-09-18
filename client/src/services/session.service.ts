@@ -24,6 +24,7 @@ export function useGetSession() {
     queryFn: async () => {
       const res = await api.get("/sessions/current");
 
+      console.log(res.data);
       if (res.data) {
         return activeUserSchema.parse(res.data);
       }
