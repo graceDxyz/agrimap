@@ -44,7 +44,6 @@ export function useGetFarm({
         },
       });
 
-      console.log(res.data);
       return farmSchema.parse(res.data);
     },
   });

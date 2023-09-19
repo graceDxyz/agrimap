@@ -1,4 +1,4 @@
-import { MAP_POLYGON_BORDER_KEY } from "@/constant/map.constant";
+import { MAP_POLYGON_KEY } from "@/constant/map.constant";
 import { DrawEvent } from "@/types";
 import { Coordinates } from "@/types/farm.type";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
@@ -49,7 +49,7 @@ export function MapContainer() {
 
       map.on("load", ({ target }) => {
         target.addLayer({
-          id: MAP_POLYGON_BORDER_KEY,
+          id: MAP_POLYGON_KEY,
           type: "line",
           source: {
             type: "geojson",
@@ -91,6 +91,7 @@ interface UseMapContainerProps {
 
 export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
   const ref = useRef<HTMLDivElement | null>(null);
+  const drawRef = useRef<MapboxDraw | null>(null);
 
   useEffect(() => {
     if (ref.current) {
@@ -114,26 +115,6 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
       map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
       map.on("load", ({ target }) => {
-        target.addLayer({
-          id: MAP_POLYGON_BORDER_KEY,
-          type: "line",
-          source: {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Polygon",
-                coordinates: coordinares ?? [],
-              },
-            },
-          },
-          paint: {
-            "line-color": "#FFA500",
-            "line-width": 4,
-          },
-        });
-
         if (updateArea) {
           target.on("draw.create", updateArea);
           target.on("draw.delete", updateArea);
@@ -145,6 +126,22 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
             center: findCenter(coordinares),
             zoom: 13.259085067438566,
           });
+
+          // Add the feature to MapboxDraw
+          const polygonFeature: GeoJSON.Feature<GeoJSON.Polygon> = {
+            id: MAP_POLYGON_KEY,
+            type: "Feature",
+            properties: {},
+            geometry: { type: "Polygon", coordinates: coordinares },
+          };
+
+          draw.add(polygonFeature);
+          draw.set({
+            type: "FeatureCollection",
+            features: [polygonFeature],
+          });
+
+          drawRef.current = draw;
         }
       });
 
@@ -157,7 +154,7 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
         map.remove();
       };
     }
-  }, [ref]);
+  }, [ref, coordinares]);
 
   return ref;
 }
