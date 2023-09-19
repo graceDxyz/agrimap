@@ -21,7 +21,6 @@ export function useGetFarms({
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data);
       return farmsSchema.parse({ farms: res.data }).farms;
     },
     ...options,
