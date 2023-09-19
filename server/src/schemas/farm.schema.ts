@@ -1,11 +1,15 @@
 import * as z from "zod";
 
+export const coordinatesSchema = z.array(
+  z.array(z.tuple([z.number(), z.number()]))
+);
+
 const payload = {
   body: z.object({
     ownerId: z.string(),
     proof: z.string(),
     hectar: z.number(),
-    coordinates: z.array(z.tuple([z.number(), z.number()])),
+    coordinates: coordinatesSchema,
   }),
 };
 

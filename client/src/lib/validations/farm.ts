@@ -1,7 +1,9 @@
 import * as z from "zod";
 import { farmerSchema } from "./farmer";
 
-const coordinatesSchema = z.array(z.array(z.tuple([z.number(), z.number()])));
+export const coordinatesSchema = z.array(
+  z.array(z.tuple([z.number(), z.number()]))
+);
 
 export const farmSchema = z.object({
   _id: z.string(),
@@ -17,8 +19,8 @@ export const farmsSchema = z.object({
 });
 
 export const createFarmSchema = z.object({
-  ownerId: z.string(),
+  ownerId: z.string().nonempty({ message: "Please select a farmer" }),
   proof: z.string(),
-  hectar: z.number(),
+  hectar: z.coerce.number(),
   coordinates: coordinatesSchema,
 });
