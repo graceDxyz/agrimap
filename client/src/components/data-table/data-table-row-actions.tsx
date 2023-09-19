@@ -10,10 +10,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { QUERY_FARM_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { User } from "@/types/user.type";
-import { Farmer } from "@/types/farmer.type";
 import { Farm } from "@/types/farm.type";
+import { Farmer } from "@/types/farmer.type";
+import { User } from "@/types/user.type";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -96,11 +99,14 @@ export function FarmerDataTableRowActions<TData>({
 export function FarmDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { setMode } = useBoundStore((state) => state.farm);
   const original = row.original as object as Farm;
 
   function handleEditClick() {
-    setMode({ mode: "update", farm: original });
+    queryClient.setQueryData([QUERY_FARM_KEY, original._id], original);
+    navigate(`/dashboard/farms/${original._id}`);
   }
 
   function handleDeleteClick() {

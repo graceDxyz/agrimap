@@ -20,7 +20,7 @@ const getAllFarmHandler = async (req: Request, res: Response) => {
 
 const getFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmId = req.params.farmId;
 
@@ -35,7 +35,7 @@ const getFarmHandler = async (
 
 const createFarmHandler = async (
   req: Request<{}, {}, CreateFarmInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -54,7 +54,7 @@ const createFarmHandler = async (
 
 const updateFarmHandler = async (
   req: Request<UpdateFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmId = req.params.farmId;
   const update = req.body;
@@ -68,6 +68,7 @@ const updateFarmHandler = async (
   try {
     const updatedFarm = await updateFarm({ _id: farmId }, update, {
       new: true,
+      populate: "owner",
     });
 
     return res.send(updatedFarm);
@@ -79,7 +80,7 @@ const updateFarmHandler = async (
 
 const deleteFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmId = req.params.farmId;
   const farm = await findFarm({ _id: farmId });

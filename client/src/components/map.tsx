@@ -1,5 +1,6 @@
 import { MAP_POLYGON_BORDER_KEY } from "@/constant/map.constant";
 import { DrawEvent } from "@/types";
+import { Coordinates } from "@/types/farm.type";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import mapboxgl from "mapbox-gl";
@@ -24,6 +25,8 @@ export function MapContainer() {
       [124.74910258726203, 7.725352264365313],
     ],
   ];
+
+  const median = findCenter(polygonCoordinates as Coordinates);
 
   useEffect(() => {
     if (ref?.current && typeof ref?.current !== undefined) {
@@ -68,10 +71,10 @@ export function MapContainer() {
         target.on("draw.delete", updateArea);
         target.on("draw.update", updateArea);
 
-        // map.flyTo({
-        //   center: { lat: center[0], lng: center[1] },
-        //   zoom: 13.259085067438566,
-        // });
+        map.flyTo({
+          center: median,
+          zoom: 13.259085067438566,
+        });
       });
     }
   }, [ref, polygonCoordinates]);
@@ -82,69 +85,110 @@ export function MapContainer() {
 }
 
 interface UseMapContainerProps {
+  coordinares?: Coordinates;
   updateArea?: (event: DrawEvent) => void;
 }
 
-export function useMapDraw({ updateArea }: UseMapContainerProps) {
+export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: ref.current || "",
-      center: [124.74735434277659, 7.745449162964974],
-      zoom: 13.259085067438566,
-      style: "mapbox://styles/mapbox/satellite-streets-v12",
-    });
-
-    const draw = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true,
-      },
-      defaultMode: "draw_polygon",
-    });
-
-    map.addControl(draw);
-    map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
-
-    map.on("load", ({ target }) => {
-      target.addLayer({
-        id: MAP_POLYGON_BORDER_KEY,
-        type: "line",
-        source: {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            properties: {},
-            geometry: {
-              type: "Polygon",
-              coordinates: [],
-            },
-          },
-        },
-        paint: {
-          "line-color": "#FFA500",
-          "line-width": 4,
-        },
+    if (ref.current) {
+      const map = new mapboxgl.Map({
+        container: ref.current || "",
+        center: [124.74735434277659, 7.745449162964974],
+        zoom: 13.259085067438566,
+        style: "mapbox://styles/mapbox/satellite-streets-v12",
       });
 
-      if (updateArea) {
-        target.on("draw.create", updateArea);
-        target.on("draw.delete", updateArea);
-        target.on("draw.update", updateArea);
-      }
-    });
+      const draw = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true,
+        },
+        defaultMode: "draw_polygon",
+      });
 
-    return () => {
-      if (updateArea) {
-        map.off("draw.create", updateArea);
-        map.off("draw.delete", updateArea);
-        map.off("draw.update", updateArea);
-      }
-      map.remove();
-    };
+      map.addControl(draw);
+      map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+
+      map.on("load", ({ target }) => {
+        target.addLayer({
+          id: MAP_POLYGON_BORDER_KEY,
+          type: "line",
+          source: {
+            type: "geojson",
+            data: {
+              type: "Feature",
+              properties: {},
+              geometry: {
+                type: "Polygon",
+                coordinates: coordinares ?? [],
+              },
+            },
+          },
+          paint: {
+            "line-color": "#FFA500",
+            "line-width": 4,
+          },
+        });
+
+        if (updateArea) {
+          target.on("draw.create", updateArea);
+          target.on("draw.delete", updateArea);
+          target.on("draw.update", updateArea);
+        }
+
+        if (coordinares) {
+          map.flyTo({
+            center: findCenter(coordinares),
+            zoom: 13.259085067438566,
+          });
+        }
+      });
+
+      return () => {
+        if (updateArea) {
+          map.off("draw.create", updateArea);
+          map.off("draw.delete", updateArea);
+          map.off("draw.update", updateArea);
+        }
+        map.remove();
+      };
+    }
   }, [ref]);
 
   return ref;
+}
+
+function findCenter(coordinates: Coordinates): { lng: number; lat: number } {
+  // Extract the lng and lat values separately
+  const lngArray = coordinates[0].map((coord) => coord[0]);
+  const latArray = coordinates[0].map((coord) => coord[1]);
+
+  // Sort the arrays
+  const sortedLng = [...lngArray].sort((a, b) => a - b);
+  const sortedLat = [...latArray].sort((a, b) => a - b);
+
+  const length = sortedLng.length;
+
+  // Calculate the median
+  if (length % 2 === 0) {
+    // If the length is even, average the two middle values
+    const middleLng1 = sortedLng[length / 2 - 1];
+    const middleLng2 = sortedLng[length / 2];
+    const middleLat1 = sortedLat[length / 2 - 1];
+    const middleLat2 = sortedLat[length / 2];
+    return {
+      lng: (middleLng1 + middleLng2) / 2,
+      lat: (middleLat1 + middleLat2) / 2,
+    };
+  } else {
+    // If the length is odd, return the middle values
+    return {
+      lng: sortedLng[Math.floor(length / 2)],
+      lat: sortedLat[Math.floor(length / 2)],
+    };
+  }
 }

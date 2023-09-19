@@ -2,7 +2,6 @@ import * as z from "zod";
 
 export const farmerSchema = z.object({
   _id: z.string(),
-  id: z.string(),
   firstname: z.string(),
   lastname: z.string(),
   address: z.string(),

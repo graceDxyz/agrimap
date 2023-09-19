@@ -7,7 +7,6 @@ export const coordinatesSchema = z.array(
 
 export const farmSchema = z.object({
   _id: z.string(),
-  id: z.string(),
   owner: farmerSchema,
   proof: z.string(),
   hectar: z.number(),

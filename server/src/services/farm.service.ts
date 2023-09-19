@@ -17,7 +17,7 @@ export async function createFarm(input: FarmInput) {
 }
 
 export async function findFarm(query: FilterQuery<IFarm>) {
-  return FarmModel.findOne(query).lean();
+  return FarmModel.findOne(query).populate("owner").lean();
 }
 
 export async function updateFarm(

@@ -1,6 +1,6 @@
-import { QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { QUERY_FARMS_KEY, QUERY_FARM_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { farmsSchema } from "@/lib/validations/farm";
+import { farmSchema, farmsSchema } from "@/lib/validations/farm";
 import { Message } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
@@ -21,9 +21,32 @@ export function useGetFarms({
           Authorization: `Bearer ${token}`,
         },
       });
+
       return farmsSchema.parse({ farms: res.data }).farms;
     },
     ...options,
+  });
+}
+
+export function useGetFarm({
+  token,
+  farmId,
+}: {
+  token: string;
+  farmId: string;
+}) {
+  return useQuery({
+    queryKey: [QUERY_FARM_KEY, farmId],
+    queryFn: async () => {
+      const res = await api.get(`/farms/${farmId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(res.data);
+      return farmSchema.parse(res.data);
+    },
   });
 }
 

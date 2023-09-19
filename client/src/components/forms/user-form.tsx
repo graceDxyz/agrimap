@@ -259,7 +259,7 @@ function UpdateForm({ token }: { token: string }) {
       queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item.id === data.id) {
+            if (item._id === data._id) {
               return data;
             }
             return item;
@@ -417,7 +417,7 @@ function DeleteForm({ token }: { token: string }) {
     onSuccess: () => {
       queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
         if (items) {
-          return items.filter((item) => item.id !== user?.id);
+          return items.filter((item) => item._id !== user?._id);
         }
         return items;
       });

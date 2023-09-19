@@ -231,7 +231,7 @@ function UpdateForm({ token }: { token: string }) {
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item.id === data.id) {
+            if (item._id === data._id) {
               return data;
             }
             return item;
@@ -363,7 +363,7 @@ function DeleteForm({ token }: { token: string }) {
     onSuccess: () => {
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (prev) => {
         if (prev) {
-          return prev.filter((item) => item.id !== farmer?._id);
+          return prev.filter((item) => item._id !== farmer?._id);
         }
         return prev;
       });

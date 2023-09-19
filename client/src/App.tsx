@@ -11,6 +11,7 @@ import { DashboardShell } from "@/components/shells/layout-shell";
 import { Toaster } from "@/components/ui/toaster";
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
+const FarmAreaPage = lazy(() => import("@/pages/FarmAreaPage"));
 const FarmersPage = lazy(() => import("@/pages/FarmersPage"));
 const FarmPage = lazy(() => import("@/pages/FarmPage"));
 const LandsPage = lazy(() => import("@/pages/LandsPage"));
@@ -71,6 +72,14 @@ function App() {
           element: (
             <Suspense fallback={<Loader />}>
               <FarmAddPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "farms/:farmId",
+          element: (
+            <Suspense fallback={<Loader />}>
+              <FarmAreaPage />
             </Suspense>
           ),
         },

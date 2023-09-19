@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
+  FarmDataTableRowActions,
   FarmerDataTableRowActions,
   UserDataTableRowActions,
 } from "@/components/data-table/data-table-row-actions";
@@ -156,6 +157,6 @@ export const farmColumns: ColumnDef<Farm>[] = [
 
   {
     id: "actions",
-    cell: ({ row }) => <FarmerDataTableRowActions row={row} />,
+    cell: ({ row }) => <FarmDataTableRowActions row={row} />,
   },
 ];

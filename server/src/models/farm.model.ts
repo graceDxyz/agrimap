@@ -5,7 +5,7 @@ export interface FarmInput {
   owner: IFarmer["_id"];
   proof: string;
   hectar: number;
-  coordinates: [number, number][];
+  coordinates: [number, number][][];
 }
 
 export interface IFarm extends FarmInput, mongoose.Document {
@@ -33,7 +33,7 @@ const farmSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  },
+  }
 );
 
 const FarmModel = mongoose.model<IFarm>("Farm", farmSchema);

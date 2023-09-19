@@ -33,25 +33,29 @@ import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { cn } from "@/lib/utils";
 import { coordinatesSchema, createFarmSchema } from "@/lib/validations/farm";
-import { createFarm } from "@/services/farm.service";
+import { updateFarm, useGetFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
 import { DrawEvent } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-function FarmAddPage() {
+function FarmAreaPage() {
+  const params = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useGetAuth();
   const { toast } = useToast();
-
-  const mapRef = useMapDraw({ updateArea });
   const [open, setOpen] = useState(false);
+
+  const { data: farmData } = useGetFarm({
+    token: user?.accessToken ?? "",
+    farmId: params.farmId ?? "",
+  });
 
   const { data, isLoading: isFarmerLoading } = useGetFarmers({
     token: user?.accessToken ?? "",
@@ -63,15 +67,20 @@ function FarmAddPage() {
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: createFarm,
+    mutationFn: updateFarm,
     onSuccess: ({ data }) => {
       toast({
-        title: "Created",
-        description: `Farm ${data._id} created successfully!`,
+        title: "Updated",
+        description: `Farm ${data._id} updated successfully!`,
       });
       queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
         if (items) {
-          return [data, ...items];
+          return items.map((item) => {
+            if (item._id === data._id) {
+              return data;
+            }
+            return item;
+          });
         }
         return items;
       });
@@ -86,6 +95,8 @@ function FarmAddPage() {
     (item) => item._id === form.getValues("ownerId")
   );
 
+  const mapRef = useMapDraw({ updateArea, coordinares: farmData?.coordinates });
+
   function updateArea(e: DrawEvent) {
     const coordinates = coordinatesSchema.parse(
       e.features[0].geometry.coordinates
@@ -94,8 +105,14 @@ function FarmAddPage() {
   }
 
   function onSubmit(data: CreateFarmInput) {
-    mutate({ token: user?.accessToken ?? "", data });
+    mutate({ token: user?.accessToken ?? "", id: farmData?._id ?? "", data });
   }
+
+  useEffect(() => {
+    if (farmData) {
+      form.reset({ ...farmData, ownerId: farmData.owner._id });
+    }
+  }, [farmData]);
 
   return (
     <Shell variant="sidebar">
@@ -126,13 +143,13 @@ function FarmAddPage() {
                 aria-hidden="true"
               />
             ) : (
-              <Icons.plus className="mr-2 h-4 w-4" aria-hidden="true" />
+              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
             )}
-            Add
-            <span className="sr-only">Add</span>
+            Update
+            <span className="sr-only">Update</span>
           </Button>
         </div>
-        <PageHeaderDescription size="sm">Add a new farm</PageHeaderDescription>
+        <PageHeaderDescription size="sm">Update a farm</PageHeaderDescription>
       </PageHeader>
       <section
         id="dashboard-farms"
@@ -142,10 +159,7 @@ function FarmAddPage() {
         <div className="h-[80vh] col-span-2 overflow-hidden" ref={mapRef} />
         <div className="pr-2">
           <Form {...form}>
-            <form
-              className="grid gap-4"
-              // onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-            >
+            <form className="grid gap-4">
               <FormField
                 control={form.control}
                 name="ownerId"
@@ -196,7 +210,7 @@ function FarmAddPage() {
                                 <Icons.check
                                   className={cn(
                                     "ml-auto h-4 w-4",
-                                    field.value === item.id
+                                    field.value === item._id
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}
@@ -246,4 +260,4 @@ function FarmAddPage() {
   );
 }
 
-export default FarmAddPage;
+export default FarmAreaPage;
