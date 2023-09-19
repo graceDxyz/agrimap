@@ -196,7 +196,7 @@ function FarmAddPage() {
                                 <Icons.check
                                   className={cn(
                                     "ml-auto h-4 w-4",
-                                    field.value === item.id
+                                    field.value === item._id
                                       ? "opacity-100"
                                       : "opacity-0"
                                   )}
