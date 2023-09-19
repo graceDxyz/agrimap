@@ -7,14 +7,14 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetAuth } from "@/services/session.service";
-import { useBoundStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 function FarmsPage() {
   const { user } = useGetAuth();
-  const { setMode } = useBoundStore((state) => state.farm);
 
   const { data, isLoading } = useGetFarms({
     token: user?.accessToken ?? "",
@@ -22,9 +22,6 @@ function FarmsPage() {
 
   if (isLoading) {
     return <>Loading...</>;
-  }
-  function handleCreateClick() {
-    setMode({ mode: "create" });
   }
 
   return (
@@ -37,9 +34,17 @@ function FarmsPage() {
           <PageHeaderHeading size="sm" className="flex-1">
             Farms
           </PageHeaderHeading>
-          <Button size="sm" onClick={handleCreateClick}>
+          <Link
+            aria-label="Add farm"
+            to={"/dashboard/farms/add"}
+            className={cn(
+              buttonVariants({
+                size: "sm",
+              }),
+            )}
+          >
             Add farm
-          </Button>
+          </Link>
         </div>
         <PageHeaderDescription size="sm">
           Manage the farms

@@ -4,15 +4,17 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import { useGetSession } from "@/services/session.service";
+
 import { DashboardShell } from "@/components/shells/layout-shell";
 import DashboardPage from "@/pages/DashboardPage";
+import FarmAddPage from "@/pages/FarmAddPage";
 import FarmersPage from "@/pages/FarmersPage";
 import FarmPage from "@/pages/FarmPage";
 import LandsPage from "@/pages/LandsPage";
 import ReportsPage from "@/pages/ReportsPage";
 import SignInPage from "@/pages/SignInPage";
 import UsersPage from "@/pages/UsersPage";
-import { useGetSession } from "@/services/session.service";
 
 function App() {
   const { data, isLoading } = useGetSession();
@@ -41,6 +43,10 @@ function App() {
         {
           path: "farms",
           element: <FarmPage />,
+        },
+        {
+          path: "farms/add",
+          element: <FarmAddPage />,
         },
         {
           path: "lands",

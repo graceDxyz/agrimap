@@ -1,5 +1,6 @@
 import { type Icons } from "@/components/icons";
 import { Role } from "./user.type";
+import { DrawEventType } from "@mapbox/mapbox-gl-draw";
 
 export type Mode = "view" | "create" | "update" | "delete";
 
@@ -44,3 +45,9 @@ export interface DialogHeaderDetail {
   description?: string;
   form?: JSX.Element;
 }
+
+export type DrawEvent = {
+  features: GeoJSON.Feature[];
+  action: DrawEventType;
+  points: number;
+};
