@@ -23,8 +23,8 @@ export default defineConfig(({ command, mode }) => {
             target: isDev
               ? "http://localhost:5000"
               : "https://agri-map-58go.onrender.com",
-            changeOrigin: isDev,
-            secure: !isDev,
+            // changeOrigin: isDev,
+            // secure: !isDev,
           },
         },
       },

@@ -8,13 +8,18 @@ import {
 const f = createUploadthing();
 
 export const uploadRouter = {
-  videoAndImage: f({
+  titleFile: f({
     image: {
       maxFileSize: "4MB",
-      maxFileCount: 4,
+      maxFileCount: 2,
     },
-    video: {
+    pdf: {
       maxFileSize: "16MB",
+      maxFileCount: 2,
+    },
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+      maxFileSize: "16MB",
+      maxFileCount: 2,
     },
   }).onUploadComplete((data) => {
     console.log("upload completed", data);

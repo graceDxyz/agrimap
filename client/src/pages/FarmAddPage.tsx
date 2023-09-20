@@ -30,7 +30,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { cn } from "@/lib/utils";
 import { coordinatesSchema, createFarmSchema } from "@/lib/validations/farm";
 import { createFarm } from "@/services/farm.service";
@@ -69,6 +69,7 @@ function FarmAddPage() {
         title: "Created",
         description: `Farm ${data._id} created successfully!`,
       });
+      queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
         if (items) {
           return [data, ...items];
@@ -83,12 +84,12 @@ function FarmAddPage() {
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
   function updateArea(e: DrawEvent) {
     const coordinates = coordinatesSchema.parse(
-      e.features[0].geometry.coordinates
+      e.features[0].geometry.coordinates,
     );
     form.reset((prev) => ({ ...prev, coordinates }));
   }
@@ -114,7 +115,7 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              })
+              }),
             )}
           >
             Cancel
@@ -198,7 +199,7 @@ function FarmAddPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                               </CommandItem>

@@ -1,11 +1,11 @@
-import { UploadButton } from "@/lib/uploadthing";
+import { UploadDropzone } from "@/lib/uploadthing";
 
 function DashboardPage() {
   return (
     <div className="h-screen w-full">
       hello
-      <UploadButton
-        endpoint="videoAndImage"
+      <UploadDropzone
+        endpoint="titleFile"
         onClientUploadComplete={(res) => {
           // Do something with the response
           console.log("Files: ", res);
