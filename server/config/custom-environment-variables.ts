@@ -7,4 +7,6 @@ export default {
   port: "PORT",
   mapBoxKey: "MAPBOX_KEY",
   env: "ENV",
+  uploadthingId: "UPLOADTHING_APP_ID",
+  uploadthingSecret: "UPLOADTHING_SECRET",
 };

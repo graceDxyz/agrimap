@@ -1,8 +1,9 @@
 import { Express, Request, Response } from "express";
-import SessionRoutes from "./session.route";
-import UserRoutes from "./user.route";
+import { uploadthingHandler } from "../utils/uploadthing";
 import FarmRoutes from "./farm.route";
 import FarmerRoutes from "./farmers.route";
+import SessionRoutes from "./session.route";
+import UserRoutes from "./user.route";
 
 function root(app: Express) {
   app.get("/api/ping", (req: Request, res: Response) => {
@@ -12,6 +13,8 @@ function root(app: Express) {
       description: `Hello ${userAgent} user`,
     });
   });
+
+  app.use("/api/uploadthing", uploadthingHandler);
 
   UserRoutes(app);
   SessionRoutes(app);

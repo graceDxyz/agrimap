@@ -1,8 +1,7 @@
-import { SERVER } from "@/constant/server.constant";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: SERVER + "/api",
+  baseURL: "/api",
   withCredentials: true,
   headers: {
     Accept: "application/json",
