@@ -14,7 +14,7 @@ function logoutMutation(accessToken: string) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-    },
+    }
   );
 }
 
@@ -36,7 +36,10 @@ export function useGetSession() {
 
 export function useGetAuth() {
   const queryClient = useQueryClient();
-  const user = useQuery<ActiveUser>([QUERY_ACTIVE_USER_KEY]).data;
+  const user = useQuery<ActiveUser>([QUERY_ACTIVE_USER_KEY], {
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  }).data;
 
   const { mutate } = useMutation({
     mutationFn: logoutMutation,

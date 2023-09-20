@@ -30,6 +30,7 @@ import {
   ShoppingBag,
   Sun,
   Table,
+  Trash2,
   User,
   Users,
   X,
@@ -72,6 +73,7 @@ export const Icons = {
   settings2: Settings2,
   chevronsUpDown: ChevronsUpDown,
   check: Check,
+  trash: Trash2,
   logo: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />

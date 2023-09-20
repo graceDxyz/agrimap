@@ -29,8 +29,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import { coordinatesSchema, createFarmSchema } from "@/lib/validations/farm";
 import { createFarm } from "@/services/farm.service";
@@ -59,7 +61,7 @@ function FarmAddPage() {
 
   const form = useForm<CreateFarmInput>({
     resolver: zodResolver(createFarmSchema),
-    defaultValues: { ownerId: "", hectar: 0, proof: "", coordinates: [] },
+    defaultValues: { ownerId: "", hectar: 0, title: [], coordinates: [] },
   });
 
   const { mutate, isLoading } = useMutation({
@@ -84,12 +86,12 @@ function FarmAddPage() {
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId"),
+    (item) => item._id === form.getValues("ownerId")
   );
 
   function updateArea(e: DrawEvent) {
     const coordinates = coordinatesSchema.parse(
-      e.features[0].geometry.coordinates,
+      e.features[0].geometry.coordinates
     );
     form.reset((prev) => ({ ...prev, coordinates }));
   }
@@ -115,7 +117,7 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              }),
+              })
             )}
           >
             Cancel
@@ -199,7 +201,7 @@ function FarmAddPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0",
+                                      : "opacity-0"
                                   )}
                                 />
                               </CommandItem>
@@ -227,14 +229,73 @@ function FarmAddPage() {
               />
               <FormField
                 control={form.control}
-                name="proof"
+                name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="address" {...field} />
+                      <div className="flex flex-col gap-5">
+                        <div>
+                          <UploadButton
+                            endpoint="titleFile"
+                            className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:w-full"
+                            onClientUploadComplete={(res) => {
+                              if (res) {
+                                field.onChange([...field.value, ...res]);
+                              }
+                            }}
+                            onUploadError={(error: Error) => {
+                              console.log(error);
+                              form.setError("title", {
+                                message: "Please select a valid file!",
+                              });
+                            }}
+                          />
+                        </div>
+                        <FormMessage />
+
+                        <Separator />
+                        <div className="flex flex-col gap-2">
+                          {field.value.map((item) => (
+                            <div
+                              key={item.fileKey}
+                              className="flex gap-2 items-center hover:bg-slate-50 rounded-lg"
+                            >
+                              <a
+                                href={item.fileUrl}
+                                target="_blank"
+                                className={cn(
+                                  buttonVariants({
+                                    size: "sm",
+                                    variant: "link",
+                                  }),
+                                  "w-full justify-start"
+                                )}
+                              >
+                                {item.fileName}
+                              </a>
+                              <Button
+                                type="button"
+                                size={"icon"}
+                                variant={"ghost"}
+                                onClick={() => {
+                                  field.onChange(
+                                    field.value.filter(
+                                      (file) => file.fileKey !== item.fileKey
+                                    )
+                                  );
+                                }}
+                              >
+                                <Icons.trash
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

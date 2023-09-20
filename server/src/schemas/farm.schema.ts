@@ -7,7 +7,13 @@ export const coordinatesSchema = z.array(
 const payload = {
   body: z.object({
     ownerId: z.string(),
-    proof: z.string(),
+    title: z.array(
+      z.object({
+        fileKey: z.string(),
+        fileName: z.string(),
+        fileUrl: z.string(),
+      })
+    ),
     hectar: z.number(),
     coordinates: coordinatesSchema,
   }),
