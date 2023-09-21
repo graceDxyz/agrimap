@@ -28,7 +28,7 @@ export const dashboardConfig: DashboardConfig = {
     },
     {
       title: "Martgage Land",
-      href: "/dashboard/lands",
+      href: "/dashboard/mortgages",
       icon: "table",
       items: [],
     },

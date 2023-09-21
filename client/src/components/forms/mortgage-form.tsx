@@ -18,50 +18,47 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import { QUERY_MORTGAGES_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { createUserSchema, roleSchema } from "@/lib/validations/user";
+import { createMortgageSchema } from "@/lib/validations/mortgage";
+import {
+  createMortgage,
+  deleteMortgage,
+  updateMortgage,
+} from "@/services/mortgage.service";
 import { useGetAuth } from "@/services/session.service";
-import { createUser, deleteUser, updateUser } from "@/services/user.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateUserInput, User } from "@/types/user.type";
+import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-export function UserDialog() {
+export function MortgageDialog() {
   const { user } = useGetAuth();
-  const { mode } = useBoundStore((state) => state.user);
+  const { mode } = useBoundStore((state) => state.mortgage);
   const isOpen = mode !== "view";
 
   const modeToTitle: Record<Mode, DialogHeaderDetail> = {
     view: {
-      title: "View User",
-      description: "View user details.",
+      title: "View Mortgage",
+      description: "View mortgage details.",
     },
     create: {
-      title: "Add User",
-      description: "Create a new user.",
+      title: "Add Mortgage",
+      description: "add a new mortgage.",
       form: <CreateForm token={user?.accessToken ?? ""} />,
     },
     update: {
-      title: "Update User",
-      description: "Update user information.",
+      title: "Update Mortgage",
+      description: "Update mortgage information.",
       form: <UpdateForm token={user?.accessToken ?? ""} />,
     },
     delete: {
       title: "Are you absolutely sure?",
-      description: "Delete user data (cannot be undone).",
+      description: "Delete mortgage data (cannot be undone).",
       form: <DeleteForm token={user?.accessToken ?? ""} />,
     },
   };
@@ -85,20 +82,24 @@ export function UserDialog() {
 function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode } = useBoundStore((state) => state.user);
-  const roles = Object.values(roleSchema.Values);
+  const { setMode } = useBoundStore((state) => state.mortgage);
 
-  const form = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+  const form = useForm<CreateMortgageInput>({
+    resolver: zodResolver(createMortgageSchema),
     defaultValues: {
-      role: "USER",
+      status: "Active",
+      farmId: "",
+      mortgageToId: "",
+      mortgageAmount: 0,
+      startDate: "",
+      endDate: "",
     },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: createUser,
+    mutationFn: createMortgage,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
+      queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (items) => {
         if (items) {
           return [data, ...items];
         }
@@ -108,7 +109,7 @@ function CreateForm({ token }: { token: string }) {
       handleCancelClick();
       toast({
         title: "Created",
-        description: `User ${data.email} created successfully!`,
+        description: `Mortgage ${data._id} created successfully!`,
       });
     },
     onError: (error) => {
@@ -116,7 +117,7 @@ function CreateForm({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: CreateUserInput) {
+  function onSubmit(data: CreateMortgageInput) {
     mutate({ token, data });
   }
 
@@ -133,10 +134,10 @@ function CreateForm({ token }: { token: string }) {
       >
         <FormField
           control={form.control}
-          name="firstname"
+          name="farmId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Firstname</FormLabel>
+              <FormLabel>Owner</FormLabel>
               <FormControl>
                 <Input placeholder="firstname" {...field} />
               </FormControl>
@@ -146,65 +147,13 @@ function CreateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="lastname"
+          name="mortgageToId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Lastname</FormLabel>
+              <FormLabel>Mortgage To</FormLabel>
               <FormControl>
                 <Input placeholder="lastname" {...field} />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div>
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {roles.map((value, index) => (
-                    <SelectItem key={index} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -239,24 +188,24 @@ function CreateForm({ token }: { token: string }) {
 function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode, user } = useBoundStore((state) => state.user);
-  const roles = Object.values(roleSchema.Values);
+  const { setMode, mortgage } = useBoundStore((state) => state.mortgage);
 
-  const form = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+  const form = useForm<CreateMortgageInput>({
+    resolver: zodResolver(createMortgageSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      role: "USER",
+      status: "Active",
+      farmId: "",
+      mortgageToId: "",
+      mortgageAmount: 0,
+      startDate: "",
+      endDate: "",
     },
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: updateUser,
+    mutationFn: updateMortgage,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
+      queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (items) => {
         if (items) {
           return items.map((item) => {
             if (item._id === data._id) {
@@ -269,8 +218,8 @@ function UpdateForm({ token }: { token: string }) {
       });
       handleCancelClick();
       toast({
-        title: "Updted",
-        description: `User ${data.email} updated successfully!`,
+        title: "Updated",
+        description: `Mortgage ${data._id} updated successfully!`,
       });
     },
     onError: (error) => {
@@ -278,8 +227,8 @@ function UpdateForm({ token }: { token: string }) {
     },
   });
 
-  function onSubmit(data: CreateUserInput) {
-    mutate({ token, id: user?._id as string, data });
+  function onSubmit(data: CreateMortgageInput) {
+    mutate({ token, id: mortgage?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -288,13 +237,12 @@ function UpdateForm({ token }: { token: string }) {
   }
 
   useEffect(() => {
-    if (user) {
+    if (mortgage) {
       form.reset({
-        ...user,
-        password: user.password as string,
+        ...mortgage,
       });
     }
-  }, [user, form]);
+  }, [mortgage, form]);
 
   return (
     <Form {...form}>
@@ -304,10 +252,10 @@ function UpdateForm({ token }: { token: string }) {
       >
         <FormField
           control={form.control}
-          name="firstname"
+          name="farmId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Firstname</FormLabel>
+              <FormLabel>Owner</FormLabel>
               <FormControl>
                 <Input placeholder="firstname" {...field} />
               </FormControl>
@@ -317,65 +265,13 @@ function UpdateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="lastname"
+          name="mortgageToId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Lastname</FormLabel>
+              <FormLabel>Mortgage To</FormLabel>
               <FormControl>
                 <Input placeholder="lastname" {...field} />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div>
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="role"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {roles.map((value, index) => (
-                    <SelectItem key={index} value={value}>
-                      {value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -410,22 +306,22 @@ function UpdateForm({ token }: { token: string }) {
 function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { user, setMode } = useBoundStore((state) => state.user);
+  const { mortgage, setMode } = useBoundStore((state) => state.mortgage);
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: deleteUser,
+    mutationFn: deleteMortgage,
     onSuccess: () => {
-      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
-        if (items) {
-          return items.filter((item) => item._id !== user?._id);
+      queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (prev) => {
+        if (prev) {
+          return prev.filter((item) => item._id !== mortgage?._id);
         }
-        return items;
+        return prev;
       });
 
       handleCancelClick();
       toast({
         title: "Deleted",
-        description: `User ${user?._id} deleted successfully!`,
+        description: `Mortgage ${mortgage?._id} deleted successfully!`,
       });
     },
     onError: (error) => {
@@ -434,7 +330,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: user?._id ?? "" });
+    mutate({ token, id: mortgage?._id ?? "" });
   }
 
   function handleCancelClick() {

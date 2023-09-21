@@ -14,7 +14,7 @@ const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
 const FarmAreaPage = lazy(() => import("@/pages/FarmAreaPage"));
 const FarmersPage = lazy(() => import("@/pages/FarmersPage"));
 const FarmPage = lazy(() => import("@/pages/FarmPage"));
-const LandsPage = lazy(() => import("@/pages/LandsPage"));
+const MortgagesPage = lazy(() => import("@/pages/MortgagesPage"));
 const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
 const SignInPage = lazy(() => import("@/pages/SignInPage"));
 const UsersPage = lazy(() => import("@/pages/UsersPage"));
@@ -84,10 +84,10 @@ function App() {
           ),
         },
         {
-          path: "lands",
+          path: "mortgages",
           element: (
             <Suspense fallback={<Loader />}>
-              <LandsPage />
+              <MortgagesPage />
             </Suspense>
           ),
         },

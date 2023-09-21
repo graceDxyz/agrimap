@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-import { IFarmer } from "./farmer.model";
 import { IFarm } from "./farm.model";
+import { IFarmer } from "./farmer.model";
 
-export interface MorgateInput {
+export interface MortgageInput {
   farm: IFarm["_id"];
   mortgageTo: IFarmer["_id"];
   mortgageAmount: number;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   status?: "Active" | "Paid Off" | "Defaulted";
 }
 
-export interface IMortgage extends MorgateInput, mongoose.Document {
+export interface IMortgage extends MortgageInput, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,11 +34,9 @@ const mortgageSchema = new mongoose.Schema(
     },
     startDate: {
       type: Date,
-      required: true,
     },
     endDate: {
       type: Date,
-      required: true,
     },
     status: {
       type: String,
@@ -52,7 +50,7 @@ const mortgageSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  },
+  }
 );
 
 const MortgageModel = mongoose.model("Mortgage", mortgageSchema);
