@@ -1,27 +1,29 @@
-import { UploadButton } from "@/lib/uploadthing";
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header";
+import { Shell } from "@/components/shells/shell";
 
 function DashboardPage() {
   return (
-    <div className="h-screen w-full">
-      hello
-      <UploadButton
-        endpoint="titleFile"
-        className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90"
-        onClientUploadComplete={(res) => {
-          // Do something with the response
-          console.log("Files: ", res);
-          alert("Upload Completed");
-        }}
-        onUploadError={(error: Error) => {
-          // Do something with the error.
-          alert(`ERROR! ${error.message}`);
-        }}
-        onUploadBegin={(name) => {
-          // Do something once upload begins
-          console.log("Uploading: ", name);
-        }}
-      />
-    </div>
+    <Shell variant="sidebar">
+      <PageHeader
+        id="dashboard-stores-page-header"
+        aria-labelledby="dashboard-stores-page-header-heading"
+      >
+        <div className="flex space-x-4">
+          <PageHeaderHeading size="sm" className="flex-1">
+            Dashboard
+          </PageHeaderHeading>
+        </div>
+        <PageHeaderDescription size="sm">Dashboard page</PageHeaderDescription>
+      </PageHeader>
+      <section
+        id="dashboard-stores-page-stores"
+        aria-labelledby="dashboard-stores-page-stores-heading"
+      ></section>
+    </Shell>
   );
 }
 
