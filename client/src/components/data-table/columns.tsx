@@ -4,12 +4,14 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import {
   FarmDataTableRowActions,
   FarmerDataTableRowActions,
+  MortgageDataTableRowActions,
   UserDataTableRowActions,
 } from "@/components/data-table/data-table-row-actions";
 import { Badge } from "@/components/ui/badge";
 import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
-import { User } from "@/types/user.type";
+import { Role, User } from "@/types/user.type";
+import { Mortgage } from "@/types/mortgage.type";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -59,11 +61,16 @@ export const userColumns: ColumnDef<User>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Role" />
     ),
-    cell: ({ row }) => (
-      <div className="w-[100px] font-medium">
-        <Badge>{row.getValue("role")} </Badge>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const role = row.getValue<Role>("role");
+      return (
+        <div className="w-[50px] font-medium">
+          <Badge variant={role === "ADMIN" ? "default" : "outline"}>
+            {role}
+          </Badge>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -155,16 +162,65 @@ export const farmColumns: ColumnDef<Farm>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "hectar",
+    accessorKey: "size",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Hectars" />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("hectar")}</div>
+      <div className="font-medium">{row.getValue("size")}</div>
     ),
   },
   {
     id: "actions",
     cell: ({ row }) => <FarmDataTableRowActions row={row} />,
+  },
+];
+
+export const mortgageColumns: ColumnDef<Mortgage>[] = [
+  {
+    accessorKey: "farm",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Land Owner" />
+    ),
+    cell: ({ row }) => {
+      const farm = row.getValue<Farm>("farm");
+      return (
+        <div className="w-auto capitalize font-medium">
+          {farm.owner.lastname + ", " + farm.owner.firstname}
+        </div>
+      );
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "mortgageTo",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Mortgage to" />
+    ),
+    cell: ({ row }) => {
+      const mortgageTo = row.getValue<Farmer>("mortgageTo");
+      return (
+        <div className="w-auto capitalize font-medium">
+          {mortgageTo.lastname + ", " + mortgageTo.firstname}
+        </div>
+      );
+    },
+    enableHiding: false,
+  },
+  {
+    accessorKey: "farm",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Hectars" />
+    ),
+    cell: ({ row }) => {
+      const farm = row.getValue<Farm>("farm");
+      return <div className="w-auto capitalize font-medium">{farm.size}</div>;
+    },
+    enableHiding: false,
+  },
+
+  {
+    id: "actions",
+    cell: ({ row }) => <MortgageDataTableRowActions row={row} />,
   },
 ];

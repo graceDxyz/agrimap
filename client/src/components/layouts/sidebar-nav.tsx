@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { Icons } from "@/components/icons";
 import { useGetAuth } from "@/services/session.service";
+import { Role } from "@/types/user.type";
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[];
@@ -43,7 +44,7 @@ export function SidebarNav({
                 key={index}
                 className={cn(
                   "h-9 w-full border border-transparent animate-pulse rounded-md bg-muted",
-                  loadingColor
+                  loadingColor,
                 )}
               ></span>
             );
@@ -64,7 +65,7 @@ export function SidebarNav({
                   isActive
                     ? "bg-muted font-medium text-foreground"
                     : "text-muted-foreground",
-                  item.disabled && "pointer-events-none opacity-60"
+                  item.disabled && "pointer-events-none opacity-60",
                 )}
               >
                 <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -84,7 +85,7 @@ export function SidebarNav({
         <span
           className={cn(
             "group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:bg-muted hover:text-foreground",
-            "text-muted-foreground"
+            "text-muted-foreground",
           )}
         >
           <Icons.logout className="mr-2 h-4 w-4" aria-hidden="true" />

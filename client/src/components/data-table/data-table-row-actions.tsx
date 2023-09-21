@@ -17,6 +17,7 @@ import { Farmer } from "@/types/farmer.type";
 import { User } from "@/types/user.type";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Mortgage } from "@/types/mortgage.type";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -125,6 +126,48 @@ export function FarmDataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleDeleteClick}>
+          Delete
+          <DropdownMenuShortcut></DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+export function MortgageDataTableRowActions<TData>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const { setMode } = useBoundStore((state) => state.mortgage);
+  const original = row.original as object as Mortgage;
+
+  function handleViewClick() {
+    setMode({ mode: "view", mortgage: original });
+  }
+
+  function handleEditClick() {
+    setMode({ mode: "update", mortgage: original });
+  }
+
+  function handleDeleteClick() {
+    setMode({ mode: "delete", mortgage: original });
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+        >
+          <Icons.horizontalThreeDots className="h-4 w-4" />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDeleteClick}>

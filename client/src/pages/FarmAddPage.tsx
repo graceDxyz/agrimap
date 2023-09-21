@@ -92,12 +92,12 @@ function FarmAddPage() {
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
   function updateArea(e: DrawEvent) {
     const coordinates = coordinatesSchema.parse(
-      e.features[0].geometry.coordinates
+      e.features[0].geometry.coordinates,
     );
     form.reset((prev) => ({ ...prev, coordinates }));
   }
@@ -123,12 +123,16 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              })
+              }),
             )}
           >
             Cancel
           </Link>
-          <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isLoading}
+            onClick={form.handleSubmit(onSubmit)}
+            size={"sm"}
+          >
             {isLoading ? (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
@@ -207,7 +211,7 @@ function FarmAddPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                               </CommandItem>
@@ -288,7 +292,7 @@ function FarmAddPage() {
                                     size: "sm",
                                     variant: "link",
                                   }),
-                                  "w-full justify-start"
+                                  "w-full justify-start",
                                 )}
                               >
                                 {item.fileName}
@@ -300,8 +304,8 @@ function FarmAddPage() {
                                 onClick={() => {
                                   field.onChange(
                                     field.value.filter(
-                                      (file) => file.fileKey !== item.fileKey
-                                    )
+                                      (file) => file.fileKey !== item.fileKey,
+                                    ),
                                   );
                                 }}
                               >

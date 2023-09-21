@@ -137,9 +137,9 @@ function CreateForm({ token }: { token: string }) {
           name="farmId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Owner</FormLabel>
+              <FormLabel>Title number</FormLabel>
               <FormControl>
-                <Input placeholder="firstname" {...field} />
+                <Input placeholder="title number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -152,7 +152,7 @@ function CreateForm({ token }: { token: string }) {
             <FormItem>
               <FormLabel>Mortgage To</FormLabel>
               <FormControl>
-                <Input placeholder="lastname" {...field} />
+                <Input placeholder="mortgage to" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

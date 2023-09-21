@@ -29,6 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
@@ -101,14 +102,17 @@ function FarmAreaPage() {
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
-  const mapRef = useMapDraw({ updateArea, coordinares: farmData?.coordinates });
+  const mapRef = useMapDraw({
+    updateArea,
+    coordinares: farmData?.coordinates ?? form.getValues("coordinates"),
+  });
 
   function updateArea(e: DrawEvent) {
     const coordinates = coordinatesSchema.parse(
-      e.features[0].geometry.coordinates
+      e.features[0].geometry.coordinates,
     );
     form.reset((prev) => ({ ...prev, coordinates }));
   }
@@ -140,12 +144,16 @@ function FarmAreaPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              })
+              }),
             )}
           >
             Cancel
           </Link>
-          <Button disabled={isLoading} onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            disabled={isLoading}
+            onClick={form.handleSubmit(onSubmit)}
+            size={"sm"}
+          >
             {isLoading ? (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
@@ -221,7 +229,7 @@ function FarmAreaPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                               </CommandItem>
@@ -288,45 +296,48 @@ function FarmAreaPage() {
                         <FormMessage />
 
                         <Separator />
-                        <div className="flex flex-col gap-2">
-                          {field.value.map((item) => (
-                            <div
-                              key={item.fileKey}
-                              className="flex gap-2 items-center hover:bg-slate-50 rounded-lg"
-                            >
-                              <a
-                                href={item.fileUrl}
-                                target="_blank"
-                                className={cn(
-                                  buttonVariants({
-                                    size: "sm",
-                                    variant: "link",
-                                  }),
-                                  "w-full justify-start"
-                                )}
+                        <ScrollArea>
+                          {" "}
+                          <div className="flex flex-col gap-2">
+                            {field.value.map((item) => (
+                              <div
+                                key={item.fileKey}
+                                className="flex gap-2 items-center hover:bg-slate-50 rounded-lg"
                               >
-                                {item.fileName}
-                              </a>
-                              <Button
-                                type="button"
-                                size={"icon"}
-                                variant={"ghost"}
-                                onClick={() => {
-                                  field.onChange(
-                                    field.value.filter(
-                                      (file) => file.fileKey !== item.fileKey
-                                    )
-                                  );
-                                }}
-                              >
-                                <Icons.trash
-                                  className="h-4 w-4"
-                                  aria-hidden="true"
-                                />
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
+                                <a
+                                  href={item.fileUrl}
+                                  target="_blank"
+                                  className={cn(
+                                    buttonVariants({
+                                      size: "sm",
+                                      variant: "link",
+                                    }),
+                                    "w-full justify-start",
+                                  )}
+                                >
+                                  {item.fileName}
+                                </a>
+                                <Button
+                                  type="button"
+                                  size={"icon"}
+                                  variant={"ghost"}
+                                  onClick={() => {
+                                    field.onChange(
+                                      field.value.filter(
+                                        (file) => file.fileKey !== item.fileKey,
+                                      ),
+                                    );
+                                  }}
+                                >
+                                  <Icons.trash
+                                    className="h-4 w-4"
+                                    aria-hidden="true"
+                                  />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                        </ScrollArea>
                       </div>
                     </FormControl>
                   </FormItem>

@@ -1,3 +1,5 @@
+import { mortgageColumns } from "@/components/data-table/columns";
+import { DataTable } from "@/components/data-table/table";
 import { MortgageDialog } from "@/components/forms/mortgage-form";
 import {
   PageHeader,
@@ -50,6 +52,13 @@ function MortgagesPage() {
         id="dashboard-stores-page-stores"
         aria-labelledby="dashboard-stores-page-stores-heading"
       >
+        {" "}
+        <DataTable
+          data={data ?? []}
+          columns={mortgageColumns}
+          searchPlaceHolder="Filter mortgages..."
+          isLoading={isLoading}
+        />
         <MortgageDialog />
       </section>
     </Shell>

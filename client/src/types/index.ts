@@ -1,5 +1,6 @@
 import { type Icons } from "@/components/icons";
 import { DrawEventType } from "@mapbox/mapbox-gl-draw";
+import { Role } from "./user.type";
 
 export type Mode = "view" | "create" | "update" | "delete";
 

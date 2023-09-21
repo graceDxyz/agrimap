@@ -27,7 +27,7 @@ export const dashboardConfig: DashboardConfig = {
       audience: ["ADMIN"],
     },
     {
-      title: "Martgage Land",
+      title: "Mortgage Land",
       href: "/dashboard/mortgages",
       icon: "table",
       items: [],
