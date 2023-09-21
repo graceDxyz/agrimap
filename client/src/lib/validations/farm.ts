@@ -14,8 +14,9 @@ export const fileSchema = z.object({
 export const farmSchema = z.object({
   _id: z.string(),
   owner: farmerSchema,
-  title: z.array(fileSchema),
-  hectar: z.number(),
+  titleNumber: z.string(),
+  proofFiles: z.array(fileSchema),
+  size: z.number(),
   coordinates: coordinatesSchema,
 });
 
@@ -25,7 +26,8 @@ export const farmsSchema = z.object({
 
 export const createFarmSchema = z.object({
   ownerId: z.string().nonempty({ message: "Please select a farmer" }),
-  title: z.array(fileSchema),
-  hectar: z.coerce.number(),
+  titleNumber: z.string(),
+  proofFiles: z.array(fileSchema),
+  size: z.coerce.number(),
   coordinates: coordinatesSchema,
 });

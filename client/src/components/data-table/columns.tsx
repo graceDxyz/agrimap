@@ -115,12 +115,12 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
     ),
   },
   {
-    accessorKey: "totalHectars",
+    accessorKey: "totalSize",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Hectars" />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("totalHectars") ?? 0}</div>
+      <div className="font-medium">{row.getValue("totalSize") ?? 0}</div>
     ),
   },
   {
@@ -130,6 +130,15 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
 ];
 
 export const farmColumns: ColumnDef<Farm>[] = [
+  {
+    accessorKey: "titleNumber",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Title Number" />
+    ),
+    cell: ({ row }) => (
+      <div className="font-medium">{row.getValue("titleNumber")}</div>
+    ),
+  },
   {
     accessorKey: "owner",
     header: ({ column }) => (
@@ -154,7 +163,6 @@ export const farmColumns: ColumnDef<Farm>[] = [
       <div className="font-medium">{row.getValue("hectar")}</div>
     ),
   },
-
   {
     id: "actions",
     cell: ({ row }) => <FarmDataTableRowActions row={row} />,

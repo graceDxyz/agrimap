@@ -8,7 +8,7 @@ export const farmerSchema = z.object({
   phoneNumber: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  totalHectars: z.number().nullish(),
+  totalSize: z.number().nullish(),
 });
 
 export const farmersSchema = z.object({

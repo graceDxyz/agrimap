@@ -2,7 +2,7 @@ import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 import FarmModel, { FarmInput, IFarm } from "../models/farm.model";
 
 export async function getAllFarm() {
-  return FarmModel.find().populate("owner").sort({ "owner.firstname": 1 });
+  return FarmModel.find().populate("owner").sort({ titleNumber: 1 });
 }
 
 export async function createFarm(input: FarmInput) {
@@ -23,7 +23,7 @@ export async function findFarm(query: FilterQuery<IFarm>) {
 export async function updateFarm(
   query: FilterQuery<IFarm>,
   update: UpdateQuery<IFarm>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return FarmModel.findByIdAndUpdate(query, update, options);
 }

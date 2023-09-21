@@ -3,12 +3,13 @@ import { IFarmer } from "./farmer.model";
 
 export interface FarmInput {
   owner: IFarmer["_id"];
-  title: {
+  titleNumber: string;
+  proofFiles: {
     fileKey: string;
     fileName: string;
     fileUrl: string;
   }[];
-  hectar: number;
+  size: number;
   coordinates: [number, number][][];
 }
 
@@ -24,7 +25,10 @@ const farmSchema = new mongoose.Schema(
       ref: "Farmer",
       required: true,
     },
-    title: {
+    titleNumber: {
+      type: String,
+    },
+    proofFiles: {
       type: [
         {
           fileKey: { type: String },
@@ -33,10 +37,17 @@ const farmSchema = new mongoose.Schema(
         },
       ],
     },
-    hectar: { type: Number, required: true, default: 0 },
+    size: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     coordinates: {
       type: [[[Number]]],
       required: true,
+    },
+    address: {
+      type: String,
     },
   },
   {

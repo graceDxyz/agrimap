@@ -8,7 +8,7 @@ import {
 const f = createUploadthing();
 
 export const uploadRouter = {
-  titleFile: f({
+  proofFiles: f({
     image: {
       maxFileSize: "4MB",
       maxFileCount: 2,

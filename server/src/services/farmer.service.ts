@@ -1,5 +1,5 @@
-import FarmerModel, { IFarmer, FarmerInput } from "../models/farmer.model";
 import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
+import FarmerModel, { FarmerInput, IFarmer } from "../models/farmer.model";
 
 export async function getAllFarmer() {
   // return FarmerModel.find().sort({ firstname: 1 });
@@ -22,7 +22,7 @@ export async function getAllFarmer() {
         phoneNumber: 1,
         createdAt: 1,
         updatedAt: 1,
-        totalHectars: { $sum: "$farms.hectar" },
+        totalSize: { $sum: "$farms.size" },
       },
     },
   ]);
@@ -45,7 +45,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions,
+  options: QueryOptions
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }

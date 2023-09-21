@@ -65,7 +65,13 @@ function FarmAreaPage() {
 
   const form = useForm<CreateFarmInput>({
     resolver: zodResolver(createFarmSchema),
-    defaultValues: { ownerId: "", hectar: 0, title: [], coordinates: [] },
+    defaultValues: {
+      ownerId: "",
+      size: 0,
+      titleNumber: "",
+      proofFiles: [],
+      coordinates: [],
+    },
   });
 
   const { mutate, isLoading } = useMutation({
@@ -115,7 +121,7 @@ function FarmAreaPage() {
     if (farmData) {
       form.reset({ ...farmData, ownerId: farmData.owner._id });
     }
-  }, [farmData]);
+  }, [farmData, form]);
 
   return (
     <Shell variant="sidebar">
@@ -230,12 +236,12 @@ function FarmAreaPage() {
               />
               <FormField
                 control={form.control}
-                name="hectar"
+                name="size"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Hectar</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="lastname" {...field} />
+                      <Input type="number" placeholder="hectar" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -243,7 +249,20 @@ function FarmAreaPage() {
               />
               <FormField
                 control={form.control}
-                name="title"
+                name="titleNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Title Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="title number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="proofFiles"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Address</FormLabel>
@@ -251,7 +270,7 @@ function FarmAreaPage() {
                       <div className="flex flex-col gap-5">
                         <div>
                           <UploadButton
-                            endpoint="titleFile"
+                            endpoint="proofFiles"
                             className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:w-full"
                             onClientUploadComplete={(res) => {
                               if (res) {
@@ -260,7 +279,7 @@ function FarmAreaPage() {
                             }}
                             onUploadError={(error: Error) => {
                               console.log(error);
-                              form.setError("title", {
+                              form.setError("proofFiles", {
                                 message: "Please select a valid file!",
                               });
                             }}

@@ -8,12 +8,50 @@ import {
 } from "../controllers/user.controller";
 import requiredAdmin from "../middlewares/requireAdmin";
 import validateResource from "../middlewares/validateResource";
+import UserModel from "../models/user.model";
 import {
   createUserSchema,
   getUserSchema,
   updateUserSchema,
 } from "../schemas/user.schema";
-import { createUser, getAllUser } from "../services/user.service";
+
+const usersToSeed = [
+  {
+    firstname: "John",
+    lastname: "Doe",
+    email: "john.doe@example.com",
+    password: "Password",
+    role: "ADMIN",
+  },
+  {
+    firstname: "Jane",
+    lastname: "Smith",
+    email: "jane.smith@example.com",
+    password: "Password",
+    role: "USER",
+  },
+  {
+    firstname: "Robert",
+    lastname: "Johnson",
+    email: "robert.johnson@example.com",
+    password: "Password",
+    role: "USER",
+  },
+  {
+    firstname: "Emily",
+    lastname: "Wilson",
+    email: "emily.wilson@example.com",
+    password: "Password",
+    role: "USER",
+  },
+  {
+    firstname: "Michael",
+    lastname: "Brown",
+    email: "michael.brown@example.com",
+    password: "Password",
+    role: "USER",
+  },
+];
 
 function UserRoutes(app: Express) {
   app.get("/api/users", requiredAdmin, getAllUserHandler);
@@ -34,15 +72,9 @@ function UserRoutes(app: Express) {
     deleteUserHandler
   );
 
-  getAllUser().then((res) => {
-    if (res.length <= 0) {
-      createUser({
-        firstname: "john",
-        lastname: "doe",
-        email: "john.doe@example.com",
-        password: "Password",
-        role: "ADMIN",
-      });
+  UserModel.countDocuments().then((res) => {
+    if (res <= 0) {
+      UserModel.insertMany(usersToSeed);
     }
   });
 }

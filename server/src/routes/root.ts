@@ -4,6 +4,7 @@ import FarmRoutes from "./farm.route";
 import FarmerRoutes from "./farmers.route";
 import SessionRoutes from "./session.route";
 import UserRoutes from "./user.route";
+import MortgageRoutes from "./mortgage.route";
 
 function root(app: Express) {
   app.get("/api/ping", (req: Request, res: Response) => {
@@ -20,6 +21,7 @@ function root(app: Express) {
   SessionRoutes(app);
   FarmerRoutes(app);
   FarmRoutes(app);
+  MortgageRoutes(app);
 }
 
 export default root;
