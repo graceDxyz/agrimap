@@ -124,7 +124,7 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
         if (coordinares) {
           map.flyTo({
             center: findCenter(coordinares),
-            zoom: 13.259085067438566,
+            zoom: 16.259085067438566,
           });
 
           // Add the feature to MapboxDraw
