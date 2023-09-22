@@ -222,7 +222,7 @@ function FarmAreaPage() {
                       <PopoverContent className="w-full p-0">
                         <Command>
                           <CommandInput placeholder="Search farmers..." />
-                          <CommandEmpty>No presets found.</CommandEmpty>
+                          <CommandEmpty>No farmers found.</CommandEmpty>
                           <CommandGroup heading="Farmers">
                             {data?.map((item) => (
                               <CommandItem

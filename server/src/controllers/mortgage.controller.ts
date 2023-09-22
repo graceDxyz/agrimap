@@ -67,10 +67,14 @@ const updateMortgageHandler = async (
   }
 
   try {
-    const updatedMortgage = await updateMortgage({ _id: mortgageId }, update, {
-      new: true,
-      populate: ["farm", "mortgageTo"],
-    });
+    const updatedMortgage = await updateMortgage(
+      { _id: mortgageId },
+      { ...update, farm: update.farmId, mortgageTo: update.mortgageToId },
+      {
+        new: true,
+        populate: [{ path: "farm", populate: "owner" }, { path: "mortgageTo" }],
+      },
+    );
 
     return res.send(updatedMortgage);
   } catch (error: any) {

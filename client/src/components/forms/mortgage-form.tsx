@@ -26,6 +26,7 @@ import {
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { createMortgageSchema } from "@/lib/validations/mortgage";
+import { useGetFarms } from "@/services/farm.service";
 import {
   createMortgage,
   deleteMortgage,
@@ -36,8 +37,19 @@ import { DialogHeaderDetail, Mode } from "@/types";
 import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+
+import { cn } from "@/lib/utils";
+import { useGetFarmers } from "@/services/farmer.service";
 
 export function MortgageDialog() {
   const { user } = useGetAuth();
@@ -85,7 +97,19 @@ export function MortgageDialog() {
 function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { user } = useGetAuth();
   const { setMode } = useBoundStore((state) => state.mortgage);
+
+  const [isFarmOpen, setIsFarmOpen] = useState(false);
+  const [isFarmerOpen, setIsFarmerOpen] = useState(false);
+
+  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({
+    token: user?.accessToken ?? "",
+  });
+
+  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({
+    token: user?.accessToken ?? "",
+  });
 
   const form = useForm<CreateMortgageInput>({
     resolver: zodResolver(createMortgageSchema),
@@ -99,6 +123,26 @@ function CreateForm({ token }: { token: string }) {
     },
   });
 
+  const selectedFarm = farmData?.find(
+    (item) => item._id === form.getValues("farmId"),
+  );
+
+  const selectedFarmers = farmersData?.find(
+    (item) => item._id === form.getValues("mortgageToId"),
+  );
+
+  const filteredFarm = farmData?.filter(
+    (farm) =>
+      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
+  );
+
+  const filteredFarmer = farmersData?.filter((farmer) => {
+    if (farmer._id === selectedFarm?.owner._id) {
+      return false;
+    }
+    return true;
+  });
+
   const { mutate, isLoading } = useMutation({
     mutationFn: createMortgage,
     onSuccess: ({ data }) => {
@@ -108,7 +152,7 @@ function CreateForm({ token }: { token: string }) {
         }
         return items;
       });
-
+      queryClient.fetchInfiniteQuery([QUERY_FARMS_KEY]);
       handleCancelClick();
       toast({
         title: "Created",
@@ -141,9 +185,57 @@ function CreateForm({ token }: { token: string }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Title number</FormLabel>
-              <FormControl>
-                <Input placeholder="title number" {...field} />
-              </FormControl>
+              <Popover open={isFarmOpen} onOpenChange={setIsFarmOpen}>
+                <PopoverTrigger asChild disabled={isFarmLoading}>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-label="Load a preset..."
+                    aria-expanded={isFarmOpen}
+                    className="flex-1 justify-between w-full"
+                  >
+                    {isFarmLoading ? (
+                      "Loading ..."
+                    ) : (
+                      <>
+                        {field.value ? (
+                          <>{selectedFarm?.titleNumber}</>
+                        ) : (
+                          "Select title number..."
+                        )}
+                      </>
+                    )}
+                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search title numbers..." />
+                    <CommandEmpty>No title number found.</CommandEmpty>
+                    <CommandGroup heading="Title number">
+                      {filteredFarm?.map((item) => (
+                        <CommandItem
+                          key={item._id}
+                          onSelect={() => {
+                            field.onChange(item._id);
+                            setIsFarmOpen(false);
+                          }}
+                        >
+                          {item.titleNumber}
+                          <Icons.check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              field.value === item._id
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
@@ -153,10 +245,63 @@ function CreateForm({ token }: { token: string }) {
           name="mortgageToId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mortgage To</FormLabel>
-              <FormControl>
-                <Input placeholder="mortgage to" {...field} />
-              </FormControl>
+              <FormLabel>Mortgage to</FormLabel>
+              <Popover open={isFarmerOpen} onOpenChange={setIsFarmerOpen}>
+                <PopoverTrigger asChild disabled={isFarmersLoading}>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-label="Load a preset..."
+                    aria-expanded={isFarmerOpen}
+                    className="flex-1 justify-between w-full"
+                  >
+                    {isFarmersLoading ? (
+                      "Loading ..."
+                    ) : (
+                      <>
+                        {field.value ? (
+                          <>
+                            {selectedFarmers?.lastname +
+                              ", " +
+                              selectedFarmers?.firstname}
+                          </>
+                        ) : (
+                          "Select farmer..."
+                        )}
+                      </>
+                    )}
+                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search farmers..." />
+                    <CommandEmpty>No farmers found.</CommandEmpty>
+                    <CommandGroup heading="Farmers">
+                      {filteredFarmer?.map((item) => (
+                        <CommandItem
+                          key={item._id}
+                          onSelect={() => {
+                            field.onChange(item._id);
+                            setIsFarmerOpen(false);
+                          }}
+                          className="capitalize"
+                        >
+                          {item.lastname + ", " + item.firstname}
+                          <Icons.check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              field.value === item._id
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
@@ -190,8 +335,20 @@ function CreateForm({ token }: { token: string }) {
 
 function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
+  const { user } = useGetAuth();
   const { toast } = useToast();
   const { setMode, mortgage } = useBoundStore((state) => state.mortgage);
+
+  const [isFarmOpen, setIsFarmOpen] = useState(false);
+  const [isFarmerOpen, setIsFarmerOpen] = useState(false);
+
+  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({
+    token: user?.accessToken ?? "",
+  });
+
+  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({
+    token: user?.accessToken ?? "",
+  });
 
   const form = useForm<CreateMortgageInput>({
     resolver: zodResolver(createMortgageSchema),
@@ -203,6 +360,26 @@ function UpdateForm({ token }: { token: string }) {
       startDate: "",
       endDate: "",
     },
+  });
+
+  const selectedFarm = farmData?.find(
+    (item) => item._id === form.getValues("farmId"),
+  );
+
+  const selectedFarmers = farmersData?.find(
+    (item) => item._id === form.getValues("mortgageToId"),
+  );
+
+  const filteredFarm = farmData?.filter(
+    (farm) =>
+      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
+  );
+
+  const filteredFarmer = farmersData?.filter((farmer) => {
+    if (farmer._id === selectedFarm?.owner._id) {
+      return false;
+    }
+    return true;
   });
 
   const { mutate, isLoading } = useMutation({
@@ -243,6 +420,10 @@ function UpdateForm({ token }: { token: string }) {
     if (mortgage) {
       form.reset({
         ...mortgage,
+        startDate: "",
+        endDate: "",
+        farmId: mortgage.farm._id,
+        mortgageToId: mortgage.mortgageTo._id,
       });
     }
   }, [mortgage, form]);
@@ -258,10 +439,58 @@ function UpdateForm({ token }: { token: string }) {
           name="farmId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Owner</FormLabel>
-              <FormControl>
-                <Input placeholder="firstname" {...field} />
-              </FormControl>
+              <FormLabel>Title number</FormLabel>
+              <Popover open={isFarmOpen} onOpenChange={setIsFarmOpen}>
+                <PopoverTrigger asChild disabled={isFarmLoading}>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-label="Load a preset..."
+                    aria-expanded={isFarmOpen}
+                    className="flex-1 justify-between w-full"
+                  >
+                    {isFarmLoading ? (
+                      "Loading ..."
+                    ) : (
+                      <>
+                        {field.value ? (
+                          <>{selectedFarm?.titleNumber}</>
+                        ) : (
+                          "Select title number..."
+                        )}
+                      </>
+                    )}
+                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search title numbers..." />
+                    <CommandEmpty>No title number found.</CommandEmpty>
+                    <CommandGroup heading="Title number">
+                      {filteredFarm?.map((item) => (
+                        <CommandItem
+                          key={item._id}
+                          onSelect={() => {
+                            field.onChange(item._id);
+                            setIsFarmOpen(false);
+                          }}
+                        >
+                          {item.titleNumber}
+                          <Icons.check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              field.value === item._id
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
@@ -271,14 +500,68 @@ function UpdateForm({ token }: { token: string }) {
           name="mortgageToId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mortgage To</FormLabel>
-              <FormControl>
-                <Input placeholder="lastname" {...field} />
-              </FormControl>
+              <FormLabel>Mortgage to</FormLabel>
+              <Popover open={isFarmerOpen} onOpenChange={setIsFarmerOpen}>
+                <PopoverTrigger asChild disabled={isFarmersLoading}>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-label="Load a preset..."
+                    aria-expanded={isFarmerOpen}
+                    className="flex-1 justify-between w-full"
+                  >
+                    {isFarmersLoading ? (
+                      "Loading ..."
+                    ) : (
+                      <>
+                        {field.value ? (
+                          <>
+                            {selectedFarmers?.lastname +
+                              ", " +
+                              selectedFarmers?.firstname}
+                          </>
+                        ) : (
+                          "Select farmer..."
+                        )}
+                      </>
+                    )}
+                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search farmers..." />
+                    <CommandEmpty>No farmers found.</CommandEmpty>
+                    <CommandGroup heading="Farmers">
+                      {filteredFarmer?.map((item) => (
+                        <CommandItem
+                          key={item._id}
+                          onSelect={() => {
+                            field.onChange(item._id);
+                            setIsFarmerOpen(false);
+                          }}
+                          className="capitalize"
+                        >
+                          {item.lastname + ", " + item.firstname}
+                          <Icons.check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              field.value === item._id
+                                ? "opacity-100"
+                                : "opacity-0",
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <AlertDialogFooter>
           <Button
             type="button"
@@ -314,13 +597,13 @@ function DeleteForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteMortgage,
     onSuccess: () => {
+      queryClient.fetchInfiniteQuery([QUERY_FARMS_KEY]);
       queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (prev) => {
         if (prev) {
           return prev.filter((item) => item._id !== mortgage?._id);
         }
         return prev;
       });
-      queryClient.invalidateQueries([QUERY_FARMS_KEY]);
       handleCancelClick();
       toast({
         title: "Deleted",

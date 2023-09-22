@@ -131,7 +131,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
     cell: ({ row }) => {
       const owner = row.getValue<Farmer>("owner");
       return (
-        <div className="w-auto capitalize font-medium">{owner.firstname}</div>
+        <div className="w-auto capitalize font-medium">{owner.fullName}</div>
       );
     },
     enableHiding: false,
@@ -143,6 +143,17 @@ export const farmColumns: ColumnDef<Farm>[] = [
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("size")}</div>
+    ),
+  },
+  {
+    accessorKey: "isMortgage",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Mortgage Status" />
+    ),
+    cell: ({ row }) => (
+      <div className="font-medium">
+        {!row.getValue("isMortgage") ? "Not" : ""} Mortgage
+      </div>
     ),
   },
   {
@@ -165,7 +176,6 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
         </div>
       );
     },
-    enableHiding: false,
   },
   {
     accessorKey: "mortgageTo",
@@ -180,7 +190,6 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
         </div>
       );
     },
-    enableHiding: false,
   },
   {
     accessorKey: "farm.size",
@@ -191,7 +200,6 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
       const farm = row.getValue<Farm>("farm");
       return <div className="w-auto capitalize font-medium">{farm.size}</div>;
     },
-    enableHiding: false,
   },
 
   {
