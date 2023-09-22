@@ -15,29 +15,17 @@ import { Mortgage } from "@/types/mortgage.type";
 
 export const userColumns: ColumnDef<User>[] = [
   {
-    accessorKey: "lastname",
+    accessorKey: "fullName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Lastname" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <div className="w-[100px] capitalize font-medium">
-        {row.getValue("lastname")}
+      <div className="w-[200px] capitalize font-medium">
+        {row.getValue("fullName")}
       </div>
     ),
     enableHiding: false,
   },
-  {
-    accessorKey: "firstname",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Firstname" />
-    ),
-    cell: ({ row }) => (
-      <div className="w-[100px] capitalize font-medium">
-        {row.getValue("firstname")}
-      </div>
-    ),
-  },
-
   {
     accessorKey: "email",
     header: ({ column }) => (
@@ -80,29 +68,17 @@ export const userColumns: ColumnDef<User>[] = [
 
 export const farmerColumns: ColumnDef<Farmer>[] = [
   {
-    accessorKey: "lastname",
+    accessorKey: "fullName",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Lastname" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <div className="w-[100px] capitalize font-medium">
-        {row.getValue("lastname")}
+      <div className="w-[200px] capitalize font-medium">
+        {row.getValue("fullName")}
       </div>
     ),
     enableHiding: false,
   },
-  {
-    accessorKey: "firstname",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Firstname" />
-    ),
-    cell: ({ row }) => (
-      <div className="w-[100px] capitalize font-medium">
-        {row.getValue("firstname")}
-      </div>
-    ),
-  },
-
   {
     accessorKey: "phoneNumber",
     header: ({ column }) => (
@@ -113,23 +89,24 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
     ),
   },
   {
-    accessorKey: "address",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Address" />
-    ),
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("address")}</div>
-    ),
-  },
-  {
     accessorKey: "totalSize",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hectars" />
+      <DataTableColumnHeader column={column} title="Land Owned (Hectars)" />
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("totalSize") ?? 0}</div>
     ),
   },
+  {
+    accessorKey: "fullAddress",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Address" />
+    ),
+    cell: ({ row }) => (
+      <div className="font-medium">{row.getValue("fullAddress")}</div>
+    ),
+  },
+
   {
     id: "actions",
     cell: ({ row }) => <FarmerDataTableRowActions row={row} />,
@@ -154,9 +131,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
     cell: ({ row }) => {
       const owner = row.getValue<Farmer>("owner");
       return (
-        <div className="w-auto capitalize font-medium">
-          {owner.lastname + ", " + owner.firstname}
-        </div>
+        <div className="w-auto capitalize font-medium">{owner.firstname}</div>
       );
     },
     enableHiding: false,
@@ -164,7 +139,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
   {
     accessorKey: "size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hectars" />
+      <DataTableColumnHeader column={column} title="Size (Hectars)" />
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("size")}</div>
@@ -208,9 +183,9 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "farm",
+    accessorKey: "farm.size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Hectars" />
+      <DataTableColumnHeader column={column} title="Size (Hectars)" />
     ),
     cell: ({ row }) => {
       const farm = row.getValue<Farm>("farm");

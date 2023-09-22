@@ -19,31 +19,61 @@ const farmersToSeed = [
   {
     firstname: "John",
     lastname: "Doe",
-    address: "123 Main St",
+    address: {
+      streetAddress: "123 Main St",
+      cityOrProvince: "Davao City",
+      municipality: "Davao del Sur",
+      barangay: "Buhangin",
+      zipcode: "8000",
+    },
     phoneNumber: "555-1234",
   },
   {
     firstname: "Jane",
     lastname: "Smith",
-    address: "456 Elm St",
+    address: {
+      streetAddress: "456 Elm St",
+      cityOrProvince: "Cagayan de Oro City",
+      municipality: "Misamis Oriental",
+      barangay: "Carmen",
+      zipcode: "9000",
+    },
     phoneNumber: "555-5678",
   },
   {
     firstname: "Robert",
     lastname: "Johnson",
-    address: "789 Oak St",
+    address: {
+      streetAddress: "789 Oak St",
+      cityOrProvince: "Zamboanga City",
+      municipality: "Zamboanga del Sur",
+      barangay: "Tetuan",
+      zipcode: "7000",
+    },
     phoneNumber: "555-9012",
   },
   {
     firstname: "Emily",
     lastname: "Wilson",
-    address: "101 Pine St",
+    address: {
+      streetAddress: "101 Pine St",
+      cityOrProvince: "General Santos City",
+      municipality: "South Cotabato",
+      barangay: "Calumpang",
+      zipcode: "9500",
+    },
     phoneNumber: "555-3456",
   },
   {
     firstname: "Michael",
     lastname: "Brown",
-    address: "202 Cedar St",
+    address: {
+      streetAddress: "202 Cedar St",
+      cityOrProvince: "Butuan City",
+      municipality: "Agusan del Norte",
+      barangay: "Baan",
+      zipcode: "8600",
+    },
     phoneNumber: "555-7890",
   },
 ];
@@ -54,17 +84,17 @@ function FarmerRoutes(app: Express) {
   app.post(
     "/api/farmers",
     [requiredUser, validateResource(createFarmerSchema)],
-    createFarmerHandler
+    createFarmerHandler,
   );
   app.put(
     "/api/farmers/:farmerId",
     [requiredUser, validateResource(updateFarmerSchema)],
-    updateFarmerHandler
+    updateFarmerHandler,
   );
   app.delete(
     "/api/farmers/:farmerId",
     [requiredUser, validateResource(getFarmerSchema)],
-    deleteFarmerHandler
+    deleteFarmerHandler,
   );
 
   FarmerModel.countDocuments().then((res) => {

@@ -179,6 +179,15 @@ function FarmAreaPage() {
             <form className="grid gap-4">
               <FormField
                 control={form.control}
+                name="coordinates"
+                render={() => (
+                  <FormItem>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="ownerId"
                 render={({ field }) => (
                   <FormItem>
@@ -273,7 +282,7 @@ function FarmAreaPage() {
                 name="proofFiles"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    <FormLabel>Title File(s)</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-5">
                         <div>

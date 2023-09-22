@@ -20,7 +20,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_FARMERS_KEY } from "@/constant/query.constant";
+import {
+  QUERY_FARMERS_KEY,
+  QUERY_FARMS_KEY,
+  QUERY_MORTGAGES_KEY,
+} from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { createFarmerSchema } from "@/lib/validations/farmer";
 import {
@@ -89,7 +93,13 @@ function CreateForm({ token }: { token: string }) {
     defaultValues: {
       firstname: "",
       lastname: "",
-      address: "",
+      address: {
+        streetAddress: "",
+        cityOrProvince: "",
+        municipality: "",
+        barangay: "",
+        zipcode: "",
+      },
       phoneNumber: "",
     },
   });
@@ -130,46 +140,38 @@ function CreateForm({ token }: { token: string }) {
         className="grid gap-4"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
-        <FormField
-          control={form.control}
-          name="firstname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Firstname</FormLabel>
-              <FormControl>
-                <Input placeholder="firstname" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="lastname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lastname</FormLabel>
-              <FormControl>
-                <Input placeholder="lastname" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="firstname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Firstname</FormLabel>
+                  <FormControl>
+                    <Input placeholder="firstname" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="lastname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lastname</FormLabel>
+                  <FormControl>
+                    <Input placeholder="lastname" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
         <FormField
           control={form.control}
           name="phoneNumber"
@@ -183,6 +185,83 @@ function CreateForm({ token }: { token: string }) {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="address.streetAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Street Address</FormLabel>
+              <FormControl>
+                <Input placeholder="street address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.cityOrProvince"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City/Province</FormLabel>
+                  <FormControl>
+                    <Input placeholder="city.provinve" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.municipality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Municipality</FormLabel>
+                  <FormControl>
+                    <Input placeholder="municipality" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.barangay"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Barangay</FormLabel>
+                  <FormControl>
+                    <Input placeholder="barangay" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.zipcode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Zipcode</FormLabel>
+                  <FormControl>
+                    <Input placeholder="zipcode" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
         <AlertDialogFooter>
           <Button
             type="button"
@@ -220,7 +299,13 @@ function UpdateForm({ token }: { token: string }) {
     defaultValues: {
       firstname: "",
       lastname: "",
-      address: "",
+      address: {
+        streetAddress: "",
+        cityOrProvince: "",
+        municipality: "",
+        barangay: "",
+        zipcode: "",
+      },
       phoneNumber: "",
     },
   });
@@ -301,20 +386,6 @@ function UpdateForm({ token }: { token: string }) {
         />
         <FormField
           control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address</FormLabel>
-              <FormControl>
-                <Input placeholder="address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="phoneNumber"
           render={({ field }) => (
             <FormItem>
@@ -326,6 +397,85 @@ function UpdateForm({ token }: { token: string }) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="address.streetAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Street Address</FormLabel>
+              <FormControl>
+                <Input placeholder="street address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.cityOrProvince"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>City/Province</FormLabel>
+                  <FormControl>
+                    <Input placeholder="city.provinve" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.municipality"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Municipality</FormLabel>
+                  <FormControl>
+                    <Input placeholder="municipality" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.barangay"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Barangay</FormLabel>
+                  <FormControl>
+                    <Input placeholder="barangay" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="grid gap-2">
+            <FormField
+              control={form.control}
+              name="address.zipcode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Zipcode</FormLabel>
+                  <FormControl>
+                    <Input placeholder="zipcode" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
         <AlertDialogFooter>
           <Button
             type="button"
@@ -367,6 +517,8 @@ function DeleteForm({ token }: { token: string }) {
         }
         return prev;
       });
+      queryClient.invalidateQueries([QUERY_MORTGAGES_KEY]);
+      queryClient.invalidateQueries([QUERY_FARMS_KEY]);
 
       handleCancelClick();
       toast({

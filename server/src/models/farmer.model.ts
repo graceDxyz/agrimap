@@ -3,7 +3,13 @@ import mongoose from "mongoose";
 export interface FarmerInput {
   firstname: string;
   lastname: string;
-  address: string;
+  address: {
+    streetAddress: string;
+    cityOrProvince: string;
+    municipality: string;
+    barangay: string;
+    zipcode: string;
+  };
   phoneNumber: string;
 }
 
@@ -23,8 +29,21 @@ const farmerSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: String,
-      required: true,
+      streetAddress: {
+        type: String,
+      },
+      cityOrProvince: {
+        type: String,
+      },
+      municipality: {
+        type: String,
+      },
+      barangay: {
+        type: String,
+      },
+      zipcode: {
+        type: String,
+      },
     },
     phoneNumber: {
       type: String,

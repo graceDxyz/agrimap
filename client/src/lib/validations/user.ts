@@ -2,16 +2,22 @@ import * as z from "zod";
 
 export const roleSchema = z.enum(["USER", "ADMIN"]);
 
-export const userSchema = z.object({
-  _id: z.string(),
-  email: z.string(),
-  firstname: z.string(),
-  lastname: z.string(),
-  password: z.string().nullish(),
-  role: roleSchema,
-  createAt: z.string().nullish(),
-  updatedAt: z.string().nullish(),
-});
+export const userSchema = z
+  .object({
+    _id: z.string(),
+    email: z.string(),
+    firstname: z.string(),
+    lastname: z.string(),
+    password: z.string().nullish(),
+    role: roleSchema,
+    createAt: z.string().nullish(),
+    updatedAt: z.string().nullish(),
+    fullName: z.string().nullish(),
+  })
+  .transform((obj) => ({
+    ...obj,
+    fullName: `${obj.lastname}, ${obj.firstname}`,
+  }));
 
 export const activeUserSchema = z.object({
   user: userSchema,

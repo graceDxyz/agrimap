@@ -155,10 +155,16 @@ function FarmAddPage() {
         <div className="h-[80vh] col-span-2 overflow-hidden" ref={mapRef} />
         <div className="pr-2">
           <Form {...form}>
-            <form
-              className="grid gap-4"
-              // onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-            >
+            <form className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="coordinates"
+                render={() => (
+                  <FormItem>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="ownerId"
@@ -204,6 +210,7 @@ function FarmAddPage() {
                                   field.onChange(item._id);
                                   setOpen(false);
                                 }}
+                                className="capitalize"
                               >
                                 {item.lastname + ", " + item.firstname}
                                 <Icons.check
@@ -255,7 +262,7 @@ function FarmAddPage() {
                 name="proofFiles"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Title File(s)</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-5">
                         <div>
