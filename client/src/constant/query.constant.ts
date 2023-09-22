@@ -9,3 +9,5 @@ export const QUERY_FARM_KEY = "farm";
 
 export const QUERY_MORTGAGES_KEY = "mortgages";
 export const QUERY_MORTGAGE_KEY = "mortgage";
+
+export const QUERY_STATISTICS_KEY = "statistics";
