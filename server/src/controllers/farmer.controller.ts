@@ -12,6 +12,8 @@ import {
   UpdateFarmerInput,
 } from "../types/farmer.types";
 import logger from "../utils/logger";
+import { deleteFarms } from "../services/farm.service";
+import { deleteMortgages } from "../services/mortgage.service";
 
 const getAllFarmerHandler = async (req: Request, res: Response) => {
   const farmers = await getAllFarmer();
@@ -89,6 +91,8 @@ const deleteFarmerHandler = async (
 
   try {
     await deleteFarmer({ _id: farmerId });
+    await deleteFarms({ owner: farmerId });
+    await deleteMortgages({ mortgageTo: farmerId });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);

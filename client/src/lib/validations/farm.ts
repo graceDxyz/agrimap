@@ -2,7 +2,7 @@ import * as z from "zod";
 import { farmerSchema } from "./farmer";
 
 export const coordinatesSchema = z.array(
-  z.array(z.tuple([z.number(), z.number()]))
+  z.array(z.tuple([z.number(), z.number()])),
 );
 
 export const fileSchema = z.object({
@@ -17,6 +17,7 @@ export const farmSchema = z.object({
   titleNumber: z.string(),
   proofFiles: z.array(fileSchema),
   size: z.number(),
+  isMortgage: z.boolean().nullish(),
   coordinates: coordinatesSchema,
 });
 
@@ -26,8 +27,15 @@ export const farmsSchema = z.object({
 
 export const createFarmSchema = z.object({
   ownerId: z.string().nonempty({ message: "Please select a farmer" }),
-  titleNumber: z.string(),
+  titleNumber: z
+    .string()
+    .nonempty({ message: "Please input a title number" })
+    .min(6, { message: "Title number must containt atleast 6 characters" }),
   proofFiles: z.array(fileSchema),
-  size: z.coerce.number(),
-  coordinates: coordinatesSchema,
+  size: z.coerce
+    .number()
+    .nonnegative({ message: "Hectars must be greater than or equal to 0" }),
+  coordinates: coordinatesSchema.min(1, {
+    message: "Please select map coordinates on the map",
+  }),
 });

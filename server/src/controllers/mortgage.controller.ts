@@ -20,7 +20,7 @@ const getAllMortgageHandler = async (req: Request, res: Response) => {
 
 const getMortgageHandler = async (
   req: Request<GetMortgageInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const mortgageId = req.params.mortgageId;
 
@@ -35,7 +35,7 @@ const getMortgageHandler = async (
 
 const createMortgageHandler = async (
   req: Request<{}, {}, CreateMortgageInput["body"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const body = req.body;
@@ -55,7 +55,7 @@ const createMortgageHandler = async (
 
 const updateMortgageHandler = async (
   req: Request<UpdateMortgageInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const mortgageId = req.params.mortgageId;
   const update = req.body;
@@ -81,7 +81,7 @@ const updateMortgageHandler = async (
 
 const deleteMortgageHandler = async (
   req: Request<GetMortgageInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const mortgageId = req.params.mortgageId;
   const mortgage = await findMortgage({ _id: mortgageId });

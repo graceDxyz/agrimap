@@ -24,7 +24,6 @@ function MortgagesPage() {
   if (isLoading) {
     return <>Loading...</>;
   }
-  console.log(data);
 
   function handleCreateClick() {
     setMode({ mode: "create" });

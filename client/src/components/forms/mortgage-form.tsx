@@ -20,7 +20,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_MORTGAGES_KEY } from "@/constant/query.constant";
+import {
+  QUERY_FARMS_KEY,
+  QUERY_MORTGAGES_KEY,
+} from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { createMortgageSchema } from "@/lib/validations/mortgage";
 import {
@@ -317,7 +320,7 @@ function DeleteForm({ token }: { token: string }) {
         }
         return prev;
       });
-
+      queryClient.invalidateQueries([QUERY_FARMS_KEY]);
       handleCancelClick();
       toast({
         title: "Deleted",
