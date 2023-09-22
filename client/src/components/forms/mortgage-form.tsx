@@ -11,7 +11,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Form,
-  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -317,6 +316,24 @@ function CreateForm({ token }: { token: string }) {
             </FormItem>
           )}
         />
+        <FormItem>
+          <FormLabel>Owner</FormLabel>
+          <Input
+            placeholder="owner"
+            disabled
+            className="disabled:opacity-100"
+            value={selectedFarm?.owner.fullName ?? ""}
+          />
+        </FormItem>
+        <FormItem>
+          <FormLabel>Size (Hectars)</FormLabel>
+          <Input
+            placeholder="size"
+            disabled
+            className="disabled:opacity-100"
+            value={selectedFarm?.size ?? ""}
+          />
+        </FormItem>
         <AlertDialogFooter>
           <Button
             type="button"
@@ -572,7 +589,24 @@ function UpdateForm({ token }: { token: string }) {
             </FormItem>
           )}
         />
-
+        <FormItem>
+          <FormLabel>Owner</FormLabel>
+          <Input
+            placeholder="owner"
+            disabled
+            className="disabled:opacity-100"
+            value={selectedFarm?.owner.fullName ?? ""}
+          />
+        </FormItem>
+        <FormItem>
+          <FormLabel>Size (Hectars)</FormLabel>
+          <Input
+            placeholder="size"
+            disabled
+            className="disabled:opacity-100"
+            value={selectedFarm?.size ?? ""}
+          />
+        </FormItem>
         <AlertDialogFooter>
           <Button
             type="button"
