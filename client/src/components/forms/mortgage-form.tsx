@@ -50,6 +50,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { useGetFarmers } from "@/services/farmer.service";
+import { Farm } from "@/types/farm.type";
 
 export function MortgageDialog() {
   const { user } = useGetAuth();
@@ -152,7 +153,17 @@ function CreateForm({ token }: { token: string }) {
         }
         return items;
       });
-      queryClient.fetchInfiniteQuery([QUERY_FARMS_KEY]);
+      queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
+        if (items) {
+          return items.map((item) => {
+            if (item._id === selectedFarm?._id) {
+              return { ...item, isMortgage: true };
+            }
+            return item;
+          });
+        }
+        return items;
+      });
       handleCancelClick();
       toast({
         title: "Created",
@@ -597,7 +608,17 @@ function DeleteForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteMortgage,
     onSuccess: () => {
-      queryClient.fetchInfiniteQuery([QUERY_FARMS_KEY]);
+      queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
+        if (items) {
+          return items.map((item) => {
+            if (item._id === mortgage?.farm._id) {
+              return { ...item, isMortgage: false };
+            }
+            return item;
+          });
+        }
+        return items;
+      });
       queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (prev) => {
         if (prev) {
           return prev.filter((item) => item._id !== mortgage?._id);
