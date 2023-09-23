@@ -1,10 +1,6 @@
 import { MemoizedOverview } from "@/components/overview";
 import OverviewSwitcher from "@/components/overview-switcher";
-import {
-  PageHeader,
-  PageHeaderDescription,
-  PageHeaderHeading,
-} from "@/components/page-header";
+import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { MemoizedRecentAddedFarmer } from "@/components/recent-added-farmer";
 import { Shell } from "@/components/shells/shell";
 import {
