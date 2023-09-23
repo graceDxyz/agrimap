@@ -47,7 +47,6 @@ function DashboardPage() {
             Dashboard
           </PageHeaderHeading>
         </div>
-        <PageHeaderDescription size="sm">Dashboard page</PageHeaderDescription>
       </PageHeader>
       <section
         id="dashboard-stores-page-stores"
