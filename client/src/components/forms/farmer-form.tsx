@@ -536,6 +536,7 @@ function DeleteForm({ token }: { token: string }) {
       });
       queryClient.invalidateQueries([QUERY_MORTGAGES_KEY]);
       queryClient.invalidateQueries([QUERY_FARMS_KEY]);
+      queryClient.invalidateQueries([QUERY_STATISTICS_KEY, "recent"]);
 
       handleCancelClick();
       toast({

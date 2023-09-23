@@ -14,19 +14,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useBoundStore } from "@/lib/store";
 import { useGetAuth } from "@/services/session.service";
-import { useGetRecentAdded } from "@/services/statistic.service";
+import {
+  useGetRecentAdded,
+  useGetStatistics,
+} from "@/services/statistic.service";
 
 function DashboardPage() {
+  const { activeSwitcher } = useBoundStore((state) => state.overview);
   const { user } = useGetAuth();
 
-  const { data, isLoading } = useGetRecentAdded({
+  const { data: recentData, isLoading: isRecentLoading } = useGetRecentAdded({
     token: user?.accessToken ?? "",
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const { data: statData, isLoading: isStatsLoading } = useGetStatistics({
+    token: user?.accessToken ?? "",
+    query: {
+      by: activeSwitcher.value,
+    },
+  });
 
   return (
     <Shell variant="sidebar">
@@ -54,18 +62,26 @@ function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="pl-2">
-              <MemoizedOverview data={[]} />
+              {isStatsLoading ? (
+                <>Loading...</>
+              ) : (
+                <MemoizedOverview data={statData ?? []} />
+              )}
             </CardContent>
           </Card>
           <Card className="col-span-2">
             <CardHeader>
               <CardTitle>Recent Added</CardTitle>
               <CardDescription>
-                {data?.count ?? 0} farmer added this month.
+                {recentData?.count ?? 0} farmer added this month.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <MemoizedRecentAddedFarmer farmers={data?.todayFarmers} />
+              {isRecentLoading ? (
+                <>Loading...</>
+              ) : (
+                <MemoizedRecentAddedFarmer farmers={recentData?.todayFarmers} />
+              )}
             </CardContent>
           </Card>
         </div>

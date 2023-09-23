@@ -1,30 +1,15 @@
-import * as React from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Dialog } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Command, CommandItem, CommandList } from "./ui/command";
-import { Icons } from "./icons";
+import { useBoundStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
-
-const overviewFilter = [
-  {
-    label: "Annually",
-    value: "1",
-  },
-  {
-    label: "Monthly",
-    value: "2",
-  },
-  {
-    label: "Weekly",
-    value: "3",
-  },
-];
-
-type Overview = {
-  label: string;
-  value: string;
-};
+import * as React from "react";
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { Command, CommandItem, CommandList } from "@/components/ui/command";
+import { Dialog } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
@@ -33,12 +18,12 @@ type PopoverTriggerProps = React.ComponentPropsWithoutRef<
 interface OverviewSwitcherProps extends PopoverTriggerProps {}
 
 export default function OverviewSwitcher({ className }: OverviewSwitcherProps) {
+  const { options, activeSwitcher, setSwitcherValue } = useBoundStore(
+    (state) => state.overview,
+  );
   const [open, setOpen] = React.useState(false);
   const [showNewOverviewDialog, setShowNewOverviewDialog] =
     React.useState(false);
-  const [selectedOverview, setSelectedOverview] = React.useState<Overview>(
-    overviewFilter[1],
-  );
 
   return (
     <Dialog
@@ -54,17 +39,17 @@ export default function OverviewSwitcher({ className }: OverviewSwitcherProps) {
             aria-label="Select a overview"
             className={cn("w-[120px] justify-between", className)}
           >
-            {selectedOverview.label}
+            {activeSwitcher.label}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[120px] p-0">
           <Command>
             <CommandList>
-              {overviewFilter.map((filter) => (
+              {options.map((filter) => (
                 <CommandItem
                   key={filter.value}
                   onSelect={() => {
-                    setSelectedOverview(filter);
+                    setSwitcherValue(filter);
                     setOpen(false);
                   }}
                   className="text-sm"
@@ -73,7 +58,7 @@ export default function OverviewSwitcher({ className }: OverviewSwitcherProps) {
                   <Icons.check
                     className={cn(
                       "ml-auto h-4 w-4",
-                      selectedOverview.value === filter.value
+                      activeSwitcher.value === filter.value
                         ? "opacity-100"
                         : "opacity-0",
                     )}
