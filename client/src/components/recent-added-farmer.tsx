@@ -10,7 +10,7 @@ export function RecentAddedFarmer({ farmers }: Props) {
     <div className="space-y-8">
       {farmers?.map((farmer) => (
         <div key={farmer._id} className="flex items-center">
-          <div className="ml-4 space-y-1">
+          <div className="ml-4 space-y-1 capitalize">
             <p className="text-sm font-medium leading-none">
               {farmer.fullName}
             </p>

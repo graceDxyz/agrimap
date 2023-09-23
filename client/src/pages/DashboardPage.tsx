@@ -1,4 +1,5 @@
-import { Overview } from "@/components/overview";
+import { MemoizedOverview } from "@/components/overview";
+import OverviewSwitcher from "@/components/overview-switcher";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -19,9 +20,13 @@ import { useGetRecentAdded } from "@/services/statistic.service";
 function DashboardPage() {
   const { user } = useGetAuth();
 
-  const { data: recentData } = useGetRecentAdded({
+  const { data, isLoading } = useGetRecentAdded({
     token: user?.accessToken ?? "",
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Shell variant="sidebar">
@@ -41,101 +46,26 @@ function DashboardPage() {
         aria-labelledby="dashboard-stores-page-stores-heading"
         className="space-y-4"
       >
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Revenue
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Revenue
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Revenue
-              </CardTitle>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                className="h-4 w-4 text-muted-foreground"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
-            </CardContent>
-          </Card>
-        </div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
           <Card className="col-span-5">
             <CardHeader>
-              <CardTitle>Overview</CardTitle>
+              <CardTitle className="flex justify-between">
+                <span>Overview</span> <OverviewSwitcher />
+              </CardTitle>
             </CardHeader>
             <CardContent className="pl-2">
-              <Overview />
+              <MemoizedOverview data={[]} />
             </CardContent>
           </Card>
           <Card className="col-span-2">
             <CardHeader>
               <CardTitle>Recent Added</CardTitle>
               <CardDescription>
-                {recentData?.count ?? 0} farmer added this month.
+                {data?.count ?? 0} farmer added this month.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <MemoizedRecentAddedFarmer farmers={recentData?.todayFarmers} />
+              <MemoizedRecentAddedFarmer farmers={data?.todayFarmers} />
             </CardContent>
           </Card>
         </div>

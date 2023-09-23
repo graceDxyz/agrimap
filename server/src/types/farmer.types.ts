@@ -8,3 +8,8 @@ import {
 export type CreateFarmerInput = z.TypeOf<typeof createFarmerSchema>;
 export type GetFarmerInput = z.TypeOf<typeof getFarmerSchema>;
 export type UpdateFarmerInput = z.TypeOf<typeof updateFarmerSchema>;
+export type StatsQuery = {
+  year?: number;
+  month?: number;
+  week?: number;
+};

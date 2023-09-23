@@ -13,9 +13,9 @@ export function useGetRecentAdded({
   options?: UseQueryOptions<RecentAdded, AxiosError>;
 }) {
   return useQuery({
-    queryKey: [QUERY_STATISTICS_KEY, "recent_added"],
+    queryKey: [QUERY_STATISTICS_KEY, "recent"],
     queryFn: async () => {
-      const res = await api.get("/statistics", {
+      const res = await api.get("/statistics/recent", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

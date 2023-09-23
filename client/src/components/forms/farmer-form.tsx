@@ -24,6 +24,7 @@ import {
   QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
   QUERY_MORTGAGES_KEY,
+  QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { createFarmerSchema } from "@/lib/validations/farmer";
@@ -35,6 +36,7 @@ import {
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
 import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
+import { RecentAdded } from "@/types/statistic.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -107,9 +109,24 @@ function CreateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: createFarmer,
     onSuccess: ({ data }) => {
+      const fullName = `${data.lastname}, ${data.firstname}`;
+      const fullAddress = `${data.address.streetAddress}, ${data.address.barangay}, ${data.address.municipality}, ${data.address.cityOrProvince}, ${data.address.zipcode}`;
+      const newFarmer = { ...data, fullName, fullAddress };
+      queryClient.setQueriesData<RecentAdded>(
+        [QUERY_STATISTICS_KEY, "recent"],
+        (items) => {
+          if (items) {
+            return {
+              count: items.count + 1,
+              todayFarmers: [newFarmer, ...items.todayFarmers.slice(0, 4)],
+            };
+          }
+          return items;
+        }
+      );
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
-          return [data, ...items];
+          return [newFarmer, ...items];
         }
         return items;
       });

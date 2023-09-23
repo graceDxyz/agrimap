@@ -1,9 +1,13 @@
 import { Express } from "express";
 import requiredUser from "../middlewares/requireUser";
-import { getAllStatisticsHandler } from "../controllers/statistics.controller";
+import {
+  getStatHandler,
+  getStatRecentHandler,
+} from "../controllers/statistics.controller";
 
 function StatisticRoutes(app: Express) {
-  app.get("/api/statistics", requiredUser, getAllStatisticsHandler);
+  app.get("/api/statistics/recent", requiredUser, getStatRecentHandler);
+  app.get("/api/statistics", requiredUser, getStatHandler);
 }
 
 export default StatisticRoutes;
