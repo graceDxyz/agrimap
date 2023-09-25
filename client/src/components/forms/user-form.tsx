@@ -28,6 +28,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import useRandomString from "@/hooks/useRandomString";
 import { useBoundStore } from "@/lib/store";
 import { createUserSchema, roleSchema } from "@/lib/validations/user";
 import { useGetAuth } from "@/services/session.service";
@@ -86,12 +87,14 @@ function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.user);
+  const [randomString, regenerateRandomString] = useRandomString(8);
   const roles = Object.values(roleSchema.Values);
 
   const form = useForm<CreateUserInput>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
       role: "USER",
+      password: randomString,
     },
   });
 
@@ -178,7 +181,19 @@ function CreateForm({ token }: { token: string }) {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="password" {...field} />
+                  <div className="flex gap-2">
+                    <Input placeholder="password" {...field} />
+                    <Button
+                      size={"icon"}
+                      type="button"
+                      onClick={() => {
+                        const newSTring = regenerateRandomString();
+                        field.onChange(newSTring);
+                      }}
+                    >
+                      <Icons.dices />
+                    </Button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

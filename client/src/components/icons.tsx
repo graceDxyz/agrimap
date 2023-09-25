@@ -11,6 +11,7 @@ import {
   ChevronsUpDown,
   Contact,
   CreditCard,
+  Dices,
   DollarSign,
   Eye,
   EyeOff,
@@ -74,6 +75,7 @@ export const Icons = {
   chevronsUpDown: ChevronsUpDown,
   check: Check,
   trash: Trash2,
+  dices: Dices,
   logo: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />
