@@ -30,6 +30,9 @@ function DashboardPage() {
     query: {
       by: activeSwitcher.value,
     },
+    options: {
+      refetchOnMount: "always",
+    },
   });
 
   return (
