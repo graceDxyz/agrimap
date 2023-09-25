@@ -60,6 +60,7 @@ function FarmAreaPage() {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const isEditMode = location.pathname.includes("edit");
+  const isAdmin = user?.user.role === "ADMIN";
 
   const { data: farmData } = useGetFarm({
     token: user?.accessToken ?? "",
@@ -145,48 +146,46 @@ function FarmAreaPage() {
           <PageHeaderHeading size="sm" className="flex-1">
             Farms
           </PageHeaderHeading>
-          <Link
-            aria-label="cancel add"
-            to={"/dashboard/farms"}
-            className={cn(
-              buttonVariants({
-                size: "sm",
-                variant: "outline",
-              }),
-            )}
-          >
+          <Button onClick={() => navigate(-1)} variant={"outline"} size={"sm"}>
             {isEditMode ? "Cancel" : "Back"}
-          </Link>
-          {isEditMode ? (
-            <Button
-              disabled={isLoading}
-              onClick={form.handleSubmit(onSubmit)}
-              size={"sm"}
-            >
-              {isLoading ? (
-                <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
+          </Button>
+          {isAdmin ? (
+            <>
+              {isEditMode ? (
+                <Button
+                  disabled={isLoading}
+                  onClick={form.handleSubmit(onSubmit)}
+                  size={"sm"}
+                >
+                  {isLoading ? (
+                    <Icons.spinner
+                      className="mr-2 h-4 w-4 animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <Icons.penLine
+                      className="mr-2 h-4 w-4"
+                      aria-hidden="true"
+                    />
+                  )}
+                  Update
+                  <span className="sr-only">Update</span>
+                </Button>
               ) : (
-                <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
+                <Link
+                  aria-label="cancel add"
+                  to={`/dashboard/farms/${farmData?._id}/edit`}
+                  className={cn(
+                    buttonVariants({
+                      size: "sm",
+                    }),
+                  )}
+                >
+                  Edit
+                </Link>
               )}
-              Update
-              <span className="sr-only">Update</span>
-            </Button>
-          ) : (
-            <Link
-              aria-label="cancel add"
-              to={`/dashboard/farms/${farmData?._id}/edit`}
-              className={cn(
-                buttonVariants({
-                  size: "sm",
-                }),
-              )}
-            >
-              Edit
-            </Link>
-          )}
+            </>
+          ) : undefined}
         </div>
         <PageHeaderDescription size="sm">
           {isEditMode ? "Update" : "View"} a farm

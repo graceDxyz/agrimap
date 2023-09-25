@@ -18,6 +18,7 @@ import { User } from "@/types/user.type";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Mortgage } from "@/types/mortgage.type";
+import { useGetAuth } from "@/services/session.service";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -146,6 +147,7 @@ export function FarmDataTableRowActions<TData>({
 export function MortgageDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const { user } = useGetAuth();
   const { setMode } = useBoundStore((state) => state.mortgage);
   const original = row.original as object as Mortgage;
   const queryClient = useQueryClient();
@@ -165,6 +167,14 @@ export function MortgageDataTableRowActions<TData>({
 
   function handleDeleteClick() {
     setMode({ mode: "delete", mortgage: original });
+  }
+
+  if (user?.user.role === "USER") {
+    return (
+      <Button onClick={handleViewClick} size={"sm"}>
+        View
+      </Button>
+    );
   }
 
   return (

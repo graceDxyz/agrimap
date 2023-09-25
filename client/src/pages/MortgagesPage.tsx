@@ -14,7 +14,7 @@ import { useGetAuth } from "@/services/session.service";
 
 function MortgagesPage() {
   const { user } = useGetAuth();
-
+  const isAdmin = user?.user.role === "ADMIN";
   const { setMode } = useBoundStore((state) => state.mortgage);
 
   const { data, isLoading } = useGetMortgages({
@@ -39,9 +39,11 @@ function MortgagesPage() {
           <PageHeaderHeading size="sm" className="flex-1">
             Mortgage land
           </PageHeaderHeading>
-          <Button size="sm" onClick={handleCreateClick}>
-            Add mortgage land
-          </Button>
+          {isAdmin ? (
+            <Button size="sm" onClick={handleCreateClick}>
+              Add mortgage land
+            </Button>
+          ) : undefined}
         </div>
         <PageHeaderDescription size="sm">
           Manage the mortgage land
@@ -51,7 +53,6 @@ function MortgagesPage() {
         id="dashboard-stores-page-stores"
         aria-labelledby="dashboard-stores-page-stores-heading"
       >
-        {" "}
         <DataTable
           data={data ?? []}
           columns={mortgageColumns}
