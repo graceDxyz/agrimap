@@ -84,6 +84,14 @@ function App() {
           ),
         },
         {
+          path: "farms/:farmId/edit",
+          element: (
+            <Suspense fallback={<Loader />}>
+              <FarmAreaPage />
+            </Suspense>
+          ),
+        },
+        {
           path: "mortgages",
           element: (
             <Suspense fallback={<Loader />}>

@@ -86,10 +86,15 @@ export function MapContainer() {
 
 interface UseMapContainerProps {
   coordinares?: Coordinates;
+  mode?: "view" | "edit";
   updateArea?: (event: DrawEvent) => void;
 }
 
-export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
+export function useMapDraw({
+  coordinares,
+  mode,
+  updateArea,
+}: UseMapContainerProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const drawRef = useRef<MapboxDraw | null>(null);
 
@@ -102,6 +107,8 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
         style: "mapbox://styles/mapbox/satellite-streets-v12",
       });
 
+      map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+
       const draw = new MapboxDraw({
         displayControlsDefault: false,
         controls: {
@@ -111,8 +118,9 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
         defaultMode: "draw_polygon",
       });
 
-      map.addControl(draw);
-      map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+      if (mode === "edit") {
+        map.addControl(draw);
+      }
 
       map.on("load", ({ target }) => {
         if (updateArea) {
@@ -127,21 +135,61 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
             zoom: 16.259085067438566,
           });
 
-          // Add the feature to MapboxDraw
-          const polygonFeature: GeoJSON.Feature<GeoJSON.Polygon> = {
-            id: MAP_POLYGON_KEY,
-            type: "Feature",
-            properties: {},
-            geometry: { type: "Polygon", coordinates: coordinares },
-          };
+          if (mode === "edit") {
+            const polygonFeature: GeoJSON.Feature<GeoJSON.Polygon> = {
+              id: MAP_POLYGON_KEY,
+              type: "Feature",
+              properties: {},
+              geometry: { type: "Polygon", coordinates: coordinares },
+            };
 
-          draw.add(polygonFeature);
-          draw.set({
-            type: "FeatureCollection",
-            features: [polygonFeature],
-          });
+            draw.add(polygonFeature);
+            draw.set({
+              type: "FeatureCollection",
+              features: [polygonFeature],
+            });
 
-          drawRef.current = draw;
+            drawRef.current = draw;
+          } else {
+            target.addLayer({
+              id: MAP_POLYGON_KEY + "fill",
+              type: "fill", // Change the type to "fill"
+              source: {
+                type: "geojson",
+                data: {
+                  type: "Feature",
+                  properties: {},
+                  geometry: {
+                    type: "Polygon",
+                    coordinates: coordinares,
+                  },
+                },
+              },
+              paint: {
+                "fill-color": "#FFA500", // Fill color
+                "fill-opacity": 0.15, // Fill opacity (adjust as needed)
+              },
+            });
+            target.addLayer({
+              id: MAP_POLYGON_KEY + "border",
+              type: "line",
+              source: {
+                type: "geojson",
+                data: {
+                  type: "Feature",
+                  properties: {},
+                  geometry: {
+                    type: "Polygon",
+                    coordinates: coordinares,
+                  },
+                },
+              },
+              paint: {
+                "line-color": "#FFA500",
+                "line-width": 4,
+              },
+            });
+          }
         }
       });
 
@@ -154,7 +202,7 @@ export function useMapDraw({ coordinares, updateArea }: UseMapContainerProps) {
         map.remove();
       };
     }
-  }, [ref, coordinares]);
+  }, [ref, coordinares, mode]);
 
   return ref;
 }

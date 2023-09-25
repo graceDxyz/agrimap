@@ -49,15 +49,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 function FarmAreaPage() {
+  const location = useLocation();
   const params = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useGetAuth();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const isEditMode = location.pathname.includes("edit");
 
   const { data: farmData } = useGetFarm({
     token: user?.accessToken ?? "",
@@ -92,7 +94,7 @@ function FarmAreaPage() {
         if (items) {
           return items.map((item) => {
             if (item._id === updateFarm._id) {
-              return updateFarm;
+              return { ...updateFarm, isMortgage: item.isMortgage };
             }
             return item;
           });
@@ -113,6 +115,7 @@ function FarmAreaPage() {
   const mapRef = useMapDraw({
     updateArea,
     coordinares: farmData?.coordinates ?? form.getValues("coordinates"),
+    mode: isEditMode ? "edit" : "view",
   });
 
   function updateArea(e: DrawEvent) {
@@ -152,24 +155,38 @@ function FarmAreaPage() {
               }),
             )}
           >
-            Cancel
+            {isEditMode ? "Cancel" : "Back"}
           </Link>
-          <Button
-            disabled={isLoading}
-            onClick={form.handleSubmit(onSubmit)}
-            size={"sm"}
-          >
-            {isLoading ? (
-              <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
-            )}
-            Update
-            <span className="sr-only">Update</span>
-          </Button>
+          {isEditMode ? (
+            <Button
+              disabled={isLoading}
+              onClick={form.handleSubmit(onSubmit)}
+              size={"sm"}
+            >
+              {isLoading ? (
+                <Icons.spinner
+                  className="mr-2 h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+              ) : (
+                <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
+              )}
+              Update
+              <span className="sr-only">Update</span>
+            </Button>
+          ) : (
+            <Link
+              aria-label="cancel add"
+              to={`/dashboard/farms/${farmData?._id}/edit`}
+              className={cn(
+                buttonVariants({
+                  size: "sm",
+                }),
+              )}
+            >
+              Edit
+            </Link>
+          )}
         </div>
         <PageHeaderDescription size="sm">Update a farm</PageHeaderDescription>
       </PageHeader>
@@ -204,7 +221,8 @@ function FarmAreaPage() {
                           role="combobox"
                           aria-label="Load a preset..."
                           aria-expanded={open}
-                          className="flex-1 justify-between w-full"
+                          className="flex-1 justify-between w-full disabled:opacity-100"
+                          disabled={!isEditMode}
                         >
                           {isFarmerLoading ? (
                             "Loading ..."
@@ -221,7 +239,12 @@ function FarmAreaPage() {
                               )}
                             </>
                           )}
-                          <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          <Icons.chevronsUpDown
+                            className={cn(
+                              "ml-2 h-4 w-4 shrink-0 opacity-50",
+                              !isEditMode ? "hidden" : "",
+                            )}
+                          />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-0">
@@ -263,7 +286,13 @@ function FarmAreaPage() {
                   <FormItem>
                     <FormLabel>Hectar</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="hectar" {...field} />
+                      <Input
+                        className="disabled:opacity-100"
+                        type="number"
+                        placeholder="hectar"
+                        disabled={!isEditMode}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -276,7 +305,12 @@ function FarmAreaPage() {
                   <FormItem>
                     <FormLabel>Title Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="title number" {...field} />
+                      <Input
+                        className="disabled:opacity-100"
+                        placeholder="title number"
+                        disabled={!isEditMode}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -290,28 +324,31 @@ function FarmAreaPage() {
                     <FormLabel>Title File(s)</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-5">
-                        <div>
-                          <UploadButton
-                            endpoint="proofFiles"
-                            className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:w-full"
-                            onClientUploadComplete={(res) => {
-                              if (res) {
-                                field.onChange([...field.value, ...res]);
-                              }
-                            }}
-                            onUploadError={(error: Error) => {
-                              console.log(error);
-                              form.setError("proofFiles", {
-                                message: "Please select a valid file!",
-                              });
-                            }}
-                          />
-                        </div>
-                        <FormMessage />
+                        {isEditMode ? (
+                          <>
+                            <div>
+                              <UploadButton
+                                endpoint="proofFiles"
+                                className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:w-full"
+                                onClientUploadComplete={(res) => {
+                                  if (res) {
+                                    field.onChange([...field.value, ...res]);
+                                  }
+                                }}
+                                onUploadError={(error: Error) => {
+                                  console.log(error);
+                                  form.setError("proofFiles", {
+                                    message: "Please select a valid file!",
+                                  });
+                                }}
+                              />
+                            </div>
+                            <FormMessage />
 
-                        <Separator />
+                            <Separator />
+                          </>
+                        ) : undefined}
                         <ScrollArea>
-                          {" "}
                           <div className="flex flex-col gap-2">
                             {field.value.map((item) => (
                               <div
@@ -331,23 +368,28 @@ function FarmAreaPage() {
                                 >
                                   {item.fileName}
                                 </a>
-                                <Button
-                                  type="button"
-                                  size={"icon"}
-                                  variant={"ghost"}
-                                  onClick={() => {
-                                    field.onChange(
-                                      field.value.filter(
-                                        (file) => file.fileKey !== item.fileKey,
-                                      ),
-                                    );
-                                  }}
-                                >
-                                  <Icons.trash
-                                    className="h-4 w-4"
-                                    aria-hidden="true"
-                                  />
-                                </Button>
+                                {isEditMode ? (
+                                  <Button
+                                    type="button"
+                                    size={"icon"}
+                                    variant={"ghost"}
+                                    onClick={() => {
+                                      field.onChange(
+                                        field.value.filter(
+                                          (file) =>
+                                            file.fileKey !== item.fileKey,
+                                        ),
+                                      );
+                                    }}
+                                  >
+                                    <Icons.trash
+                                      className="h-4 w-4"
+                                      aria-hidden="true"
+                                    />
+                                  </Button>
+                                ) : (
+                                  <div></div>
+                                )}
                               </div>
                             ))}
                           </div>

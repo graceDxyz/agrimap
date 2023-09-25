@@ -105,9 +105,14 @@ export function FarmDataTableRowActions<TData>({
   const { setMode } = useBoundStore((state) => state.farm);
   const original = row.original as object as Farm;
 
-  function handleEditClick() {
+  function handleViewClick() {
     queryClient.setQueryData([QUERY_FARM_KEY, original._id], original);
     navigate(`/dashboard/farms/${original._id}`);
+  }
+
+  function handleEditClick() {
+    queryClient.setQueryData([QUERY_FARM_KEY, original._id], original);
+    navigate(`/dashboard/farms/${original._id}/edit`);
   }
 
   function handleDeleteClick() {
@@ -126,6 +131,7 @@ export function FarmDataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDeleteClick}>
