@@ -1,6 +1,5 @@
 import { FarmDialog } from "@/components/forms/farm-form";
 import { Icons } from "@/components/icons";
-import { useMapDraw } from "@/components/map";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -33,6 +32,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { useMapDraw } from "@/hooks/useMapDraw";
 import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import {
@@ -114,17 +114,20 @@ function FarmAreaPage() {
   );
 
   const mapRef = useMapDraw({
-    updateArea,
     coordinares: farmData?.coordinates ?? form.getValues("coordinates"),
     mode: isEditMode ? "edit" : "view",
-  });
+    onUpdateArea: (e: DrawEvent) => {
+      const coordinates = coordinatesSchema.parse(
+        e.features[0].geometry.coordinates,
+      );
+      form.reset((prev) => ({ ...prev, coordinates }));
+    },
+    onCalculateArea: (area: number) => {
+      const size = area / 10000;
 
-  function updateArea(e: DrawEvent) {
-    const coordinates = coordinatesSchema.parse(
-      e.features[0].geometry.coordinates,
-    );
-    form.reset((prev) => ({ ...prev, coordinates }));
-  }
+      form.reset((prev) => ({ ...prev, size }));
+    },
+  });
 
   function onSubmit(data: CreateFarmInput) {
     mutate({ token: user?.accessToken ?? "", id: farmData?._id ?? "", data });

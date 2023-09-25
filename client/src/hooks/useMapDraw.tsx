@@ -6,94 +6,23 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
+import * as turf from "@turf/turf";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
 
-export function MapContainer() {
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  const polygonCoordinates = [
-    [
-      [124.74910258726203, 7.725352264365313],
-      [124.74868544290376, 7.7216755352504265],
-      [124.74477745891977, 7.722165042452389],
-      [124.7434491834635, 7.724264478020004],
-      [124.74523851320919, 7.72573298892496],
-      [124.74605084695855, 7.7281043513099235],
-      [124.74940995678901, 7.727658362153107],
-      [124.74910258726203, 7.725352264365313],
-    ],
-  ];
-
-  const median = findCenter(polygonCoordinates as Coordinates);
-
-  useEffect(() => {
-    if (ref?.current && typeof ref?.current !== undefined) {
-      const map = new mapboxgl.Map({
-        container: ref?.current || "",
-        center: [124.74735434277659, 7.745449162964974],
-        zoom: 13.259085067438566,
-        style: "mapbox://styles/mapbox/satellite-streets-v12",
-      });
-      const draw = new MapboxDraw({
-        displayControlsDefault: false,
-        controls: {
-          polygon: true,
-          trash: true,
-        },
-        // defaultMode: "draw_polygon",
-      });
-      map.addControl(draw);
-      map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
-
-      map.on("load", ({ target }) => {
-        target.addLayer({
-          id: MAP_POLYGON_KEY,
-          type: "line",
-          source: {
-            type: "geojson",
-            data: {
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Polygon",
-                coordinates: polygonCoordinates,
-              },
-            },
-          },
-          paint: {
-            "line-color": "#FFA500",
-            "line-width": 4,
-          },
-        });
-        target.on("draw.create", updateArea);
-        target.on("draw.delete", updateArea);
-        target.on("draw.update", updateArea);
-
-        map.flyTo({
-          center: median,
-          zoom: 13.259085067438566,
-        });
-      });
-    }
-  }, [ref, polygonCoordinates]);
-  function updateArea(event: DrawEvent) {
-    console.log(event);
-  }
-  return <div className="h-screen w-full overflow-hidden" ref={ref} />;
-}
-
 interface UseMapContainerProps {
   coordinares?: Coordinates;
   mode?: "view" | "edit";
-  updateArea?: (event: DrawEvent) => void;
+  onUpdateArea?: (event: DrawEvent) => void;
+  onCalculateArea?: (event: number) => void;
 }
 
 export function useMapDraw({
   coordinares,
   mode,
-  updateArea,
+  onUpdateArea,
+  onCalculateArea,
 }: UseMapContainerProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const drawRef = useRef<MapboxDraw | null>(null);
@@ -123,10 +52,19 @@ export function useMapDraw({
       }
 
       map.on("load", ({ target }) => {
-        if (updateArea) {
-          target.on("draw.create", updateArea);
-          target.on("draw.delete", updateArea);
-          target.on("draw.update", updateArea);
+        if (onUpdateArea) {
+          target.on("draw.create", drawEvent);
+          target.on("draw.delete", drawEvent);
+          target.on("draw.update", drawEvent);
+        }
+
+        function drawEvent(e: DrawEvent) {
+          if (onUpdateArea) {
+            onUpdateArea(e);
+          }
+          if (onCalculateArea) {
+            onCalculateArea(turf.area(draw.getAll()));
+          }
         }
 
         if (coordinares) {
@@ -194,10 +132,10 @@ export function useMapDraw({
       });
 
       return () => {
-        if (updateArea) {
-          map.off("draw.create", updateArea);
-          map.off("draw.delete", updateArea);
-          map.off("draw.update", updateArea);
+        if (onUpdateArea) {
+          map.off("draw.create", onUpdateArea);
+          map.off("draw.delete", onUpdateArea);
+          map.off("draw.update", onUpdateArea);
         }
         map.remove();
       };
@@ -208,32 +146,28 @@ export function useMapDraw({
 }
 
 function findCenter(coordinates: Coordinates): { lng: number; lat: number } {
-  // Extract the lng and lat values separately
-  const lngArray = coordinates[0].map((coord) => coord[0]);
-  const latArray = coordinates[0].map((coord) => coord[1]);
+  const featureCollection: GeoJSON.FeatureCollection<
+    GeoJSON.Polygon,
+    GeoJSON.GeoJsonProperties
+  > = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "Polygon",
+          coordinates: coordinates,
+        },
+        properties: {
+          name: "Example Polygon",
+          description: "This is an example polygon feature.",
+        },
+      },
+    ],
+  };
+  const center = turf.center(featureCollection);
 
-  // Sort the arrays
-  const sortedLng = [...lngArray].sort((a, b) => a - b);
-  const sortedLat = [...latArray].sort((a, b) => a - b);
+  const newCenter = center.geometry.coordinates;
 
-  const length = sortedLng.length;
-
-  // Calculate the median
-  if (length % 2 === 0) {
-    // If the length is even, average the two middle values
-    const middleLng1 = sortedLng[length / 2 - 1];
-    const middleLng2 = sortedLng[length / 2];
-    const middleLat1 = sortedLat[length / 2 - 1];
-    const middleLat2 = sortedLat[length / 2];
-    return {
-      lng: (middleLng1 + middleLng2) / 2,
-      lat: (middleLat1 + middleLat2) / 2,
-    };
-  } else {
-    // If the length is odd, return the middle values
-    return {
-      lng: sortedLng[Math.floor(length / 2)],
-      lat: sortedLat[Math.floor(length / 2)],
-    };
-  }
+  return { lng: newCenter[0], lat: newCenter[1] };
 }
