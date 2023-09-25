@@ -188,7 +188,9 @@ function FarmAreaPage() {
             </Link>
           )}
         </div>
-        <PageHeaderDescription size="sm">Update a farm</PageHeaderDescription>
+        <PageHeaderDescription size="sm">
+          {isEditMode ? "Update" : "View"} a farm
+        </PageHeaderDescription>
       </PageHeader>
       <section
         id="dashboard-farms"

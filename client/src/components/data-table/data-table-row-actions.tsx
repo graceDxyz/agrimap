@@ -148,9 +148,15 @@ export function MortgageDataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const { setMode } = useBoundStore((state) => state.mortgage);
   const original = row.original as object as Mortgage;
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   function handleViewClick() {
-    setMode({ mode: "view", mortgage: original });
+    queryClient.setQueryData(
+      [QUERY_FARM_KEY, original.farm._id],
+      original.farm,
+    );
+    navigate(`/dashboard/farms/${original.farm._id}`);
   }
 
   function handleEditClick() {
