@@ -18,7 +18,7 @@ const options = Object.values(StatsBy).map((value) => ({
 }));
 
 const intitialState: State = {
-  activeSwitcher: options[1],
+  activeSwitcher: options[2],
   options: options,
 };
 

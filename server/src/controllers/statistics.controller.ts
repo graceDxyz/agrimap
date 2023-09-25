@@ -78,12 +78,6 @@ const getStatHandler = async (
   }
 
   if (queryBy === "Monthly") {
-    // pipeline.push({
-    //   $group: {
-    //     _id: { $dateToString: { format: "%b", date: "$createdAt" } },
-    //     count: { $sum: 1 },
-    //   },
-    // });
     pipeline.push({
       $group: {
         _id: {
@@ -146,10 +140,3 @@ const getStatHandler = async (
 };
 
 export { getStatHandler, getStatRecentHandler };
-
-// function getStartAndEndDateOfWeek(year: number, weekNumber: number) {
-//   return [
-//     dayjs().year(year).isoWeek(weekNumber).startOf("isoWeek"),
-//     dayjs().year(year).isoWeek(weekNumber).endOf("isoWeek"),
-//   ];
-// }
