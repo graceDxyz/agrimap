@@ -35,7 +35,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
-import { coordinatesSchema, createFarmSchema } from "@/lib/validations/farm";
+import {
+  coordinatesSchema,
+  createFarmSchema,
+  farmSchema,
+} from "@/lib/validations/farm";
 import { updateFarm, useGetFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
@@ -78,16 +82,17 @@ function FarmAreaPage() {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateFarm,
     onSuccess: ({ data }) => {
+      const updateFarm = farmSchema.parse(data);
       toast({
         title: "Updated",
-        description: `Farm ${data._id} updated successfully!`,
+        description: `Farm ${updateFarm._id} updated successfully!`,
       });
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item._id === data._id) {
-              return data;
+            if (item._id === updateFarm._id) {
+              return updateFarm;
             }
             return item;
           });
