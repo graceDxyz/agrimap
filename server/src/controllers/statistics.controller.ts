@@ -84,37 +84,37 @@ const getStatHandler = async (
     //     count: { $sum: 1 },
     //   },
     // });
-      pipeline.push({
-        $group: {
-          _id: {
-            $let: {
-              vars: {
-                monthNumeric: { $month: "$createdAt" },
-              },
-              in: {
-                $switch: {
-                  branches: [
-                    { case: { $eq: ["$$monthNumeric", 1] }, then: "Jan" },
-                    { case: { $eq: ["$$monthNumeric", 2] }, then: "Feb" },
-                    { case: { $eq: ["$$monthNumeric", 3] }, then: "Mar" },
-                    { case: { $eq: ["$$monthNumeric", 4] }, then: "Apr" },
-                    { case: { $eq: ["$$monthNumeric", 5] }, then: "May" },
-                    { case: { $eq: ["$$monthNumeric", 6] }, then: "Jun" },
-                    { case: { $eq: ["$$monthNumeric", 7] }, then: "Jul" },
-                    { case: { $eq: ["$$monthNumeric", 8] }, then: "Aug" },
-                    { case: { $eq: ["$$monthNumeric", 9] }, then: "Sep" },
-                    { case: { $eq: ["$$monthNumeric", 10] }, then: "Oct" },
-                    { case: { $eq: ["$$monthNumeric", 11] }, then: "Nov" },
-                    { case: { $eq: ["$$monthNumeric", 12] }, then: "Dec" },
-                  ],
-                  default: "Unknown", // Default value if the month number is unexpected
-                },
+    pipeline.push({
+      $group: {
+        _id: {
+          $let: {
+            vars: {
+              monthNumeric: { $month: "$createdAt" },
+            },
+            in: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ["$$monthNumeric", 1] }, then: "Jan" },
+                  { case: { $eq: ["$$monthNumeric", 2] }, then: "Feb" },
+                  { case: { $eq: ["$$monthNumeric", 3] }, then: "Mar" },
+                  { case: { $eq: ["$$monthNumeric", 4] }, then: "Apr" },
+                  { case: { $eq: ["$$monthNumeric", 5] }, then: "May" },
+                  { case: { $eq: ["$$monthNumeric", 6] }, then: "Jun" },
+                  { case: { $eq: ["$$monthNumeric", 7] }, then: "Jul" },
+                  { case: { $eq: ["$$monthNumeric", 8] }, then: "Aug" },
+                  { case: { $eq: ["$$monthNumeric", 9] }, then: "Sep" },
+                  { case: { $eq: ["$$monthNumeric", 10] }, then: "Oct" },
+                  { case: { $eq: ["$$monthNumeric", 11] }, then: "Nov" },
+                  { case: { $eq: ["$$monthNumeric", 12] }, then: "Dec" },
+                ],
+                default: "Unknown", // Default value if the month number is unexpected
               },
             },
           },
-          count: { $sum: 1 },
         },
-      });
+        count: { $sum: 1 },
+      },
+    });
   }
 
   if (queryBy === "Weekly") {
@@ -132,7 +132,7 @@ const getStatHandler = async (
       (resData: { _id: string | number; count: number }) => {
         const tempId =
           queryBy === "Weekly"
-            ? today.day(resData._id as number).format("ddd")
+            ? today.day((resData._id as number) - 1).format("ddd")
             : resData._id;
         return tempId === _id;
       },
