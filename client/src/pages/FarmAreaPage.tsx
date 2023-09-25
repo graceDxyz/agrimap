@@ -123,8 +123,7 @@ function FarmAreaPage() {
       form.reset((prev) => ({ ...prev, coordinates }));
     },
     onCalculateArea: (area: number) => {
-      const size = area / 10000;
-
+      const size = parseFloat((area / 10000).toFixed(2));
       form.reset((prev) => ({ ...prev, size }));
     },
   });
