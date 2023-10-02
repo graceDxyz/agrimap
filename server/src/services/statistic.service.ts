@@ -45,8 +45,20 @@ export async function getStatisticsRecent() {
     },
     {
       $project: {
-        todayFarmers: 1,
-        count: { $arrayElemAt: ["$monthlyCount.count", 0] },
+        todayFarmers: {
+          $cond: {
+            if: { $eq: ["$todayFarmers", []] },
+            then: [], // Default value for todayFarmers when empty
+            else: "$todayFarmers",
+          },
+        },
+        count: {
+          $cond: {
+            if: { $eq: ["$monthlyCount", []] },
+            then: 0, // Default value for count when empty
+            else: { $arrayElemAt: ["$monthlyCount.count", 0] },
+          },
+        },
       },
     },
   ]);
