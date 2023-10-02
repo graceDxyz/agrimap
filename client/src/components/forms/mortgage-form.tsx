@@ -24,7 +24,10 @@ import {
   QUERY_MORTGAGES_KEY,
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { createMortgageSchema } from "@/lib/validations/mortgage";
+import {
+  createMortgageSchema,
+  mortgageSchema,
+} from "@/lib/validations/mortgage";
 import { useGetFarms } from "@/services/farm.service";
 import {
   createMortgage,
@@ -146,9 +149,10 @@ function CreateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: createMortgage,
     onSuccess: ({ data }) => {
+      const newMortgage = mortgageSchema.parse(data);
       queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (items) => {
         if (items) {
-          return [data, ...items];
+          return [newMortgage, ...items];
         }
         return items;
       });
@@ -413,11 +417,12 @@ function UpdateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateMortgage,
     onSuccess: ({ data }) => {
+      const upMortgage = mortgageSchema.parse(data);
       queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item._id === data._id) {
-              return data;
+            if (item._id === upMortgage._id) {
+              return upMortgage;
             }
             return item;
           });

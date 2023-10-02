@@ -164,42 +164,49 @@ export const farmColumns: ColumnDef<Farm>[] = [
 
 export const mortgageColumns: ColumnDef<Mortgage>[] = [
   {
-    accessorKey: "farm",
+    accessorKey: "farmTitle",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Land Owner" />
+      <DataTableColumnHeader column={column} title="Title number" />
     ),
-    cell: ({ row }) => {
-      const farm = row.getValue<Farm>("farm");
-      return (
-        <div className="w-auto capitalize font-medium">
-          {farm.owner.lastname + ", " + farm.owner.firstname}
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("farmTitle")}
+      </div>
+    ),
   },
   {
-    accessorKey: "mortgageTo",
+    accessorKey: "mortgageToName",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Mortgage to" />
     ),
-    cell: ({ row }) => {
-      const mortgageTo = row.getValue<Farmer>("mortgageTo");
-      return (
-        <div className="w-auto capitalize font-medium">
-          {mortgageTo.lastname + ", " + mortgageTo.firstname}
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("mortgageToName")}
+      </div>
+    ),
   },
   {
-    accessorKey: "farm.size",
+    accessorKey: "farmerName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Land Owner" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("farmerName")}
+      </div>
+    ),
+  },
+
+  {
+    accessorKey: "farmSize",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Size (Hectars)" />
     ),
-    cell: ({ row }) => {
-      const farm = row.getValue<Farm>("farm");
-      return <div className="w-auto capitalize font-medium">{farm.size}</div>;
-    },
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("farmSize")}
+      </div>
+    ),
   },
 
   {
