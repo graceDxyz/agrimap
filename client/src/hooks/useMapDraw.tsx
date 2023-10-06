@@ -3,10 +3,10 @@ import { DrawEvent } from "@/types";
 import { Coordinates } from "@/types/farm.type";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
-import * as turf from "@turf/turf";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
@@ -70,7 +70,7 @@ export function useMapDraw({
         if (coordinares) {
           map.flyTo({
             center: findCenter(coordinares),
-            zoom: 16.259085067438566,
+            zoom: 15.259085067438566,
           });
 
           if (mode === "edit") {

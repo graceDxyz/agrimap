@@ -110,7 +110,7 @@ function FarmAreaPage() {
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId"),
+    (item) => item._id === form.getValues("ownerId")
   );
 
   const mapRef = useMapDraw({
@@ -118,7 +118,7 @@ function FarmAreaPage() {
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
+        e.features[0].geometry.coordinates
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -180,7 +180,7 @@ function FarmAreaPage() {
                   className={cn(
                     buttonVariants({
                       size: "sm",
-                    }),
+                    })
                   )}
                 >
                   Edit
@@ -196,10 +196,10 @@ function FarmAreaPage() {
       <section
         id="dashboard-farms"
         aria-labelledby="dashboard-farms-heading"
-        className="grid grid-cols-3 gap-4"
+        className="grid grid-cols-5 gap-4"
       >
-        <div className="h-[80vh] col-span-2 overflow-hidden" ref={mapRef} />
-        <div className="pr-2">
+        <div className="h-[80vh] col-span-3 overflow-hidden" ref={mapRef} />
+        <ScrollArea className="h-[80vh] col-span-2 pr-2">
           <Form {...form}>
             <form className="grid gap-4">
               <FormField
@@ -224,8 +224,7 @@ function FarmAreaPage() {
                           role="combobox"
                           aria-label="Load a preset..."
                           aria-expanded={open}
-                          className="flex-1 justify-between w-full disabled:opacity-100"
-                          disabled={!isEditMode}
+                          className="flex-1 justify-between w-full"
                         >
                           {isFarmerLoading ? (
                             "Loading ..."
@@ -242,12 +241,7 @@ function FarmAreaPage() {
                               )}
                             </>
                           )}
-                          <Icons.chevronsUpDown
-                            className={cn(
-                              "ml-2 h-4 w-4 shrink-0 opacity-50",
-                              !isEditMode ? "hidden" : "",
-                            )}
-                          />
+                          <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-full p-0">
@@ -262,6 +256,7 @@ function FarmAreaPage() {
                                   field.onChange(item._id);
                                   setOpen(false);
                                 }}
+                                className="capitalize"
                               >
                                 {item.lastname + ", " + item.firstname}
                                 <Icons.check
@@ -269,7 +264,7 @@ function FarmAreaPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0",
+                                      : "opacity-0"
                                   )}
                                 />
                               </CommandItem>
@@ -289,13 +284,7 @@ function FarmAreaPage() {
                   <FormItem>
                     <FormLabel>Hectar</FormLabel>
                     <FormControl>
-                      <Input
-                        className="disabled:opacity-100"
-                        type="number"
-                        placeholder="hectar"
-                        disabled={!isEditMode}
-                        {...field}
-                      />
+                      <Input type="number" placeholder="hectar" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -308,17 +297,89 @@ function FarmAreaPage() {
                   <FormItem>
                     <FormLabel>Title Number</FormLabel>
                     <FormControl>
-                      <Input
-                        className="disabled:opacity-100"
-                        placeholder="title number"
-                        disabled={!isEditMode}
-                        {...field}
-                      />
+                      <Input placeholder="title number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="address.streetAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Street Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="street address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.cityOrProvince"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City/Province</FormLabel>
+                        <FormControl>
+                          <Input placeholder="city.provinve" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.municipality"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Municipality</FormLabel>
+                        <FormControl>
+                          <Input placeholder="municipality" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.barangay"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Barangay</FormLabel>
+                        <FormControl>
+                          <Input placeholder="barangay" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.zipcode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Zipcode</FormLabel>
+                        <FormControl>
+                          <Input placeholder="zipcode" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
               <FormField
                 control={form.control}
                 name="proofFiles"
@@ -327,76 +388,65 @@ function FarmAreaPage() {
                     <FormLabel>Title File(s)</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-5">
-                        {isEditMode ? (
-                          <>
-                            <div>
-                              <UploadButton
-                                endpoint="proofFiles"
-                                className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:w-full"
-                                onClientUploadComplete={(res) => {
-                                  if (res) {
-                                    field.onChange([...field.value, ...res]);
-                                  }
-                                }}
-                                onUploadError={(error: Error) => {
-                                  console.log(error);
-                                  form.setError("proofFiles", {
-                                    message: "Please select a valid file!",
-                                  });
-                                }}
-                              />
-                            </div>
-                            <FormMessage />
+                        <div>
+                          <UploadButton
+                            endpoint="proofFiles"
+                            className="ut-label:text-lg ut-allowed-content:ut-uploading:text-red-300 ut-button:bg-primary ut-button:text-primary-foreground ut-button:hover:bg-primary/90 ut-button:w-full"
+                            onClientUploadComplete={(res) => {
+                              if (res) {
+                                field.onChange([...field.value, ...res]);
+                              }
+                            }}
+                            onUploadError={(error: Error) => {
+                              console.log(error);
+                              form.setError("proofFiles", {
+                                message: "Please select a valid file!",
+                              });
+                            }}
+                          />
+                        </div>
+                        <FormMessage />
 
-                            <Separator />
-                          </>
-                        ) : undefined}
-                        <ScrollArea>
-                          <div className="flex flex-col gap-2">
-                            {field.value.map((item) => (
-                              <div
-                                key={item.fileKey}
-                                className="flex gap-2 items-center hover:bg-slate-50 rounded-lg"
-                              >
-                                <a
-                                  href={item.fileUrl}
-                                  target="_blank"
-                                  className={cn(
-                                    buttonVariants({
-                                      size: "sm",
-                                      variant: "link",
-                                    }),
-                                    "w-full justify-start",
-                                  )}
-                                >
-                                  {item.fileName}
-                                </a>
-                                {isEditMode ? (
-                                  <Button
-                                    type="button"
-                                    size={"icon"}
-                                    variant={"ghost"}
-                                    onClick={() => {
-                                      field.onChange(
-                                        field.value.filter(
-                                          (file) =>
-                                            file.fileKey !== item.fileKey,
-                                        ),
-                                      );
-                                    }}
-                                  >
-                                    <Icons.trash
-                                      className="h-4 w-4"
-                                      aria-hidden="true"
-                                    />
-                                  </Button>
-                                ) : (
-                                  <div></div>
+                        <Separator />
+                        <div className="flex flex-col gap-2">
+                          {field.value.map((item) => (
+                            <div
+                              key={item.fileKey}
+                              className="flex gap-2 items-center hover:bg-slate-50 rounded-lg"
+                            >
+                              <a
+                                href={item.fileUrl}
+                                target="_blank"
+                                className={cn(
+                                  buttonVariants({
+                                    size: "sm",
+                                    variant: "link",
+                                  }),
+                                  "w-full justify-start"
                                 )}
-                              </div>
-                            ))}
-                          </div>
-                        </ScrollArea>
+                              >
+                                {item.fileName}
+                              </a>
+                              <Button
+                                type="button"
+                                size={"icon"}
+                                variant={"ghost"}
+                                onClick={() => {
+                                  field.onChange(
+                                    field.value.filter(
+                                      (file) => file.fileKey !== item.fileKey
+                                    )
+                                  );
+                                }}
+                              >
+                                <Icons.trash
+                                  className="h-4 w-4"
+                                  aria-hidden="true"
+                                />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </FormControl>
                   </FormItem>
@@ -404,7 +454,7 @@ function FarmAreaPage() {
               />
             </form>
           </Form>
-        </div>
+        </ScrollArea>
       </section>
       <FarmDialog />
     </Shell>

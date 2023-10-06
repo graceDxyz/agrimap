@@ -1,7 +1,8 @@
 import * as z from "zod";
+import { addressSchema } from "./farmer.schema";
 
 export const coordinatesSchema = z.array(
-  z.array(z.tuple([z.number(), z.number()]))
+  z.array(z.tuple([z.number(), z.number()])),
 );
 
 const payload = {
@@ -13,10 +14,11 @@ const payload = {
         fileKey: z.string(),
         fileName: z.string(),
         fileUrl: z.string(),
-      })
+      }),
     ),
     size: z.number(),
     coordinates: coordinatesSchema,
+    address: addressSchema,
   }),
 };
 

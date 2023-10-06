@@ -1,8 +1,8 @@
 import * as z from "zod";
-import { farmerSchema } from "./farmer";
+import { addressSchema, farmerSchema } from "./farmer";
 
 export const coordinatesSchema = z.array(
-  z.array(z.tuple([z.number(), z.number()])),
+  z.array(z.tuple([z.number(), z.number()]))
 );
 
 export const fileSchema = z.object({
@@ -19,6 +19,7 @@ export const farmSchema = z.object({
   size: z.number(),
   isMortgage: z.boolean().nullish(),
   coordinates: coordinatesSchema,
+  address: addressSchema,
 });
 
 export const farmsSchema = z.object({
@@ -38,4 +39,5 @@ export const createFarmSchema = z.object({
   coordinates: coordinatesSchema.min(1, {
     message: "Please select map coordinates on the map",
   }),
+  address: addressSchema,
 });

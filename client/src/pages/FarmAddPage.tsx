@@ -28,6 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
@@ -46,6 +47,7 @@ import { DrawEvent } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -77,7 +79,7 @@ function FarmAddPage() {
     mode: "edit",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
+        e.features[0].geometry.coordinates
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -104,13 +106,22 @@ function FarmAddPage() {
       });
       navigate("/dashboard/farms");
     },
-    onError: (error) => {
-      console.log({ error });
+    onError: (error: AxiosError) => {
+      const message = error.response?.data as string;
+      if (message.includes("E11000")) {
+        form.setError(
+          "titleNumber",
+          {
+            message: "Title number already registered",
+          },
+          { shouldFocus: true }
+        );
+      }
     },
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId"),
+    (item) => item._id === form.getValues("ownerId")
   );
 
   function onSubmit(data: CreateFarmInput) {
@@ -134,7 +145,7 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              }),
+              })
             )}
           >
             Cancel
@@ -161,10 +172,10 @@ function FarmAddPage() {
       <section
         id="dashboard-farms"
         aria-labelledby="dashboard-farms-heading"
-        className="grid grid-cols-3 gap-4"
+        className="grid grid-cols-5 gap-4"
       >
-        <div className="h-[80vh] col-span-2 overflow-hidden" ref={mapRef} />
-        <div className="pr-2">
+        <div className="h-[80vh] col-span-3 overflow-hidden" ref={mapRef} />
+        <ScrollArea className="h-[80vh] col-span-2 pr-2">
           <Form {...form}>
             <form className="grid gap-4">
               <FormField
@@ -229,7 +240,7 @@ function FarmAddPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0",
+                                      : "opacity-0"
                                   )}
                                 />
                               </CommandItem>
@@ -268,6 +279,83 @@ function FarmAddPage() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="address.streetAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Street Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="street address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.cityOrProvince"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City/Province</FormLabel>
+                        <FormControl>
+                          <Input placeholder="city.provinve" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.municipality"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Municipality</FormLabel>
+                        <FormControl>
+                          <Input placeholder="municipality" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.barangay"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Barangay</FormLabel>
+                        <FormControl>
+                          <Input placeholder="barangay" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="address.zipcode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Zipcode</FormLabel>
+                        <FormControl>
+                          <Input placeholder="zipcode" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
               <FormField
                 control={form.control}
                 name="proofFiles"
@@ -310,7 +398,7 @@ function FarmAddPage() {
                                     size: "sm",
                                     variant: "link",
                                   }),
-                                  "w-full justify-start",
+                                  "w-full justify-start"
                                 )}
                               >
                                 {item.fileName}
@@ -322,8 +410,8 @@ function FarmAddPage() {
                                 onClick={() => {
                                   field.onChange(
                                     field.value.filter(
-                                      (file) => file.fileKey !== item.fileKey,
-                                    ),
+                                      (file) => file.fileKey !== item.fileKey
+                                    )
                                   );
                                 }}
                               >
@@ -342,7 +430,7 @@ function FarmAddPage() {
               />
             </form>
           </Form>
-        </div>
+        </ScrollArea>
       </section>
       <FarmDialog />
     </Shell>

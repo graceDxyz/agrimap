@@ -11,6 +11,13 @@ export interface FarmInput {
   }[];
   size: number;
   coordinates: [number, number][][];
+  address: {
+    streetAddress: string;
+    cityOrProvince: string;
+    municipality: string;
+    barangay: string;
+    zipcode: string;
+  };
 }
 
 export interface IFarm extends FarmInput, mongoose.Document {
@@ -27,6 +34,8 @@ const farmSchema = new mongoose.Schema(
     },
     titleNumber: {
       type: String,
+      required: true,
+      unique: true,
     },
     proofFiles: {
       type: [
@@ -47,7 +56,21 @@ const farmSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: String,
+      streetAddress: {
+        type: String,
+      },
+      cityOrProvince: {
+        type: String,
+      },
+      municipality: {
+        type: String,
+      },
+      barangay: {
+        type: String,
+      },
+      zipcode: {
+        type: String,
+      },
     },
   },
   {
@@ -56,7 +79,7 @@ const farmSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  }
+  },
 );
 
 const FarmModel = mongoose.model<IFarm>("Farm", farmSchema);
