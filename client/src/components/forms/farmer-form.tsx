@@ -44,7 +44,7 @@ import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
 import { RecentAdded } from "@/types/statistic.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import AsyncSelect from "react-select/async";
 
@@ -95,6 +95,11 @@ function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.farmer);
+  const [psgc, setPsgc] = useState<{
+    prov?: string;
+    city?: string;
+  }>();
+  console.log(psgc);
 
   const form = useForm<CreateFarmerInput>({
     resolver: zodResolver(createFarmerSchema),
@@ -234,8 +239,16 @@ function CreateForm({ token }: { token: string }) {
                     defaultOptions
                     loadOptions={regionOptions}
                     placeholder="Select ..."
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
+                    value={
+                      value != "" ? { label: value, psgcCode: "" } : undefined
+                    }
+                    onChange={(e) => {
+                      onChange(e?.label);
+                      setPsgc((prev) => ({
+                        ...prev,
+                        prov: e?.psgcCode,
+                      }));
+                    }}
                   />
                   <FormMessage />
                 </FormItem>
@@ -254,8 +267,18 @@ function CreateForm({ token }: { token: string }) {
                     defaultOptions
                     loadOptions={cityOptions}
                     placeholder="Select ..."
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
+                    value={
+                      value != ""
+                        ? { label: value, provinceCode: "" }
+                        : undefined
+                    }
+                    onChange={(e) => {
+                      onChange(e?.label);
+                      setPsgc((prev) => ({
+                        ...prev,
+                        prov: e?.provinceCode,
+                      }));
+                    }}
                   />
                   <FormMessage />
                 </FormItem>
@@ -276,8 +299,19 @@ function CreateForm({ token }: { token: string }) {
                     defaultOptions
                     loadOptions={barangayOptions}
                     placeholder="Select ..."
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
+                    value={
+                      value != ""
+                        ? { label: value, provinceCode: "", cityMunCode: "" }
+                        : undefined
+                    }
+                    onChange={(e) => {
+                      onChange(e?.label);
+                      setPsgc((prev) => ({
+                        ...prev,
+                        prov: e?.provinceCode,
+                        city: e?.cityMunCode,
+                      }));
+                    }}
                   />
                   <FormMessage />
                 </FormItem>

@@ -1,6 +1,12 @@
 import { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
+import {
+  Barangay,
+  City,
+  GetAddressInput,
+  Province,
+} from "../types/address.types";
 
 const dataDirectory = path.join(__dirname, "..", "json");
 const provFilePath = path.join(dataDirectory, "provinces.json");
@@ -20,44 +26,11 @@ export const getAddressHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const getProvinceHandler = async (req: Request, res: Response) => {
+export const getProvincesHandler = async (req: Request, res: Response) => {
   try {
     const jsonData: Province[] =
       (await readFilePromise<Province>(provFilePath)).data ?? [];
-
-    jsonData.sort((a: Province, b: Province) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    // Pagination logic
-    const page = parseInt(req.query.page as string) || 1; // Get the page parameter from the query, default to 1
-    const perPage = parseInt(req.query.perPage as string) || 100; // Get the perPage parameter from the query, default to 100
-    const filter = req.query.filter as string | undefined; // Get the city parameter from the query
-
-    // Filter data by city if the 'city' parameter is provided
-    const filteredData = filter
-      ? jsonData.filter((item: Province) =>
-          Object.values(item).some((value) =>
-            value.toString().toLowerCase().includes(filter.toLowerCase())
-          )
-        )
-      : jsonData;
-
-    // Calculate the start and end indexes for pagination
-    const startIndex = (page - 1) * perPage;
-    const endIndex = startIndex + perPage;
-
-    // Get the data for the current page
-    const paginatedData = filteredData.slice(startIndex, endIndex);
-
+    const paginatedData = paginateAndFilter(jsonData, req);
     res.json(paginatedData);
   } catch (err) {
     console.error(err);
@@ -65,44 +38,30 @@ export const getProvinceHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const getCityHandler = async (req: Request, res: Response) => {
+export const getProvinceHandler = async (
+  req: Request<GetAddressInput["params"]>,
+  res: Response
+) => {
+  try {
+    const psgcCode = req.params.psgcCode;
+
+    const data: City[] = (await readFilePromise<City>(cityFilePath)).data ?? [];
+
+    const jsonData = data.filter((item) => item.provinceCode === psgcCode);
+
+    const paginatedData = paginateAndFilter(jsonData, req);
+    res.json(paginatedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error parsing JSON data");
+  }
+};
+
+export const getCitiesHandler = async (req: Request, res: Response) => {
   try {
     const jsonData: City[] =
       (await readFilePromise<City>(cityFilePath)).data ?? [];
-
-    jsonData.sort((a: City, b: City) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    // Pagination logic
-    const page = parseInt(req.query.page as string) || 1; // Get the page parameter from the query, default to 1
-    const perPage = parseInt(req.query.perPage as string) || 100; // Get the perPage parameter from the query, default to 10
-    const filter = req.query.filter as string | undefined; // Get the city parameter from the query
-
-    // Filter data by city if the 'city' parameter is provided
-    const filteredData = filter
-      ? jsonData.filter((item: City) =>
-          Object.values(item).some((value) =>
-            value.toString().toLowerCase().includes(filter.toLowerCase())
-          )
-        )
-      : jsonData;
-
-    // Calculate the start and end indexes for pagination
-    const startIndex = (page - 1) * perPage;
-    const endIndex = startIndex + perPage;
-
-    // Get the data for the current page
-    const paginatedData = filteredData.slice(startIndex, endIndex);
-
+    const paginatedData = paginateAndFilter(jsonData, req);
     res.json(paginatedData);
   } catch (err) {
     console.error(err);
@@ -110,46 +69,30 @@ export const getCityHandler = async (req: Request, res: Response) => {
   }
 };
 
-export const getBarangayHandler = async (req: Request, res: Response) => {
+export const getCityHandler = async (
+  req: Request<GetAddressInput["params"]>,
+  res: Response
+) => {
+  try {
+    const psgcCode = req.params.psgcCode;
+
+    const data: Barangay[] =
+      (await readFilePromise<Barangay>(bgyFilePath)).data ?? [];
+
+    const jsonData = data.filter((item) => item.cityMunCode === psgcCode);
+    const paginatedData = paginateAndFilter(jsonData, req);
+    res.json(paginatedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error parsing JSON data");
+  }
+};
+
+export const getBarangaysHandler = async (req: Request, res: Response) => {
   try {
     const jsonData: Barangay[] =
       (await readFilePromise<Barangay>(bgyFilePath)).data ?? [];
-
-    jsonData.sort((a: Barangay, b: Barangay) => {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
-
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
-      return 0;
-    });
-    // Pagination logic
-    const page = parseInt(req.query.page as string) || 1; // Get the page parameter from the query, default to 1
-    const perPage = parseInt(req.query.perPage as string) || 100; // Get the perPage parameter from the query, default to 10
-    const filter = req.query.filter as string | undefined; // Get the city parameter from the query
-
-    // Filter data by city if the 'city' parameter is provided
-    const filteredData = filter
-      ? jsonData.filter((item: Barangay) =>
-          Object.values(item).some((value) =>
-            value.toString().toLowerCase().includes(filter.toLowerCase())
-          )
-        )
-      : jsonData;
-
-    // Calculate the start and end indexes for pagination
-    const startIndex = (page - 1) * perPage;
-    const endIndex = startIndex + perPage;
-
-    // Get the data for the current page
-    const paginatedData = filteredData
-      .slice(startIndex, endIndex)
-      .filter((item) => item.name.trim().length > 0);
-
+    const paginatedData = paginateAndFilter(jsonData, req);
     res.json(paginatedData);
   } catch (err) {
     console.error(err);
@@ -194,26 +137,44 @@ const readFilePromise = <
   });
 };
 
-interface Province {
-  psgcCode: string;
-  name: string;
-  label: string;
-  value: string;
-}
+function paginateAndFilter<T extends { name: string }>(
+  data: T[],
+  req: Request
+): T[] {
+  data.sort((a: T, b: T) => {
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
 
-interface City {
-  psgcCode: string;
-  name: string;
-  provinceCode: string;
-  label: string;
-  value: string;
-}
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
+  });
+  // Pagination logic
+  const page = parseInt(req.query.page as string) || 1; // Get the page parameter from the query, default to 1
+  const perPage = parseInt(req.query.perPage as string) || 100; // Get the perPage parameter from the query, default to 10
+  const filter = req.query.filter as string | undefined; // Get the city parameter from the query
 
-interface Barangay {
-  psgcCode: string;
-  name: string;
-  provinceCode: string;
-  cityMunCode: string;
-  label: string;
-  value: string;
+  // Filter data by city if the 'city' parameter is provided
+  const filteredData = filter
+    ? data.filter((item: T) =>
+        Object.values(item).some((value) =>
+          value.toString().toLowerCase().includes(filter.toLowerCase())
+        )
+      )
+    : data;
+
+  // Calculate the start and end indexes for pagination
+  const startIndex = (page - 1) * perPage;
+  const endIndex = startIndex + perPage;
+
+  // Get the data for the current page
+  const paginatedData = filteredData
+    .slice(startIndex, endIndex)
+    .filter((item) => item.name.trim().length > 0);
+
+  return paginatedData;
 }

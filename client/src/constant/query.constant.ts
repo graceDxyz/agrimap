@@ -11,3 +11,5 @@ export const QUERY_MORTGAGES_KEY = "mortgages";
 export const QUERY_MORTGAGE_KEY = "mortgage";
 
 export const QUERY_STATISTICS_KEY = "statistics";
+
+export const QUERY_ADDRESSES_KEY = "addresses";
