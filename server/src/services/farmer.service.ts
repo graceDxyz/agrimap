@@ -25,6 +25,12 @@ export async function getAllFarmer() {
         totalSize: { $sum: "$farms.size" },
       },
     },
+    {
+      $sort: {
+        lastname: 1, // 1 for ascending, -1 for descending
+        firstname: 1, // 1 for ascending, -1 for descending
+      },
+    },
   ]);
 }
 
@@ -45,7 +51,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }

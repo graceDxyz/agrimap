@@ -7,7 +7,7 @@ import MortgageModel, {
 export async function getAllMortgage() {
   return MortgageModel.find()
     .populate([{ path: "farm", populate: { path: "owner" } }, "mortgageTo"])
-    .sort({ "mortgageTo.lastname": 1 });
+    .sort({ "farm.titleNumber": 1 });
   // return MortgageModel.aggregate([
   //{
   //   $and: [{ farm: { $ne: null } }, { mortgageTo: { $ne: null } }],

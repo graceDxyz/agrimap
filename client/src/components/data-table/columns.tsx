@@ -85,7 +85,9 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
       <DataTableColumnHeader column={column} title="Phone Number" />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("phoneNumber")}</div>
+      <div className="font-medium text-center">
+        {row.getValue("phoneNumber")}
+      </div>
     ),
   },
   {
@@ -94,7 +96,9 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
       <DataTableColumnHeader column={column} title="Land Owned (Hectars)" />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("totalSize") ?? 0}</div>
+      <div className="font-medium text-center">
+        {row.getValue("totalSize") ?? 0}
+      </div>
     ),
   },
   {
