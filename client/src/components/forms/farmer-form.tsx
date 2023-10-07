@@ -224,7 +224,7 @@ function CreateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>City/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="city/province" {...field} />
+                    <Input placeholder="province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -237,9 +237,9 @@ function CreateForm({ token }: { token: string }) {
               name="address.municipality"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Municipality</FormLabel>
+                  <FormLabel>City/Municipality</FormLabel>
                   <FormControl>
-                    <Input placeholder="municipality" {...field} />
+                    <Input placeholder="city/municipality" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -435,9 +435,9 @@ function UpdateForm({ token }: { token: string }) {
               name="address.cityOrProvince"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>City/Province</FormLabel>
+                  <FormLabel>Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="city/province" {...field} />
+                    <Input placeholder="province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -450,9 +450,9 @@ function UpdateForm({ token }: { token: string }) {
               name="address.municipality"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Municipality</FormLabel>
+                  <FormLabel>City/Municipality</FormLabel>
                   <FormControl>
-                    <Input placeholder="municipality" {...field} />
+                    <Input placeholder="city/municipality" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

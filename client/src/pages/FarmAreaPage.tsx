@@ -47,6 +47,7 @@ import { DrawEvent } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -104,8 +105,17 @@ function FarmAreaPage() {
       });
       navigate("/dashboard/farms");
     },
-    onError: (error) => {
-      console.log({ error });
+    onError: (error: AxiosError) => {
+      const message = error.response?.data as string;
+      if (message.includes("E11000")) {
+        form.setError(
+          "titleNumber",
+          {
+            message: "Title number already registered",
+          },
+          { shouldFocus: true },
+        );
+      }
     },
   });
 
@@ -201,7 +211,7 @@ function FarmAreaPage() {
         <div className="h-[80vh] col-span-3 overflow-hidden" ref={mapRef} />
         <ScrollArea className="h-[80vh] col-span-2 pr-2">
           <Form {...form}>
-            <form className="grid gap-4">
+            <form className="grid gap-4 px-2">
               <FormField
                 control={form.control}
                 name="coordinates"
@@ -323,9 +333,9 @@ function FarmAreaPage() {
                     name="address.cityOrProvince"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>City/Province</FormLabel>
+                        <FormLabel>Province</FormLabel>
                         <FormControl>
-                          <Input placeholder="city/province" {...field} />
+                          <Input placeholder="province" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -338,9 +348,9 @@ function FarmAreaPage() {
                     name="address.municipality"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Municipality</FormLabel>
+                        <FormLabel>City/Municipality</FormLabel>
                         <FormControl>
-                          <Input placeholder="municipality" {...field} />
+                          <Input placeholder="city/municipality" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
