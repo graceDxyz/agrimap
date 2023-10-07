@@ -122,7 +122,7 @@ function CreateForm({ token }: { token: string }) {
             };
           }
           return items;
-        }
+        },
       );
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
@@ -224,7 +224,7 @@ function CreateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>City/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="city.provinve" {...field} />
+                    <Input placeholder="city/province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -437,7 +437,7 @@ function UpdateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>City/Province</FormLabel>
                   <FormControl>
-                    <Input placeholder="city.provinve" {...field} />
+                    <Input placeholder="city/province" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

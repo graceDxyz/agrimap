@@ -79,7 +79,7 @@ function FarmAddPage() {
     mode: "edit",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates
+        e.features[0].geometry.coordinates,
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -114,14 +114,14 @@ function FarmAddPage() {
           {
             message: "Title number already registered",
           },
-          { shouldFocus: true }
+          { shouldFocus: true },
         );
       }
     },
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
   function onSubmit(data: CreateFarmInput) {
@@ -145,7 +145,7 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              })
+              }),
             )}
           >
             Cancel
@@ -177,7 +177,7 @@ function FarmAddPage() {
         <div className="h-[80vh] col-span-3 overflow-hidden" ref={mapRef} />
         <ScrollArea className="h-[80vh] col-span-2 pr-2">
           <Form {...form}>
-            <form className="grid gap-4">
+            <form className="grid gap-4 px-2">
               <FormField
                 control={form.control}
                 name="coordinates"
@@ -240,7 +240,7 @@ function FarmAddPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                               </CommandItem>
@@ -301,7 +301,7 @@ function FarmAddPage() {
                       <FormItem>
                         <FormLabel>City/Province</FormLabel>
                         <FormControl>
-                          <Input placeholder="city.provinve" {...field} />
+                          <Input placeholder="city/province" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -398,7 +398,7 @@ function FarmAddPage() {
                                     size: "sm",
                                     variant: "link",
                                   }),
-                                  "w-full justify-start"
+                                  "w-full justify-start",
                                 )}
                               >
                                 {item.fileName}
@@ -410,8 +410,8 @@ function FarmAddPage() {
                                 onClick={() => {
                                   field.onChange(
                                     field.value.filter(
-                                      (file) => file.fileKey !== item.fileKey
-                                    )
+                                      (file) => file.fileKey !== item.fileKey,
+                                    ),
                                   );
                                 }}
                               >

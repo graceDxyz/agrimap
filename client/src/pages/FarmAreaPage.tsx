@@ -110,7 +110,7 @@ function FarmAreaPage() {
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
   const mapRef = useMapDraw({
@@ -118,7 +118,7 @@ function FarmAreaPage() {
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates
+        e.features[0].geometry.coordinates,
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -180,7 +180,7 @@ function FarmAreaPage() {
                   className={cn(
                     buttonVariants({
                       size: "sm",
-                    })
+                    }),
                   )}
                 >
                   Edit
@@ -264,7 +264,7 @@ function FarmAreaPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0"
+                                      : "opacity-0",
                                   )}
                                 />
                               </CommandItem>
@@ -325,7 +325,7 @@ function FarmAreaPage() {
                       <FormItem>
                         <FormLabel>City/Province</FormLabel>
                         <FormControl>
-                          <Input placeholder="city.provinve" {...field} />
+                          <Input placeholder="city/province" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -422,7 +422,7 @@ function FarmAreaPage() {
                                     size: "sm",
                                     variant: "link",
                                   }),
-                                  "w-full justify-start"
+                                  "w-full justify-start",
                                 )}
                               >
                                 {item.fileName}
@@ -434,8 +434,8 @@ function FarmAreaPage() {
                                 onClick={() => {
                                   field.onChange(
                                     field.value.filter(
-                                      (file) => file.fileKey !== item.fileKey
-                                    )
+                                      (file) => file.fileKey !== item.fileKey,
+                                    ),
                                   );
                                 }}
                               >
