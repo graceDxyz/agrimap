@@ -40,6 +40,11 @@ import {
   createFarmSchema,
   farmSchema,
 } from "@/lib/validations/farm";
+import {
+  barangayOptions,
+  cityOptions,
+  regionOptions,
+} from "@/services/address.service";
 import { updateFarm, useGetFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
@@ -51,6 +56,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import AsyncSelect from "react-select/async";
 
 function FarmAreaPage() {
   const location = useLocation();
@@ -113,14 +119,14 @@ function FarmAreaPage() {
           {
             message: "Title number already registered",
           },
-          { shouldFocus: true },
+          { shouldFocus: true }
         );
       }
     },
   });
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId"),
+    (item) => item._id === form.getValues("ownerId")
   );
 
   const mapRef = useMapDraw({
@@ -128,7 +134,7 @@ function FarmAreaPage() {
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
+        e.features[0].geometry.coordinates
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -190,7 +196,7 @@ function FarmAreaPage() {
                   className={cn(
                     buttonVariants({
                       size: "sm",
-                    }),
+                    })
                   )}
                 >
                   Edit
@@ -274,7 +280,7 @@ function FarmAreaPage() {
                                     "ml-auto h-4 w-4",
                                     field.value === item._id
                                       ? "opacity-100"
-                                      : "opacity-0",
+                                      : "opacity-0"
                                   )}
                                 />
                               </CommandItem>
@@ -331,12 +337,17 @@ function FarmAreaPage() {
                   <FormField
                     control={form.control}
                     name="address.cityOrProvince"
-                    render={({ field }) => (
+                    render={({ field: { value, onChange } }) => (
                       <FormItem>
                         <FormLabel>Province</FormLabel>
-                        <FormControl>
-                          <Input placeholder="province" {...field} />
-                        </FormControl>
+                        <AsyncSelect
+                          cacheOptions
+                          defaultOptions
+                          loadOptions={regionOptions}
+                          placeholder="Select ..."
+                          value={value != "" ? { label: value } : undefined}
+                          onChange={(e) => onChange(e?.label)}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -346,12 +357,17 @@ function FarmAreaPage() {
                   <FormField
                     control={form.control}
                     name="address.municipality"
-                    render={({ field }) => (
+                    render={({ field: { value, onChange } }) => (
                       <FormItem>
                         <FormLabel>City/Municipality</FormLabel>
-                        <FormControl>
-                          <Input placeholder="city/municipality" {...field} />
-                        </FormControl>
+                        <AsyncSelect
+                          cacheOptions
+                          defaultOptions
+                          loadOptions={cityOptions}
+                          placeholder="Select ..."
+                          value={value != "" ? { label: value } : undefined}
+                          onChange={(e) => onChange(e?.label)}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -363,12 +379,17 @@ function FarmAreaPage() {
                   <FormField
                     control={form.control}
                     name="address.barangay"
-                    render={({ field }) => (
+                    render={({ field: { value, onChange } }) => (
                       <FormItem>
                         <FormLabel>Barangay</FormLabel>
-                        <FormControl>
-                          <Input placeholder="barangay" {...field} />
-                        </FormControl>
+                        <AsyncSelect
+                          cacheOptions
+                          defaultOptions
+                          loadOptions={barangayOptions}
+                          placeholder="Select ..."
+                          value={value != "" ? { label: value } : undefined}
+                          onChange={(e) => onChange(e?.label)}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -432,7 +453,7 @@ function FarmAreaPage() {
                                     size: "sm",
                                     variant: "link",
                                   }),
-                                  "w-full justify-start",
+                                  "w-full justify-start"
                                 )}
                               >
                                 {item.fileName}
@@ -444,8 +465,8 @@ function FarmAreaPage() {
                                 onClick={() => {
                                   field.onChange(
                                     field.value.filter(
-                                      (file) => file.fileKey !== item.fileKey,
-                                    ),
+                                      (file) => file.fileKey !== item.fileKey
+                                    )
                                   );
                                 }}
                               >

@@ -27,7 +27,12 @@ import {
   QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { createFarmerSchema } from "@/lib/validations/farmer";
+import { createFarmerSchema, farmerSchema } from "@/lib/validations/farmer";
+import {
+  barangayOptions,
+  cityOptions,
+  regionOptions,
+} from "@/services/address.service";
 import {
   createFarmer,
   deleteFarmer,
@@ -41,6 +46,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import AsyncSelect from "react-select/async";
 
 export function FarmerDialog() {
   const { user } = useGetAuth();
@@ -122,7 +128,7 @@ function CreateForm({ token }: { token: string }) {
             };
           }
           return items;
-        },
+        }
       );
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
@@ -220,12 +226,17 @@ function CreateForm({ token }: { token: string }) {
             <FormField
               control={form.control}
               name="address.cityOrProvince"
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
-                  <FormLabel>City/Province</FormLabel>
-                  <FormControl>
-                    <Input placeholder="province" {...field} />
-                  </FormControl>
+                  <FormLabel>Province</FormLabel>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={regionOptions}
+                    placeholder="Select ..."
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -235,12 +246,17 @@ function CreateForm({ token }: { token: string }) {
             <FormField
               control={form.control}
               name="address.municipality"
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>City/Municipality</FormLabel>
-                  <FormControl>
-                    <Input placeholder="city/municipality" {...field} />
-                  </FormControl>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={cityOptions}
+                    placeholder="Select ..."
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -252,12 +268,17 @@ function CreateForm({ token }: { token: string }) {
             <FormField
               control={form.control}
               name="address.barangay"
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Barangay</FormLabel>
-                  <FormControl>
-                    <Input placeholder="barangay" {...field} />
-                  </FormControl>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={barangayOptions}
+                    placeholder="Select ..."
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -330,11 +351,12 @@ function UpdateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateFarmer,
     onSuccess: ({ data }) => {
+      const upFarmer = farmerSchema.parse(data);
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item._id === data._id) {
-              return data;
+            if (item._id === upFarmer._id) {
+              return upFarmer;
             }
             return item;
           });
@@ -433,12 +455,17 @@ function UpdateForm({ token }: { token: string }) {
             <FormField
               control={form.control}
               name="address.cityOrProvince"
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Province</FormLabel>
-                  <FormControl>
-                    <Input placeholder="province" {...field} />
-                  </FormControl>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={regionOptions}
+                    placeholder="Select ..."
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -448,12 +475,17 @@ function UpdateForm({ token }: { token: string }) {
             <FormField
               control={form.control}
               name="address.municipality"
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>City/Municipality</FormLabel>
-                  <FormControl>
-                    <Input placeholder="city/municipality" {...field} />
-                  </FormControl>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={cityOptions}
+                    placeholder="Select ..."
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -465,12 +497,17 @@ function UpdateForm({ token }: { token: string }) {
             <FormField
               control={form.control}
               name="address.barangay"
-              render={({ field }) => (
+              render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Barangay</FormLabel>
-                  <FormControl>
-                    <Input placeholder="barangay" {...field} />
-                  </FormControl>
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={barangayOptions}
+                    placeholder="Select ..."
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -492,7 +529,6 @@ function UpdateForm({ token }: { token: string }) {
             />
           </div>
         </div>
-
         <AlertDialogFooter>
           <Button
             type="button"

@@ -1,11 +1,12 @@
 import { Express, Request, Response } from "express";
 import { uploadthingHandler } from "../utils/uploadthing";
+import AddressRoutes from "./address.route";
 import FarmRoutes from "./farm.route";
 import FarmerRoutes from "./farmers.route";
-import SessionRoutes from "./session.route";
-import UserRoutes from "./user.route";
 import MortgageRoutes from "./mortgage.route";
+import SessionRoutes from "./session.route";
 import StatisticsRoutes from "./statistics.route";
+import UserRoutes from "./user.route";
 
 function root(app: Express) {
   app.get("/api/ping", (req: Request, res: Response) => {
@@ -24,6 +25,7 @@ function root(app: Express) {
   FarmRoutes(app);
   MortgageRoutes(app);
   StatisticsRoutes(app);
+  AddressRoutes(app);
 }
 
 export default root;
