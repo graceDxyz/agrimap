@@ -113,9 +113,7 @@ export const ProvinceSelect = (props: Props<Province>) => {
   });
 
   useEffect(() => {
-    if (selectedItem) {
-      setAddressState({ prov: selectedItem?.psgcCode });
-    }
+    setAddressState({ prov: selectedItem?.psgcCode });
   }, [selectedItem]);
 
   return (
@@ -138,12 +136,10 @@ export const CitySelect = (props: Props<City>) => {
   });
 
   useEffect(() => {
-    if (selectedItem) {
-      setAddressState({
-        city: selectedItem?.psgcCode,
-        prov: prov ? prov : selectedItem?.provinceCode,
-      });
-    }
+    setAddressState({
+      city: selectedItem?.psgcCode,
+      prov: prov ? prov : selectedItem?.provinceCode,
+    });
   }, [selectedItem]);
 
   return (
@@ -167,12 +163,10 @@ export const BarangaySelect = (props: Props<Barangay>) => {
   });
 
   useEffect(() => {
-    if (selectedItem) {
-      setAddressState({
-        city: city ? city : selectedItem?.cityMunCode,
-        prov: prov ? prov : selectedItem?.provinceCode,
-      });
-    }
+    setAddressState({
+      city: city ? city : selectedItem?.cityMunCode,
+      prov: prov ? prov : selectedItem?.provinceCode,
+    });
   }, [selectedItem]);
 
   return (
