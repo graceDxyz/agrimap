@@ -38,12 +38,14 @@ interface AddressState {
   prov?: string;
   city?: string;
   setAddressState: (props: { prov?: string; city?: string }) => void;
+  resetState: () => void;
 }
 
-const useAddressState = create<AddressState>()((set) => ({
+export const useAddressState = create<AddressState>()((set) => ({
   prov: undefined,
   city: undefined,
   setAddressState: (props) => set(() => ({ ...props })),
+  resetState: () => set(() => ({ prov: undefined, city: undefined })),
 }));
 
 const useGetOptions = () => {
@@ -101,16 +103,19 @@ const useGetOptions = () => {
 };
 
 export const ProvinceSelect = (props: Props<Province>) => {
-  const { setAddressState } = useAddressState();
+  const { setAddressState, prov } = useAddressState();
   const { defaultProvOptions, promiseProvOptions, provinces } = useGetOptions();
 
   const propsValue = props.value as { label?: string };
-  const selectedItem = provinces.find(
-    (item) => item.label === propsValue?.label
-  );
+  const selectedItem = provinces.find((item) => {
+    const provFilter = prov ? item.psgcCode === prov : true;
+    return item.label === propsValue?.label && provFilter;
+  });
 
   useEffect(() => {
-    setAddressState({ prov: selectedItem?.psgcCode });
+    if (selectedItem) {
+      setAddressState({ prov: selectedItem?.psgcCode });
+    }
   }, [selectedItem]);
 
   return (
@@ -127,13 +132,18 @@ export const CitySelect = (props: Props<City>) => {
   const { defaultCityOptions, promiseCityOptions, cities } = useGetOptions();
 
   const propsValue = props.value as { label?: string };
-  const selectedItem = cities.find((item) => item.label === propsValue?.label);
+  const selectedItem = cities.find((item) => {
+    const provFilter = prov ? item.provinceCode === prov : true;
+    return item.label === propsValue?.label && provFilter;
+  });
 
   useEffect(() => {
-    setAddressState({
-      city: selectedItem?.psgcCode,
-      prov: prov ? prov : selectedItem?.provinceCode,
-    });
+    if (selectedItem) {
+      setAddressState({
+        city: selectedItem?.psgcCode,
+        prov: prov ? prov : selectedItem?.provinceCode,
+      });
+    }
   }, [selectedItem]);
 
   return (
@@ -150,15 +160,19 @@ export const BarangaySelect = (props: Props<Barangay>) => {
   const { defaultBrgyOptions, promiseBrgyOptions, barangays } = useGetOptions();
 
   const propsValue = props.value as { label?: string };
-  const selectedItem = barangays.find(
-    (item) => item.label === propsValue?.label
-  );
+  const selectedItem = barangays.find((item) => {
+    const cityFilter = city ? item.cityMunCode === city : true;
+    const provFilter = prov ? item.provinceCode === prov : true;
+    return item.label === propsValue?.label && cityFilter && provFilter;
+  });
 
   useEffect(() => {
-    setAddressState({
-      city: city ? city : selectedItem?.cityMunCode,
-      prov: prov ? prov : selectedItem?.provinceCode,
-    });
+    if (selectedItem) {
+      setAddressState({
+        city: city ? city : selectedItem?.cityMunCode,
+        prov: prov ? prov : selectedItem?.provinceCode,
+      });
+    }
   }, [selectedItem]);
 
   return (

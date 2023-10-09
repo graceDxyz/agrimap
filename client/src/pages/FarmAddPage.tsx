@@ -2,6 +2,7 @@ import {
   BarangaySelect,
   CitySelect,
   ProvinceSelect,
+  useAddressState,
 } from "@/components/address-select";
 import { FarmDialog } from "@/components/forms/farm-form";
 import { Icons } from "@/components/icons";
@@ -62,6 +63,7 @@ function FarmAddPage() {
   const queryClient = useQueryClient();
   const { user } = useGetAuth();
   const { toast } = useToast();
+  const { resetState } = useAddressState();
 
   const [open, setOpen] = useState(false);
 
@@ -105,6 +107,7 @@ function FarmAddPage() {
     mutationFn: createFarm,
     onSuccess: ({ data }) => {
       const newFarm = farmSchema.parse(data);
+      resetState();
       toast({
         title: "Created",
         description: `Farm ${newFarm._id} created successfully!`,

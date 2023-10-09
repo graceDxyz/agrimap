@@ -2,6 +2,7 @@ import {
   BarangaySelect,
   CitySelect,
   ProvinceSelect,
+  useAddressState,
 } from "@/components/address-select";
 import { FarmDialog } from "@/components/forms/farm-form";
 import { Icons } from "@/components/icons";
@@ -64,6 +65,7 @@ function FarmAreaPage() {
   const queryClient = useQueryClient();
   const { user } = useGetAuth();
   const { toast } = useToast();
+  const { resetState } = useAddressState();
   const [open, setOpen] = useState(false);
   const isEditMode = location.pathname.includes("edit");
   const isAdmin = user?.user.role === "ADMIN";
@@ -99,6 +101,7 @@ function FarmAreaPage() {
     mutationFn: updateFarm,
     onSuccess: ({ data }) => {
       const updateFarm = farmSchema.parse(data);
+      resetState();
       toast({
         title: "Updated",
         description: `Farm ${updateFarm._id} updated successfully!`,

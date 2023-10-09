@@ -41,7 +41,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { BarangaySelect, CitySelect, ProvinceSelect } from "../address-select";
+import {
+  BarangaySelect,
+  CitySelect,
+  ProvinceSelect,
+  useAddressState,
+} from "../address-select";
 
 export function FarmerDialog() {
   const { user } = useGetAuth();
@@ -89,6 +94,7 @@ export function FarmerDialog() {
 function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { resetState } = useAddressState();
   const { setMode } = useBoundStore((state) => state.farmer);
 
   const form = useForm<CreateFarmerInput>({
@@ -148,6 +154,7 @@ function CreateForm({ token }: { token: string }) {
   }
 
   function handleCancelClick() {
+    resetState();
     setMode({ mode: "view" });
     form.reset();
   }
@@ -313,6 +320,7 @@ function CreateForm({ token }: { token: string }) {
 function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { resetState } = useAddressState();
   const { setMode, farmer } = useBoundStore((state) => state.farmer);
 
   const form = useForm<CreateFarmerInput>({
@@ -362,6 +370,7 @@ function UpdateForm({ token }: { token: string }) {
   }
 
   function handleCancelClick() {
+    resetState();
     setMode({ mode: "view" });
     form.reset();
   }
