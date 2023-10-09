@@ -10,8 +10,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
-import { Role, User } from "@/types/user.type";
 import { Mortgage } from "@/types/mortgage.type";
+import { Role, User } from "@/types/user.type";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -128,16 +128,15 @@ export const farmColumns: ColumnDef<Farm>[] = [
     ),
   },
   {
-    accessorKey: "owner",
+    accessorKey: "ownerName",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Owner" />
     ),
-    cell: ({ row }) => {
-      const owner = row.getValue<Farmer>("owner");
-      return (
-        <div className="w-auto capitalize font-medium">{owner.fullName}</div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("ownerName")}
+      </div>
+    ),
     enableHiding: false,
   },
   {

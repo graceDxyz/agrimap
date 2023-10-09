@@ -11,16 +11,22 @@ export const fileSchema = z.object({
   fileUrl: z.string(),
 });
 
-export const farmSchema = z.object({
-  _id: z.string(),
-  owner: farmerSchema,
-  titleNumber: z.string(),
-  proofFiles: z.array(fileSchema),
-  size: z.number(),
-  isMortgage: z.boolean().nullish(),
-  coordinates: coordinatesSchema,
-  address: addressSchema,
-});
+export const farmSchema = z
+  .object({
+    _id: z.string(),
+    owner: farmerSchema,
+    titleNumber: z.string(),
+    proofFiles: z.array(fileSchema),
+    size: z.number(),
+    isMortgage: z.boolean().nullish(),
+    coordinates: coordinatesSchema,
+    address: addressSchema,
+    ownerName: z.string().nullish(),
+  })
+  .transform((obj) => ({
+    ...obj,
+    ownerName: `${obj.owner.lastname}, ${obj.owner.firstname}`,
+  }));
 
 export const farmsSchema = z.object({
   farms: z.array(farmSchema),
