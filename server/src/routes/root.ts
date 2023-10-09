@@ -17,6 +17,10 @@ function root(app: Express) {
     });
   });
 
+  app.get("/api/health", (req: Request, res: Response) => {
+    res.status(200).send(".");
+  });
+
   app.use("/api/uploadthing", uploadthingHandler);
 
   UserRoutes(app);
