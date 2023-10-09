@@ -225,9 +225,7 @@ function CreateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>Province</FormLabel>
                   <ProvinceSelect
-                    value={
-                      value != "" ? { label: value, psgcCode: "" } : undefined
-                    }
+                    value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
@@ -243,9 +241,7 @@ function CreateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>City/Municipality</FormLabel>
                   <CitySelect
-                    value={
-                      value != "" ? { label: value, psgcCode: "" } : undefined
-                    }
+                    value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
@@ -263,11 +259,7 @@ function CreateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>Barangay</FormLabel>
                   <BarangaySelect
-                    value={
-                      value != ""
-                        ? { label: value, provinceCode: "", cityMunCode: "" }
-                        : undefined
-                    }
+                    value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
@@ -450,9 +442,7 @@ function UpdateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>Province</FormLabel>
                   <ProvinceSelect
-                    value={
-                      value != "" ? { label: value, psgcCode: "" } : undefined
-                    }
+                    value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
@@ -468,9 +458,7 @@ function UpdateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>City/Municipality</FormLabel>
                   <CitySelect
-                    value={
-                      value != "" ? { label: value, psgcCode: "" } : undefined
-                    }
+                    value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
@@ -488,11 +476,7 @@ function UpdateForm({ token }: { token: string }) {
                 <FormItem>
                   <FormLabel>Barangay</FormLabel>
                   <BarangaySelect
-                    value={
-                      value != ""
-                        ? { label: value, provinceCode: "", cityMunCode: "" }
-                        : undefined
-                    }
+                    value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />

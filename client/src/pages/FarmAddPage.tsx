@@ -77,6 +77,13 @@ function FarmAddPage() {
       titleNumber: "",
       proofFiles: [],
       coordinates: [],
+      address: {
+        streetAddress: "",
+        cityOrProvince: "",
+        municipality: "",
+        barangay: "",
+        zipcode: "",
+      },
     },
   });
 
@@ -306,11 +313,7 @@ function FarmAddPage() {
                       <FormItem>
                         <FormLabel>Province</FormLabel>
                         <ProvinceSelect
-                          value={
-                            value != ""
-                              ? { label: value, psgcCode: "" }
-                              : undefined
-                          }
+                          value={value != "" ? { label: value } : undefined}
                           onChange={(e) => onChange(e?.label)}
                         />
                         <FormMessage />
@@ -326,11 +329,7 @@ function FarmAddPage() {
                       <FormItem>
                         <FormLabel>City/Municipality</FormLabel>
                         <CitySelect
-                          value={
-                            value != ""
-                              ? { label: value, psgcCode: "" }
-                              : undefined
-                          }
+                          value={value != "" ? { label: value } : undefined}
                           onChange={(e) => onChange(e?.label)}
                         />
                         <FormMessage />
@@ -348,15 +347,7 @@ function FarmAddPage() {
                       <FormItem>
                         <FormLabel>Barangay</FormLabel>
                         <BarangaySelect
-                          value={
-                            value != ""
-                              ? {
-                                  label: value,
-                                  provinceCode: "",
-                                  cityMunCode: "",
-                                }
-                              : undefined
-                          }
+                          value={value != "" ? { label: value } : undefined}
                           onChange={(e) => onChange(e?.label)}
                         />
                         <FormMessage />

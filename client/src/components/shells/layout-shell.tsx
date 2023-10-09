@@ -1,11 +1,13 @@
-import { Link, Outlet } from "react-router-dom";
-import { ScrollArea } from "../ui/scroll-area";
-import { SidebarNav } from "../layouts/sidebar-nav";
-import { dashboardConfig } from "@/config/siteConfig";
-import { Separator } from "../ui/separator";
 import logoimg from "@/assets/logo-leaf.png";
+import { dashboardConfig } from "@/config/siteConfig";
+import { prefetchPhAddress } from "@/services/address.service";
+import { Link, Outlet } from "react-router-dom";
+import { SidebarNav } from "../layouts/sidebar-nav";
+import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
 
 export function DashboardShell() {
+  prefetchPhAddress();
   return (
     <div className="flex min-h-screen flex-col">
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">

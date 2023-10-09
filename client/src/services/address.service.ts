@@ -2,7 +2,11 @@ import { QUERY_ADDRESSES_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { phAddressSchema } from "@/lib/validations/address";
 import { Barangay, City, PhAddress, Province } from "@/types/address.type";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import {
+  UseQueryOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
 let regionTimeout: NodeJS.Timeout | null = null;
@@ -56,16 +60,27 @@ export const barangayOptions = async (
   });
 };
 
-export function useGetPhAddress(
+export async function fetchAddress() {
+  const res = await api.get("/address");
+
+  return phAddressSchema.parse(res.data);
+}
+
+export async function useGetPhAddress(
   options?: UseQueryOptions<PhAddress, AxiosError>
 ) {
   return useQuery({
     queryKey: [QUERY_ADDRESSES_KEY],
-    queryFn: async () => {
-      const res = await api.get("/address");
-
-      return phAddressSchema.parse(res.data);
-    },
+    queryFn: fetchAddress,
     ...options,
+  });
+}
+
+export async function prefetchPhAddress() {
+  const queryClient = useQueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: [QUERY_ADDRESSES_KEY],
+    queryFn: fetchAddress,
   });
 }
