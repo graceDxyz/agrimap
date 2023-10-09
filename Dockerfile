@@ -14,6 +14,8 @@ RUN cd server && npm install
 
 COPY . . 
 
+# Copy the 'json' folder to the server's working directory
+COPY server/src/json ./server/src/json
 
 # Build the React front-end
 RUN cd client && npm run build
