@@ -14,16 +14,17 @@ RUN cd server && npm install
 
 COPY . . 
 
-# Copy the 'json' folder to the server's working directory
-COPY server/src/json ./server/src/json
-
 # Build the React front-end
 RUN cd client && npm run build
-# RUN cd server && npm run build
 
+# Change working directory to the server
 WORKDIR /app/server
 
+# Build the server
 RUN npm run build
+
+# Copy the 'json' folder to the server's 'build' directory
+COPY server/src/json ./build/src/json
 
 # # Start your Express.js server
 CMD ["node", "build/src/app.js"]
