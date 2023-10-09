@@ -32,82 +32,69 @@ function GenericSelect<T>({
   );
 }
 
-export const ProvinceSelect = (props: Props<Province>) => {
+const useGetOptions = () => {
   const { data } = useGetPhAddress();
-  const items = data?.provinces ?? [];
-  const defaultOptions = items;
+  const { provinces = [], cities = [], barangays = [] } = data || {};
+  const limitedProvinces = provinces.slice(0, 100);
+  const limitedCities = cities.slice(0, 100);
+  const limitedBarangays = barangays.slice(0, 100);
 
-  const filterData = (inputValue: string) => {
-    return items
-      .filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase()))
-      .slice(0, 100);
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise<Province[]>((resolve) => {
+  const promiseOptions = (inputValue: string, data: any[]) =>
+    new Promise<any[]>((resolve) => {
       setTimeout(() => {
-        resolve(filterData(inputValue));
+        resolve(
+          data
+            .filter((item) =>
+              item.label.toLowerCase().includes(inputValue.toLowerCase())
+            )
+            .slice(0, 100)
+        );
       }, 500);
     });
 
+  return {
+    defaultBrgyOptions: limitedBarangays,
+    promiseBrgyOptions: (inputValue: string) =>
+      promiseOptions(inputValue, barangays),
+    defaultCityOptions: limitedCities,
+    promiseCityOptions: (inputValue: string) =>
+      promiseOptions(inputValue, cities),
+    defaultProvOptions: limitedProvinces,
+    promiseProvOptions: (inputValue: string) =>
+      promiseOptions(inputValue, provinces),
+  };
+};
+
+export const ProvinceSelect = (props: Props<Province>) => {
+  const { defaultProvOptions, promiseProvOptions } = useGetOptions();
   return (
     <GenericSelect<Province>
-      defaultOptions={defaultOptions}
-      loadOptions={promiseOptions}
+      defaultOptions={defaultProvOptions}
+      loadOptions={promiseProvOptions}
       {...props}
     />
   );
 };
 
 export const CitySelect = (props: Props<City>) => {
-  const { data } = useGetPhAddress();
-  const items = data?.cities ?? [];
-  const defaultOptions = items.slice(0, 100);
-
-  const filterData = (inputValue: string) => {
-    return items
-      .filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase()))
-      .slice(0, 100);
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise<Province[]>((resolve) => {
-      setTimeout(() => {
-        resolve(filterData(inputValue));
-      }, 500);
-    });
+  const { defaultCityOptions, promiseCityOptions } = useGetOptions();
 
   return (
     <GenericSelect<City>
-      defaultOptions={defaultOptions}
-      loadOptions={promiseOptions}
+      defaultOptions={defaultCityOptions}
+      loadOptions={promiseCityOptions}
       {...props}
     />
   );
 };
 
 export const BarangaySelect = (props: Props<Barangay>) => {
-  const { data } = useGetPhAddress();
-  const items = data?.barangays ?? [];
-  const defaultOptions = items.slice(0, 100);
-
-  const filterData = (inputValue: string) => {
-    return items
-      .filter((i) => i.label.toLowerCase().includes(inputValue.toLowerCase()))
-      .slice(0, 100);
-  };
-
-  const promiseOptions = (inputValue: string) =>
-    new Promise<Province[]>((resolve) => {
-      setTimeout(() => {
-        resolve(filterData(inputValue));
-      }, 500);
-    });
+  const { defaultBrgyOptions, promiseBrgyOptions } = useGetOptions();
 
   return (
     <GenericSelect<Barangay>
-      defaultOptions={defaultOptions}
-      loadOptions={promiseOptions}
+      defaultOptions={defaultBrgyOptions}
+      loadOptions={promiseBrgyOptions}
       {...props}
     />
   );
