@@ -4,6 +4,7 @@ import AddressRoutes from "./address.route";
 import FarmRoutes from "./farm.route";
 import FarmerRoutes from "./farmers.route";
 import MortgageRoutes from "./mortgage.route";
+import ReportRoutes from "./report.route";
 import SessionRoutes from "./session.route";
 import StatisticsRoutes from "./statistics.route";
 import UserRoutes from "./user.route";
@@ -30,6 +31,7 @@ function root(app: Express) {
   MortgageRoutes(app);
   StatisticsRoutes(app);
   AddressRoutes(app);
+  ReportRoutes(app);
 }
 
 export default root;
