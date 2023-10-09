@@ -15,6 +15,7 @@ import {
   DollarSign,
   Eye,
   EyeOff,
+  FileDownIcon,
   FileSpreadsheet,
   FileTerminal,
   LocateFixed,
@@ -76,6 +77,7 @@ export const Icons = {
   check: Check,
   trash: Trash2,
   dices: Dices,
+  fileDownload: FileDownIcon,
   logo: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />

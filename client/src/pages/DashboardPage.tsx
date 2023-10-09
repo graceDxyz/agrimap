@@ -1,8 +1,10 @@
+import { Icons } from "@/components/icons";
 import { MemoizedOverview } from "@/components/overview";
 import OverviewSwitcher from "@/components/overview-switcher";
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { MemoizedRecentAddedFarmer } from "@/components/recent-added-farmer";
 import { Shell } from "@/components/shells/shell";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useBoundStore } from "@/lib/store";
+import { useGetExcelReport } from "@/services/report.service";
 import { useGetAuth } from "@/services/session.service";
 import {
   useGetRecentAdded,
@@ -35,6 +38,10 @@ function DashboardPage() {
     },
   });
 
+  const { mutate, isLoading: isDownloadLoading } = useGetExcelReport({
+    token: user?.accessToken ?? "",
+  });
+
   return (
     <Shell variant="sidebar">
       <PageHeader
@@ -56,7 +63,22 @@ function DashboardPage() {
           <Card className="col-span-5">
             <CardHeader>
               <CardTitle className="flex justify-between">
-                <span>Overview</span> <OverviewSwitcher />
+                <span>Overview</span>
+                <div className="flex gap-2">
+                  <OverviewSwitcher />
+                  <Button
+                    size={"icon"}
+                    onClick={() => mutate()}
+                    disabled={isDownloadLoading}
+                    variant={"outline"}
+                  >
+                    {isDownloadLoading ? (
+                      <Icons.spinner className="h-6 w-6 animate-spin" />
+                    ) : (
+                      <Icons.fileDownload className="h-6 w-6 text-primary" />
+                    )}
+                  </Button>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="pl-2">

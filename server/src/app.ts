@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 
 dotenv.config();
-import config from "config";
 
+import config from "config";
 import deserializeUser from "./middlewares/deserializeUser";
 import route from "./routes/root";
 import connect from "./utils/connect";
@@ -12,8 +12,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
-import path from "path";
 import morgan from "morgan";
+import path from "path";
 
 const port = config.get<number>("port");
 const node_env = config.get<string>("env");
@@ -37,6 +37,7 @@ app.use(
       "http://localhost:5000",
     ],
     credentials: true,
+    allowedHeaders: ["Content-Disposition"],
   }),
 );
 app.use(express.json()); //bodyparser
