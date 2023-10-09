@@ -1,7 +1,9 @@
 import { useGetPhAddress } from "@/services/address.service";
 import { Barangay, City, Province } from "@/types/address.type";
+import { useEffect } from "react";
 import { ActionMeta, SingleValue } from "react-select";
 import AsyncSelect from "react-select/async";
+import { create } from "zustand";
 
 interface Props<T> {
   value?: Partial<T> | Partial<T>[] | null;
@@ -32,12 +34,42 @@ function GenericSelect<T>({
   );
 }
 
+interface AddressState {
+  prov?: string;
+  city?: string;
+  setAddressState: (props: { prov?: string; city?: string }) => void;
+}
+
+const useAddressState = create<AddressState>()((set) => ({
+  prov: undefined,
+  city: undefined,
+  setAddressState: (props) => set(() => ({ ...props })),
+}));
+
 const useGetOptions = () => {
+  const { prov, city } = useAddressState();
   const { data } = useGetPhAddress();
   const { provinces = [], cities = [], barangays = [] } = data || {};
-  const limitedProvinces = provinces.slice(0, 100);
-  const limitedCities = cities.slice(0, 100);
-  const limitedBarangays = barangays.slice(0, 100);
+
+  const fileredProvinces = provinces.filter((item) =>
+    prov ? item.psgcCode === prov : true
+  );
+
+  const filteredCities = cities.filter((item) => {
+    const provinceFilter = prov ? item.provinceCode === prov : true;
+    const cityFilter = city ? item.psgcCode === city : true;
+    return provinceFilter && cityFilter;
+  });
+
+  const filteredBarangays = barangays.filter((item) => {
+    const cityFilter = city ? item.cityMunCode === city : true;
+    const provinceFilter = prov ? item.provinceCode === prov : true;
+    return cityFilter && provinceFilter;
+  });
+
+  const limitedProvinces = fileredProvinces.slice(0, 100);
+  const limitedCities = filteredCities.slice(0, 100);
+  const limitedBarangays = filteredBarangays.slice(0, 100);
 
   const promiseOptions = (inputValue: string, data: any[]) =>
     new Promise<any[]>((resolve) => {
@@ -53,20 +85,34 @@ const useGetOptions = () => {
     });
 
   return {
+    barangays,
     defaultBrgyOptions: limitedBarangays,
     promiseBrgyOptions: (inputValue: string) =>
-      promiseOptions(inputValue, barangays),
+      promiseOptions(inputValue, filteredBarangays),
+    cities,
     defaultCityOptions: limitedCities,
     promiseCityOptions: (inputValue: string) =>
-      promiseOptions(inputValue, cities),
+      promiseOptions(inputValue, filteredCities),
     defaultProvOptions: limitedProvinces,
+    provinces,
     promiseProvOptions: (inputValue: string) =>
-      promiseOptions(inputValue, provinces),
+      promiseOptions(inputValue, fileredProvinces),
   };
 };
 
 export const ProvinceSelect = (props: Props<Province>) => {
-  const { defaultProvOptions, promiseProvOptions } = useGetOptions();
+  const { setAddressState } = useAddressState();
+  const { defaultProvOptions, promiseProvOptions, provinces } = useGetOptions();
+
+  const propsValue = props.value as { label?: string };
+  const selectedItem = provinces.find(
+    (item) => item.label === propsValue?.label
+  );
+
+  useEffect(() => {
+    setAddressState({ prov: selectedItem?.psgcCode });
+  }, [selectedItem]);
+
   return (
     <GenericSelect<Province>
       defaultOptions={defaultProvOptions}
@@ -77,7 +123,18 @@ export const ProvinceSelect = (props: Props<Province>) => {
 };
 
 export const CitySelect = (props: Props<City>) => {
-  const { defaultCityOptions, promiseCityOptions } = useGetOptions();
+  const { setAddressState, prov } = useAddressState();
+  const { defaultCityOptions, promiseCityOptions, cities } = useGetOptions();
+
+  const propsValue = props.value as { label?: string };
+  const selectedItem = cities.find((item) => item.label === propsValue?.label);
+
+  useEffect(() => {
+    setAddressState({
+      city: selectedItem?.psgcCode,
+      prov: prov ? prov : selectedItem?.provinceCode,
+    });
+  }, [selectedItem]);
 
   return (
     <GenericSelect<City>
@@ -89,7 +146,20 @@ export const CitySelect = (props: Props<City>) => {
 };
 
 export const BarangaySelect = (props: Props<Barangay>) => {
-  const { defaultBrgyOptions, promiseBrgyOptions } = useGetOptions();
+  const { setAddressState, city, prov } = useAddressState();
+  const { defaultBrgyOptions, promiseBrgyOptions, barangays } = useGetOptions();
+
+  const propsValue = props.value as { label?: string };
+  const selectedItem = barangays.find(
+    (item) => item.label === propsValue?.label
+  );
+
+  useEffect(() => {
+    setAddressState({
+      city: city ? city : selectedItem?.cityMunCode,
+      prov: prov ? prov : selectedItem?.provinceCode,
+    });
+  }, [selectedItem]);
 
   return (
     <GenericSelect<Barangay>
