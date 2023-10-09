@@ -5,26 +5,57 @@ import { Barangay, City, PhAddress, Province } from "@/types/address.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export const regionOptions = async (inputValue: string) => {
-  const response = await api.get(`/address/province?filter=${inputValue}`);
-  const data: Province[] = response.data;
-  return data;
+let regionTimeout: NodeJS.Timeout | null = null;
+let cityTimeout: NodeJS.Timeout | null = null;
+let barangayTimeout: NodeJS.Timeout | null = null;
+const timeOut = 500;
+
+export const regionOptions = (inputValue: string) => {
+  if (regionTimeout) {
+    clearTimeout(regionTimeout);
+  }
+
+  return new Promise((resolve) => {
+    regionTimeout = setTimeout(() => {
+      api
+        .get<Province[]>(`/address/province?filter=${inputValue}`)
+        .then((res) => resolve(res.data));
+    }, timeOut);
+  });
 };
 
 export const cityOptions = async (inputValue: string) => {
-  const response = await api.get(`/address/city?filter=${inputValue}`);
-  const data: City[] = response.data;
-  return data;
+  if (cityTimeout) {
+    clearTimeout(cityTimeout);
+  }
+
+  return new Promise((resolve) => {
+    cityTimeout = setTimeout(async () => {
+      const response = await api.get<City[]>(
+        `/address/city?filter=${inputValue}`,
+      );
+      resolve(response.data);
+    }, timeOut);
+  });
 };
 
 export const barangayOptions = async (inputValue: string) => {
-  const response = await api.get(`/address/barangay?filter=${inputValue}`);
-  const data: Barangay[] = response.data;
-  return data;
+  if (barangayTimeout) {
+    clearTimeout(barangayTimeout);
+  }
+
+  return new Promise((resolve) => {
+    barangayTimeout = setTimeout(async () => {
+      const response = await api.get<Barangay[]>(
+        `/address/barangay?filter=${inputValue}`,
+      );
+      resolve(response.data);
+    }, timeOut);
+  });
 };
 
 export function useGetPhAddress(
-  options?: UseQueryOptions<PhAddress, AxiosError>
+  options?: UseQueryOptions<PhAddress, AxiosError>,
 ) {
   return useQuery({
     queryKey: [QUERY_ADDRESSES_KEY],

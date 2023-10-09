@@ -133,7 +133,7 @@ function CreateForm({ token }: { token: string }) {
             };
           }
           return items;
-        }
+        },
       );
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
