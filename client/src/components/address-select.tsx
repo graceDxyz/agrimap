@@ -31,14 +31,14 @@ function GenericSelect<T>({ loadOptions, ...props }: GenericSelectProps<T>) {
   );
 }
 
-export const ProvinceSelect = (props: Props<Province>) => (
-  <GenericSelect<Province> loadOptions={provinceOptions} {...props} />
-);
+export const ProvinceSelect = (props: Props<Province>) => {
+  return <GenericSelect<Province> loadOptions={provinceOptions} {...props} />;
+};
 
-export const CitySelect = (props: Props<City>) => (
-  <GenericSelect<City> loadOptions={cityOptions} {...props} />
-);
+export const CitySelect = (props: Props<City>) => {
+  return <GenericSelect<City> loadOptions={cityOptions} {...props} />;
+};
 
-export const BarangaySelect = (props: Props<Barangay>) => (
-  <GenericSelect<Barangay> loadOptions={barangayOptions} {...props} />
-);
+export const BarangaySelect = (props: Props<Barangay>) => {
+  return <GenericSelect<Barangay> loadOptions={barangayOptions} {...props} />;
+};

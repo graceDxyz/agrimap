@@ -340,7 +340,11 @@ function FarmAreaPage() {
                       <FormItem>
                         <FormLabel>Province</FormLabel>
                         <ProvinceSelect
-                          value={value != "" ? { label: value } : undefined}
+                          value={
+                            value != ""
+                              ? { label: value, psgcCode: "" }
+                              : undefined
+                          }
                           onChange={(e) => onChange(e?.label)}
                         />
                         <FormMessage />
@@ -356,7 +360,11 @@ function FarmAreaPage() {
                       <FormItem>
                         <FormLabel>City/Municipality</FormLabel>
                         <CitySelect
-                          value={value != "" ? { label: value } : undefined}
+                          value={
+                            value != ""
+                              ? { label: value, psgcCode: "" }
+                              : undefined
+                          }
                           onChange={(e) => onChange(e?.label)}
                         />
                         <FormMessage />
@@ -374,7 +382,15 @@ function FarmAreaPage() {
                       <FormItem>
                         <FormLabel>Barangay</FormLabel>
                         <BarangaySelect
-                          value={value != "" ? { label: value } : undefined}
+                          value={
+                            value != ""
+                              ? {
+                                  label: value,
+                                  provinceCode: "",
+                                  cityMunCode: "",
+                                }
+                              : undefined
+                          }
                           onChange={(e) => onChange(e?.label)}
                         />
                         <FormMessage />
