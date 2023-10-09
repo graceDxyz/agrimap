@@ -1,27 +1,44 @@
 import {
   barangayOptions,
   cityOptions,
-  regionOptions,
+  provinceOptions,
 } from "@/services/address.service";
+import { Barangay, City, Province } from "@/types/address.type";
+import { ActionMeta, SingleValue } from "react-select";
 import AsyncSelect from "react-select/async";
 
-export function RegionSelect() {
+interface Props<T> {
+  value?: Partial<T> | Partial<T>[] | null;
+  onChange?: (
+    newValue: SingleValue<Partial<T>> | null,
+    actionMeta: ActionMeta<Partial<T>>
+  ) => void;
+}
+
+type GenericSelectProps<T> = Props<T> & {
+  loadOptions: (inputValue: string, callback: (options: T[]) => void) => void;
+};
+
+function GenericSelect<T>({ loadOptions, ...props }: GenericSelectProps<T>) {
   return (
     <AsyncSelect
       cacheOptions
       defaultOptions
-      loadOptions={regionOptions}
       isClearable
+      loadOptions={loadOptions}
+      {...props}
     />
   );
 }
 
-export function CitySelect() {
-  return <AsyncSelect cacheOptions defaultOptions loadOptions={cityOptions} />;
-}
+export const ProvinceSelect = (props: Props<Province>) => (
+  <GenericSelect<Province> loadOptions={provinceOptions} {...props} />
+);
 
-export function BarangaySelect() {
-  return (
-    <AsyncSelect cacheOptions defaultOptions loadOptions={barangayOptions} />
-  );
-}
+export const CitySelect = (props: Props<City>) => (
+  <GenericSelect<City> loadOptions={cityOptions} {...props} />
+);
+
+export const BarangaySelect = (props: Props<Barangay>) => (
+  <GenericSelect<Barangay> loadOptions={barangayOptions} {...props} />
+);

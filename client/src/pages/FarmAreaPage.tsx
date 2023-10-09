@@ -1,3 +1,8 @@
+import {
+  BarangaySelect,
+  CitySelect,
+  ProvinceSelect,
+} from "@/components/address-select";
 import { FarmDialog } from "@/components/forms/farm-form";
 import { Icons } from "@/components/icons";
 import {
@@ -40,11 +45,6 @@ import {
   createFarmSchema,
   farmSchema,
 } from "@/lib/validations/farm";
-import {
-  barangayOptions,
-  cityOptions,
-  regionOptions,
-} from "@/services/address.service";
 import { updateFarm, useGetFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
@@ -56,7 +56,6 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import AsyncSelect from "react-select/async";
 
 function FarmAreaPage() {
   const location = useLocation();
@@ -340,11 +339,7 @@ function FarmAreaPage() {
                     render={({ field: { value, onChange } }) => (
                       <FormItem>
                         <FormLabel>Province</FormLabel>
-                        <AsyncSelect
-                          cacheOptions
-                          defaultOptions
-                          loadOptions={regionOptions}
-                          placeholder="Select ..."
+                        <ProvinceSelect
                           value={value != "" ? { label: value } : undefined}
                           onChange={(e) => onChange(e?.label)}
                         />
@@ -360,11 +355,7 @@ function FarmAreaPage() {
                     render={({ field: { value, onChange } }) => (
                       <FormItem>
                         <FormLabel>City/Municipality</FormLabel>
-                        <AsyncSelect
-                          cacheOptions
-                          defaultOptions
-                          loadOptions={cityOptions}
-                          placeholder="Select ..."
+                        <CitySelect
                           value={value != "" ? { label: value } : undefined}
                           onChange={(e) => onChange(e?.label)}
                         />
@@ -382,11 +373,7 @@ function FarmAreaPage() {
                     render={({ field: { value, onChange } }) => (
                       <FormItem>
                         <FormLabel>Barangay</FormLabel>
-                        <AsyncSelect
-                          cacheOptions
-                          defaultOptions
-                          loadOptions={barangayOptions}
-                          placeholder="Select ..."
+                        <BarangaySelect
                           value={value != "" ? { label: value } : undefined}
                           onChange={(e) => onChange(e?.label)}
                         />

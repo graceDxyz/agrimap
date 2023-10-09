@@ -29,11 +29,6 @@ import {
 import { useBoundStore } from "@/lib/store";
 import { createFarmerSchema, farmerSchema } from "@/lib/validations/farmer";
 import {
-  barangayOptions,
-  cityOptions,
-  regionOptions,
-} from "@/services/address.service";
-import {
   createFarmer,
   deleteFarmer,
   updateFarmer,
@@ -44,9 +39,9 @@ import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
 import { RecentAdded } from "@/types/statistic.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import AsyncSelect from "react-select/async";
+import { BarangaySelect, CitySelect, ProvinceSelect } from "../address-select";
 
 export function FarmerDialog() {
   const { user } = useGetAuth();
@@ -95,11 +90,6 @@ function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.farmer);
-  const [psgc, setPsgc] = useState<{
-    prov?: string;
-    city?: string;
-  }>();
-  console.log(psgc);
 
   const form = useForm<CreateFarmerInput>({
     resolver: zodResolver(createFarmerSchema),
@@ -133,7 +123,7 @@ function CreateForm({ token }: { token: string }) {
             };
           }
           return items;
-        },
+        }
       );
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {
@@ -234,21 +224,9 @@ function CreateForm({ token }: { token: string }) {
               render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Province</FormLabel>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={regionOptions}
-                    placeholder="Select ..."
-                    value={
-                      value != "" ? { label: value, psgcCode: "" } : undefined
-                    }
-                    onChange={(e) => {
-                      onChange(e?.label);
-                      setPsgc((prev) => ({
-                        ...prev,
-                        prov: e?.psgcCode,
-                      }));
-                    }}
+                  <ProvinceSelect
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
                 </FormItem>
@@ -262,23 +240,9 @@ function CreateForm({ token }: { token: string }) {
               render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>City/Municipality</FormLabel>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={cityOptions}
-                    placeholder="Select ..."
-                    value={
-                      value != ""
-                        ? { label: value, provinceCode: "" }
-                        : undefined
-                    }
-                    onChange={(e) => {
-                      onChange(e?.label);
-                      setPsgc((prev) => ({
-                        ...prev,
-                        prov: e?.provinceCode,
-                      }));
-                    }}
+                  <CitySelect
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
                 </FormItem>
@@ -294,24 +258,9 @@ function CreateForm({ token }: { token: string }) {
               render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Barangay</FormLabel>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={barangayOptions}
-                    placeholder="Select ..."
-                    value={
-                      value != ""
-                        ? { label: value, provinceCode: "", cityMunCode: "" }
-                        : undefined
-                    }
-                    onChange={(e) => {
-                      onChange(e?.label);
-                      setPsgc((prev) => ({
-                        ...prev,
-                        prov: e?.provinceCode,
-                        city: e?.cityMunCode,
-                      }));
-                    }}
+                  <BarangaySelect
+                    value={value != "" ? { label: value } : undefined}
+                    onChange={(e) => onChange(e?.label)}
                   />
                   <FormMessage />
                 </FormItem>
@@ -492,11 +441,7 @@ function UpdateForm({ token }: { token: string }) {
               render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Province</FormLabel>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={regionOptions}
-                    placeholder="Select ..."
+                  <ProvinceSelect
                     value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
@@ -512,11 +457,7 @@ function UpdateForm({ token }: { token: string }) {
               render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>City/Municipality</FormLabel>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={cityOptions}
-                    placeholder="Select ..."
+                  <CitySelect
                     value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />
@@ -534,11 +475,7 @@ function UpdateForm({ token }: { token: string }) {
               render={({ field: { value, onChange } }) => (
                 <FormItem>
                   <FormLabel>Barangay</FormLabel>
-                  <AsyncSelect
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={barangayOptions}
-                    placeholder="Select ..."
+                  <BarangaySelect
                     value={value != "" ? { label: value } : undefined}
                     onChange={(e) => onChange(e?.label)}
                   />

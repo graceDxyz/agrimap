@@ -10,7 +10,7 @@ let cityTimeout: NodeJS.Timeout | null = null;
 let barangayTimeout: NodeJS.Timeout | null = null;
 const timeOut = 500;
 
-export const regionOptions = (inputValue: string) => {
+export const provinceOptions = (inputValue: string): Promise<Province[]> => {
   if (regionTimeout) {
     clearTimeout(regionTimeout);
   }
@@ -24,7 +24,7 @@ export const regionOptions = (inputValue: string) => {
   });
 };
 
-export const cityOptions = async (inputValue: string) => {
+export const cityOptions = async (inputValue: string): Promise<City[]> => {
   if (cityTimeout) {
     clearTimeout(cityTimeout);
   }
@@ -32,14 +32,16 @@ export const cityOptions = async (inputValue: string) => {
   return new Promise((resolve) => {
     cityTimeout = setTimeout(async () => {
       const response = await api.get<City[]>(
-        `/address/city?filter=${inputValue}`,
+        `/address/city?filter=${inputValue}`
       );
       resolve(response.data);
     }, timeOut);
   });
 };
 
-export const barangayOptions = async (inputValue: string) => {
+export const barangayOptions = async (
+  inputValue: string
+): Promise<Barangay[]> => {
   if (barangayTimeout) {
     clearTimeout(barangayTimeout);
   }
@@ -47,7 +49,7 @@ export const barangayOptions = async (inputValue: string) => {
   return new Promise((resolve) => {
     barangayTimeout = setTimeout(async () => {
       const response = await api.get<Barangay[]>(
-        `/address/barangay?filter=${inputValue}`,
+        `/address/barangay?filter=${inputValue}`
       );
       resolve(response.data);
     }, timeOut);
@@ -55,7 +57,7 @@ export const barangayOptions = async (inputValue: string) => {
 };
 
 export function useGetPhAddress(
-  options?: UseQueryOptions<PhAddress, AxiosError>,
+  options?: UseQueryOptions<PhAddress, AxiosError>
 ) {
   return useQuery({
     queryKey: [QUERY_ADDRESSES_KEY],
