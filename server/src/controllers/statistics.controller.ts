@@ -15,7 +15,7 @@ const getStatRecentHandler = async (req: Request, res: Response) => {
 
 const getStatHandler = async (
   req: Request<{}, {}, {}, StatsQuery>,
-  res: Response,
+  res: Response
 ) => {
   const qYear = req.query.year;
   const queryBy = req.query.by;
@@ -32,7 +32,7 @@ const getStatHandler = async (
 
     const currentYear = today.year();
     tempList.push(
-      ...Array.from({ length: 5 }, (_, index) => currentYear - index).reverse(),
+      ...Array.from({ length: 5 }, (_, index) => currentYear - index).reverse()
     );
   }
 
@@ -129,14 +129,16 @@ const getStatHandler = async (
             ? today.day((resData._id as number) - 1).format("ddd")
             : resData._id;
         return tempId === _id;
-      },
+      }
     );
     return {
       _id,
       count: match ? match.count : 0,
     };
   });
-  return res.send(data);
+  setTimeout(() => {
+    return res.send(data);
+  }, 10000);
 };
 
 export { getStatHandler, getStatRecentHandler };

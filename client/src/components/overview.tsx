@@ -5,11 +5,11 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 interface Props {
   data?: FarmerData[];
-  isLoading?: Boolean;
+  isLoading?: boolean;
 }
 
 export function Overview(props: Props) {
-  const randomData = useRandomData();
+  const randomData = useRandomData(props.isLoading);
 
   const data = props.isLoading ? randomData : props.data;
 

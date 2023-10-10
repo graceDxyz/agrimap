@@ -1,12 +1,18 @@
 import { useBoundStore } from "@/lib/store";
-import { FarmerData } from "@/types/statistic.type";
+import { FarmerData, StatsBy } from "@/types/statistic.type";
 import { useEffect, useState } from "react";
 
-function useRandomData() {
+function useRandomData(isLoading?: boolean) {
   const [data, setRandomData] = useState<FarmerData[]>([]);
   const { activeSwitcher } = useBoundStore((state) => state.overview);
 
-  const length = activeSwitcher.label === "Weekly" ? 7 : 12;
+  const labelToLength: { [key: string]: number } = {
+    [StatsBy.Weekly]: 7,
+    [StatsBy.Monthly]: 12,
+    [StatsBy.Annually]: 5,
+  };
+
+  const length = labelToLength[activeSwitcher.label] || 5;
 
   const generateRandomData = () => {
     const newData = Array.from({ length }, () => ({
@@ -17,13 +23,17 @@ function useRandomData() {
   };
 
   useEffect(() => {
+    if (!isLoading) {
+      return; // Don't start generating data if not in loading state
+    }
+
     generateRandomData();
     const interval = setInterval(() => {
       generateRandomData();
     }, 1000); // Change the interval as needed (e.g., 10 seconds)
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isLoading]);
 
   return data;
 }
