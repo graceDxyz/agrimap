@@ -1,62 +1,16 @@
+import { useBoundStore } from "@/lib/store";
 import { FarmerData } from "@/types/statistic.type";
 import { useEffect, useState } from "react";
 
 function useRandomData() {
   const [data, setRandomData] = useState<FarmerData[]>([]);
+  const { activeSwitcher } = useBoundStore((state) => state.overview);
+
+  const length = activeSwitcher.label === "Weekly" ? 7 : 12;
 
   const generateRandomData = () => {
-    const placeholderData: FarmerData[] = [
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      {
-        _id: "",
-        count: Math.floor(Math.random() * 5000) + 1000,
-      },
-      // {
-      //   _id: "",
-      //   count: Math.floor(Math.random() * 5000) + 1000,
-      // },
-      // {
-      //   _id: "",
-      //   count: Math.floor(Math.random() * 5000) + 1000,
-      // },
-      // {
-      //   _id: "",
-      //   count: Math.floor(Math.random() * 5000) + 1000,
-      // },
-      // {
-      //   _id: "",
-      //   count: Math.floor(Math.random() * 5000) + 1000,
-      // },
-      // {
-      //   _id: "",
-      //   count: Math.floor(Math.random() * 5000) + 1000,
-      // },
-    ];
-    const newData = placeholderData.map((item) => ({
-      _id: item._id,
+    const newData = Array.from({ length }, () => ({
+      _id: "",
       count: Math.floor(Math.random() * 5000) + 1000,
     }));
     setRandomData(newData);
