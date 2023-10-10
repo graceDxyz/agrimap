@@ -148,7 +148,7 @@ function FarmAreaPage() {
       form.reset((prev) => ({ ...prev, coordinates }));
     },
     onCalculateArea: (area: number) => {
-      const size = parseFloat((area / 10000).toFixed(2));
+      const size = parseFloat(area.toFixed(2)); // parseFloat((area / 10000).toFixed(2));
       form.reset((prev) => ({ ...prev, size }));
     },
   });
@@ -307,9 +307,9 @@ function FarmAreaPage() {
                 name="size"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hectar</FormLabel>
+                    <FormLabel>Size (m²)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="hectar" {...field} />
+                      <Input type="number" placeholder="size" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -413,7 +413,7 @@ function FarmAreaPage() {
                 name="proofFiles"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title File(s)</FormLabel>
+                    <FormLabel>Document(s)</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-5">
                         <div>

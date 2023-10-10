@@ -93,7 +93,7 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
   {
     accessorKey: "totalSize",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Land Owned (Hectars)" />
+      <DataTableColumnHeader column={column} title="Owned Area(m²)" />
     ),
     cell: ({ row }) => (
       <div className="font-medium text-center">
@@ -145,7 +145,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
   {
     accessorKey: "size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Size (Hectars)" />
+      <DataTableColumnHeader column={column} title="Size (m²)" />
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("size")}</div>
@@ -206,7 +206,7 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
   {
     accessorKey: "farmSize",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Size (Hectars)" />
+      <DataTableColumnHeader column={column} title="Size (m²)" />
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">
