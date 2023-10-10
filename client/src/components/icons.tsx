@@ -4,8 +4,6 @@ import {
   ArrowUp,
   BadgeDollarSign,
   Check,
-  CheckCircle,
-  CheckIcon,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
