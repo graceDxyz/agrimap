@@ -56,6 +56,7 @@ function FarmsPage() {
           columns={farmColumns}
           searchPlaceHolder="Filter farms..."
           isLoading={isLoading}
+          facetFilter
         />
       </section>
       <FarmDialog />

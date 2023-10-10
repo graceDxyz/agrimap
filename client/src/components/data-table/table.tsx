@@ -3,7 +3,6 @@ import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
-  FilterFn,
   SortingState,
   VisibilityState,
   flexRender,

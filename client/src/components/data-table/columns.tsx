@@ -137,6 +137,9 @@ export const farmColumns: ColumnDef<Farm>[] = [
         {row.getValue("ownerName")}
       </div>
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
     enableHiding: false,
   },
   {
