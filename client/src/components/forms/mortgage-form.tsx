@@ -10,6 +10,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
   Form,
   FormField,
   FormItem,
@@ -42,17 +49,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
 
 import { cn } from "@/lib/utils";
 import { useGetFarmers } from "@/services/farmer.service";
 import { Farm } from "@/types/farm.type";
+import { addMonths } from "date-fns";
+import { CalendarDateRangePicker } from "../date-range-picker";
 
 export function MortgageDialog() {
   const { user } = useGetAuth();
@@ -121,22 +123,24 @@ function CreateForm({ token }: { token: string }) {
       farmId: "",
       mortgageToId: "",
       mortgageAmount: 0,
-      startDate: "",
-      endDate: "",
+      mortgageDate: {
+        from: new Date(2023, 0, 20).toString(),
+        to: addMonths(new Date(2023, 0, 20), 1).toString(),
+      },
     },
   });
 
   const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId"),
+    (item) => item._id === form.getValues("farmId")
   );
 
   const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId"),
+    (item) => item._id === form.getValues("mortgageToId")
   );
 
   const filteredFarm = farmData?.filter(
     (farm) =>
-      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
+      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
   );
 
   const filteredFarmer = farmersData?.filter((farmer) => {
@@ -241,7 +245,7 @@ function CreateForm({ token }: { token: string }) {
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -307,7 +311,7 @@ function CreateForm({ token }: { token: string }) {
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -317,6 +321,29 @@ function CreateForm({ token }: { token: string }) {
                 </PopoverContent>
               </Popover>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="mortgageDate"
+          render={({ field: { value, onChange } }) => (
+            <FormItem>
+              <FormLabel>Date Range</FormLabel>
+              <CalendarDateRangePicker
+                date={{
+                  from: new Date(value.from),
+                  to: new Date(value.to),
+                }}
+                onSelect={(e) => {
+                  if (e?.from && e?.to) {
+                    onChange({
+                      from: e?.from?.toString() ?? value.from,
+                      to: e?.to?.toString() ?? value.to,
+                    });
+                  }
+                }}
+              />
             </FormItem>
           )}
         />
@@ -389,22 +416,24 @@ function UpdateForm({ token }: { token: string }) {
       farmId: "",
       mortgageToId: "",
       mortgageAmount: 0,
-      startDate: "",
-      endDate: "",
+      mortgageDate: {
+        from: new Date(2023, 0, 20).toString(),
+        to: addMonths(new Date(2023, 0, 20), 1).toString(),
+      },
     },
   });
 
   const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId"),
+    (item) => item._id === form.getValues("farmId")
   );
 
   const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId"),
+    (item) => item._id === form.getValues("mortgageToId")
   );
 
   const filteredFarm = farmData?.filter(
     (farm) =>
-      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
+      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
   );
 
   const filteredFarmer = farmersData?.filter((farmer) => {
@@ -453,8 +482,6 @@ function UpdateForm({ token }: { token: string }) {
     if (mortgage) {
       form.reset({
         ...mortgage,
-        startDate: "",
-        endDate: "",
         farmId: mortgage.farm._id,
         mortgageToId: mortgage.mortgageTo._id,
       });
@@ -515,7 +542,7 @@ function UpdateForm({ token }: { token: string }) {
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -581,7 +608,7 @@ function UpdateForm({ token }: { token: string }) {
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -591,6 +618,29 @@ function UpdateForm({ token }: { token: string }) {
                 </PopoverContent>
               </Popover>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="mortgageDate"
+          render={({ field: { value, onChange } }) => (
+            <FormItem>
+              <FormLabel>Date Range</FormLabel>
+              <CalendarDateRangePicker
+                date={{
+                  from: new Date(value.from),
+                  to: new Date(value.to),
+                }}
+                onSelect={(e) => {
+                  if (e?.from && e?.to) {
+                    onChange({
+                      from: e?.from?.toString() ?? value.from,
+                      to: e?.to?.toString() ?? value.to,
+                    });
+                  }
+                }}
+              />
             </FormItem>
           )}
         />

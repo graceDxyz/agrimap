@@ -32,8 +32,8 @@ export const farmersSchema = z.object({
 });
 
 export const createFarmerSchema = z.object({
-  firstname: z.string().nonempty({ message: "Please input a firstname" }),
-  lastname: z.string().nonempty({ message: "Please input a lastname" }),
+  firstname: z.string().min(1, { message: "Please input a firstname" }),
+  lastname: z.string().min(1, { message: "Please input a lastname" }),
   address: addressSchema,
   phoneNumber: z.string(),
 });

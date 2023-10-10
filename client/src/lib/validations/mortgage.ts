@@ -10,8 +10,10 @@ export const mortgageSchema = z
     farm: farmSchema,
     mortgageTo: farmerSchema,
     mortgageAmount: z.number(),
-    startDate: z.string().nullish(),
-    endDate: z.string().nullish(),
+    mortgageDate: z.object({
+      from: z.string(),
+      to: z.string(),
+    }),
     status: statusSchema,
     farmTitle: z.string().nullish(),
     farmerName: z.string().nullish(),
@@ -31,10 +33,12 @@ export const mortgagesSchema = z.object({
 });
 
 export const createMortgageSchema = z.object({
-  farmId: z.string().nonempty({ message: "Please select a title number" }),
-  mortgageToId: z.string().nonempty({ message: "Please select a farmer" }),
+  farmId: z.string().min(1, { message: "Please select a title number" }),
+  mortgageToId: z.string().min(1, { message: "Please select a farmer" }),
   mortgageAmount: z.number(),
-  startDate: z.string().nullish(),
-  endDate: z.string().nullish(),
+  mortgageDate: z.object({
+    from: z.string(),
+    to: z.string(),
+  }),
   status: statusSchema,
 });

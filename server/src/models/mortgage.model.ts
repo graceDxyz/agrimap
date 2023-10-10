@@ -6,8 +6,10 @@ export interface MortgageInput {
   farm: IFarm["_id"];
   mortgageTo: IFarmer["_id"];
   mortgageAmount: number;
-  startDate: string;
-  endDate: string;
+  mortgageDate: {
+    from: string;
+    to: string;
+  };
   status?: "Active" | "Paid Off" | "Defaulted";
 }
 
@@ -32,11 +34,13 @@ const mortgageSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    startDate: {
-      type: Date,
-    },
-    endDate: {
-      type: Date,
+    mortgageDate: {
+      from: {
+        type: Date,
+      },
+      to: {
+        type: Date,
+      },
     },
     status: {
       type: String,

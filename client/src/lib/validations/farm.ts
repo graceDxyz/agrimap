@@ -33,10 +33,10 @@ export const farmsSchema = z.object({
 });
 
 export const createFarmSchema = z.object({
-  ownerId: z.string().nonempty({ message: "Please select a farmer" }),
+  ownerId: z.string().min(1, { message: "Please select a farmer" }),
   titleNumber: z
     .string()
-    .nonempty({ message: "Please input a title number" })
+    .min(1, { message: "Please input a title number" })
     .min(6, { message: "Title number must containt atleast 6 characters" }),
   proofFiles: z.array(fileSchema),
   size: z.coerce

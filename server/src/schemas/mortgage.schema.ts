@@ -1,7 +1,7 @@
 import * as z from "zod";
 
 export const coordinatesSchema = z.array(
-  z.array(z.tuple([z.number(), z.number()])),
+  z.array(z.tuple([z.number(), z.number()]))
 );
 
 const payload = {
@@ -9,8 +9,10 @@ const payload = {
     farmId: z.string(),
     mortgageToId: z.string(),
     mortgageAmount: z.number(),
-    startDate: z.string(),
-    endDate: z.string(),
+    mortgageDate: z.object({
+      from: z.string(),
+      to: z.string(),
+    }),
     status: z.enum(["Active", "Paid Off", "Defaulted"]).optional(),
   }),
 };
