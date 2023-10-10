@@ -1,5 +1,9 @@
+import * as React from "react";
+
 import {
   ColumnDef,
+  ColumnFiltersState,
+  FilterFn,
   SortingState,
   VisibilityState,
   flexRender,
@@ -11,7 +15,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import * as React from "react";
 
 import {
   Table,
@@ -30,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchPlaceHolder?: string;
   isLoading?: boolean;
+  facetFilter?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,12 +41,16 @@ export function DataTable<TData, TValue>({
   data,
   searchPlaceHolder,
   isLoading,
+  facetFilter,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
 
-  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [globalFilter, setGlobalFilter] = React.useState(undefined);
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
@@ -51,6 +59,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnVisibility,
+      columnFilters,
       rowSelection,
       globalFilter,
     },
@@ -58,6 +67,7 @@ export function DataTable<TData, TValue>({
     onGlobalFilterChange: setGlobalFilter,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -73,8 +83,7 @@ export function DataTable<TData, TValue>({
         table={table}
         placeHolder={searchPlaceHolder}
         disabled={isLoading}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
+        facetFilter={facetFilter}
       />
       <div className="rounded-md border">
         <Table>
@@ -88,7 +97,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -107,7 +116,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
