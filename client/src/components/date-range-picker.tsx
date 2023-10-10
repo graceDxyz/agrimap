@@ -47,7 +47,7 @@ export function CalendarDateRangePicker({ date, onSelect }: Props) {
         <Calendar
           initialFocus
           mode="range"
-          defaultMonth={date?.from}
+          defaultMonth={date?.to}
           selected={date}
           onSelect={onSelect}
           numberOfMonths={2}

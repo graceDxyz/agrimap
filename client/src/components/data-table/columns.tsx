@@ -202,7 +202,6 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
       </div>
     ),
   },
-
   {
     accessorKey: "farmSize",
     header: ({ column }) => (
@@ -214,7 +213,17 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
       </div>
     ),
   },
-
+  {
+    accessorKey: "mortgageDateRange",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Mortgage Date Range" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto font-medium">
+        {row.getValue("mortgageDateRange")}
+      </div>
+    ),
+  },
   {
     id: "actions",
     cell: ({ row }) => <MortgageDataTableRowActions row={row} />,

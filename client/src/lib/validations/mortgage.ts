@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import * as z from "zod";
 import { farmSchema } from "./farm";
 import { farmerSchema } from "./farmer";
@@ -19,6 +20,7 @@ export const mortgageSchema = z
     farmerName: z.string().nullish(),
     farmSize: z.number().nullish(),
     mortgageToName: z.string().nullish(),
+    mortgageDateRange: z.string().nullish(),
   })
   .transform((obj) => ({
     ...obj,
@@ -26,6 +28,10 @@ export const mortgageSchema = z
     farmerName: obj.farm.owner.fullName,
     farmSize: obj.farm.size,
     mortgageToName: obj.mortgageTo.fullName,
+    mortgageDateRange: `${format(
+      new Date(obj.mortgageDate.from),
+      "LLL dd, y"
+    )} - ${format(new Date(obj.mortgageDate.to), "LLL dd, y")}`,
   }));
 
 export const mortgagesSchema = z.object({
