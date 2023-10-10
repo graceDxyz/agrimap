@@ -53,16 +53,12 @@ function DashboardPage() {
             Dashboard
           </PageHeaderHeading>
           <div className="flex items-center space-x-2">
-            <OverviewSwitcher />
-            <Button
-              onClick={() => mutate()}
-              disabled={isDownloadLoading}
-              variant={"outline"}
-            >
+            <OverviewSwitcher isLoading={isStatsLoading} />
+            <Button onClick={() => mutate()} disabled={isDownloadLoading}>
               {isDownloadLoading ? (
                 <Icons.spinner className="h-6 w-6 animate-spin" />
               ) : (
-                <Icons.fileDownload className="h-6 w-6 text-primary" />
+                <Icons.fileDownload className="h-6 w-6" />
               )}
               Download
             </Button>

@@ -1,6 +1,3 @@
-import { useBoundStore } from "@/lib/store";
-import { cn } from "@/lib/utils";
-import * as React from "react";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Command, CommandItem, CommandList } from "@/components/ui/command";
@@ -10,16 +7,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useBoundStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
+import * as React from "react";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
-interface OverviewSwitcherProps extends PopoverTriggerProps {}
+interface OverviewSwitcherProps extends PopoverTriggerProps {
+  isLoading?: boolean;
+}
 
-export default function OverviewSwitcher({ className }: OverviewSwitcherProps) {
+export default function OverviewSwitcher({
+  className,
+  isLoading,
+}: OverviewSwitcherProps) {
   const { options, activeSwitcher, setSwitcherValue } = useBoundStore(
-    (state) => state.overview,
+    (state) => state.overview
   );
   const [open, setOpen] = React.useState(false);
   const [showNewOverviewDialog, setShowNewOverviewDialog] =
@@ -31,7 +36,7 @@ export default function OverviewSwitcher({ className }: OverviewSwitcherProps) {
       onOpenChange={setShowNewOverviewDialog}
     >
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild disabled={isLoading}>
           <Button
             variant="outline"
             role="combobox"
@@ -60,7 +65,7 @@ export default function OverviewSwitcher({ className }: OverviewSwitcherProps) {
                       "ml-auto h-4 w-4",
                       activeSwitcher.value === filter.value
                         ? "opacity-100"
-                        : "opacity-0",
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>
