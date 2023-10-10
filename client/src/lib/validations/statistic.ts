@@ -2,7 +2,7 @@ import * as z from "zod";
 import { farmerSchema } from "./farmer";
 
 export const farmerDataSchema = z.object({
-  name: z.string(),
+  _id: z.string(),
   count: z.number(),
 });
 

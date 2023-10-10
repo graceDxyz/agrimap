@@ -1,12 +1,18 @@
+import useRandomData from "@/hooks/useRandomData";
 import { FarmerData } from "@/types/statistic.type";
 import { memo } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 interface Props {
-  data: FarmerData[];
+  data?: FarmerData[];
+  isLoading?: Boolean;
 }
 
-export function Overview({ data }: Props) {
+export function Overview(props: Props) {
+  const randomData = useRandomData();
+
+  const data = props.isLoading ? randomData : props.data;
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <BarChart data={data}>
@@ -24,7 +30,12 @@ export function Overview({ data }: Props) {
           axisLine={false}
           tickFormatter={(value) => `${value}`}
         />
-        <Bar dataKey="count" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+        <Bar
+          dataKey="count"
+          className={props.isLoading ? "fill-foreground" : ""}
+          fill="#adfa1d"
+          radius={[4, 4, 0, 0]}
+        />
       </BarChart>
     </ResponsiveContainer>
   );
