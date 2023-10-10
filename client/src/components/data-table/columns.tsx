@@ -216,7 +216,7 @@ export const mortgageColumns: ColumnDef<Mortgage>[] = [
   {
     accessorKey: "mortgageDateRange",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Mortgage Date Range" />
+      <DataTableColumnHeader column={column} title="Contract Duration" />
     ),
     cell: ({ row }) => (
       <div className="w-auto font-medium">

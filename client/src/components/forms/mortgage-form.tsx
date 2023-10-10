@@ -124,8 +124,8 @@ function CreateForm({ token }: { token: string }) {
       mortgageToId: "",
       mortgageAmount: 0,
       mortgageDate: {
-        from: new Date(2023, 0, 20).toString(),
-        to: addMonths(new Date(2023, 0, 20), 1).toString(),
+        from: new Date().toString(),
+        to: addMonths(new Date(), 1).toString(),
       },
     },
   });
@@ -329,7 +329,7 @@ function CreateForm({ token }: { token: string }) {
           name="mortgageDate"
           render={({ field: { value, onChange } }) => (
             <FormItem>
-              <FormLabel>Date Range</FormLabel>
+              <FormLabel>Contract Duration</FormLabel>
               <CalendarDateRangePicker
                 date={{
                   from: new Date(value.from),
@@ -417,8 +417,8 @@ function UpdateForm({ token }: { token: string }) {
       mortgageToId: "",
       mortgageAmount: 0,
       mortgageDate: {
-        from: new Date(2023, 0, 20).toString(),
-        to: addMonths(new Date(2023, 0, 20), 1).toString(),
+        from: new Date().toString(),
+        to: addMonths(new Date(), 1).toString(),
       },
     },
   });
@@ -626,7 +626,7 @@ function UpdateForm({ token }: { token: string }) {
           name="mortgageDate"
           render={({ field: { value, onChange } }) => (
             <FormItem>
-              <FormLabel>Date Range</FormLabel>
+              <FormLabel>Contract Duration</FormLabel>
               <CalendarDateRangePicker
                 date={{
                   from: new Date(value.from),
