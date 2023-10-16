@@ -47,7 +47,7 @@ import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { cn } from "@/lib/utils";
@@ -102,19 +102,7 @@ export function MortgageDialog() {
 function CreateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { user } = useGetAuth();
   const { setMode } = useBoundStore((state) => state.mortgage);
-
-  const [isFarmOpen, setIsFarmOpen] = useState(false);
-  const [isFarmerOpen, setIsFarmerOpen] = useState(false);
-
-  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({
-    token: user?.accessToken ?? "",
-  });
-
-  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({
-    token: user?.accessToken ?? "",
-  });
 
   const form = useForm<CreateMortgageInput>({
     resolver: zodResolver(createMortgageSchema),
@@ -130,26 +118,6 @@ function CreateForm({ token }: { token: string }) {
     },
   });
 
-  const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId")
-  );
-
-  const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId")
-  );
-
-  const filteredFarm = farmData?.filter(
-    (farm) =>
-      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
-  );
-
-  const filteredFarmer = farmersData?.filter((farmer) => {
-    if (farmer._id === selectedFarm?.owner._id) {
-      return false;
-    }
-    return true;
-  });
-
   const { mutate, isLoading } = useMutation({
     mutationFn: createMortgage,
     onSuccess: ({ data }) => {
@@ -160,10 +128,11 @@ function CreateForm({ token }: { token: string }) {
         }
         return items;
       });
+
       queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item._id === selectedFarm?._id) {
+            if (item._id === data.farm?._id) {
               return { ...item, isMortgage: true };
             }
             return item;
@@ -192,222 +161,21 @@ function CreateForm({ token }: { token: string }) {
   }
 
   return (
-    <Form {...form}>
-      <form
-        className="grid gap-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
-        <FormField
-          control={form.control}
-          name="farmId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title number</FormLabel>
-              <Popover open={isFarmOpen} onOpenChange={setIsFarmOpen}>
-                <PopoverTrigger asChild disabled={isFarmLoading}>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-label="Load a preset..."
-                    aria-expanded={isFarmOpen}
-                    className="flex-1 justify-between w-full"
-                  >
-                    {isFarmLoading ? (
-                      "Loading ..."
-                    ) : (
-                      <>
-                        {field.value ? (
-                          <>{selectedFarm?.titleNumber}</>
-                        ) : (
-                          "Select title number..."
-                        )}
-                      </>
-                    )}
-                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Search title numbers..." />
-                    <CommandEmpty>No title number found.</CommandEmpty>
-                    <CommandGroup heading="Title number">
-                      {filteredFarm?.map((item) => (
-                        <CommandItem
-                          key={item._id}
-                          onSelect={() => {
-                            field.onChange(item._id);
-                            setIsFarmOpen(false);
-                          }}
-                        >
-                          {item.titleNumber}
-                          <Icons.check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              field.value === item._id
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mortgageToId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mortgage to</FormLabel>
-              <Popover open={isFarmerOpen} onOpenChange={setIsFarmerOpen}>
-                <PopoverTrigger asChild disabled={isFarmersLoading}>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-label="Load a preset..."
-                    aria-expanded={isFarmerOpen}
-                    className="flex-1 justify-between w-full"
-                  >
-                    {isFarmersLoading ? (
-                      "Loading ..."
-                    ) : (
-                      <>
-                        {field.value ? (
-                          <>
-                            {selectedFarmers?.lastname +
-                              ", " +
-                              selectedFarmers?.firstname}
-                          </>
-                        ) : (
-                          "Select farmer..."
-                        )}
-                      </>
-                    )}
-                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Search farmers..." />
-                    <CommandEmpty>No farmers found.</CommandEmpty>
-                    <CommandGroup heading="Farmers">
-                      {filteredFarmer?.map((item) => (
-                        <CommandItem
-                          key={item._id}
-                          onSelect={() => {
-                            field.onChange(item._id);
-                            setIsFarmerOpen(false);
-                          }}
-                          className="capitalize"
-                        >
-                          {item.lastname + ", " + item.firstname}
-                          <Icons.check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              field.value === item._id
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mortgageDate"
-          render={({ field: { value, onChange } }) => (
-            <FormItem>
-              <FormLabel>Contract Duration</FormLabel>
-              <CalendarDateRangePicker
-                date={{
-                  from: new Date(value.from),
-                  to: new Date(value.to),
-                }}
-                onSelect={(e) => {
-                  if (e?.from && e?.to) {
-                    onChange({
-                      from: e?.from?.toString() ?? value.from,
-                      to: e?.to?.toString() ?? value.to,
-                    });
-                  }
-                }}
-              />
-            </FormItem>
-          )}
-        />
-        <FormItem>
-          <FormLabel>Owner</FormLabel>
-          <Input
-            placeholder="owner"
-            disabled
-            className="disabled:opacity-100"
-            value={selectedFarm?.owner.fullName ?? ""}
-          />
-        </FormItem>
-        <FormItem>
-          <FormLabel>Size (Hectars)</FormLabel>
-          <Input
-            placeholder="size"
-            disabled
-            className="disabled:opacity-100"
-            value={selectedFarm?.size ?? ""}
-          />
-        </FormItem>
-        <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </Button>
-          <Button disabled={isLoading}>
-            {isLoading ? (
-              <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icons.plus className="mr-2 h-4 w-4" aria-hidden="true" />
-            )}
-            Add
-            <span className="sr-only">Add</span>
-          </Button>
-        </AlertDialogFooter>
-      </form>
-    </Form>
+    <MortgageGenericForm
+      form={form}
+      handleCancelClick={handleCancelClick}
+      isLoading={isLoading}
+      onSubmit={onSubmit}
+      buttonLabel="Add"
+      token={token}
+    />
   );
 }
 
 function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
-  const { user } = useGetAuth();
   const { toast } = useToast();
   const { setMode, mortgage } = useBoundStore((state) => state.mortgage);
-
-  const [isFarmOpen, setIsFarmOpen] = useState(false);
-  const [isFarmerOpen, setIsFarmerOpen] = useState(false);
-
-  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({
-    token: user?.accessToken ?? "",
-  });
-
-  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({
-    token: user?.accessToken ?? "",
-  });
 
   const form = useForm<CreateMortgageInput>({
     resolver: zodResolver(createMortgageSchema),
@@ -421,26 +189,6 @@ function UpdateForm({ token }: { token: string }) {
         to: addMonths(new Date(), 1).toString(),
       },
     },
-  });
-
-  const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId")
-  );
-
-  const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId")
-  );
-
-  const filteredFarm = farmData?.filter(
-    (farm) =>
-      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
-  );
-
-  const filteredFarmer = farmersData?.filter((farmer) => {
-    if (farmer._id === selectedFarm?.owner._id) {
-      return false;
-    }
-    return true;
   });
 
   const { mutate, isLoading } = useMutation({
@@ -489,203 +237,14 @@ function UpdateForm({ token }: { token: string }) {
   }, [mortgage, form]);
 
   return (
-    <Form {...form}>
-      <form
-        className="grid gap-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
-        <FormField
-          control={form.control}
-          name="farmId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title number</FormLabel>
-              <Popover open={isFarmOpen} onOpenChange={setIsFarmOpen}>
-                <PopoverTrigger asChild disabled={isFarmLoading}>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-label="Load a preset..."
-                    aria-expanded={isFarmOpen}
-                    className="flex-1 justify-between w-full"
-                  >
-                    {isFarmLoading ? (
-                      "Loading ..."
-                    ) : (
-                      <>
-                        {field.value ? (
-                          <>{selectedFarm?.titleNumber}</>
-                        ) : (
-                          "Select title number..."
-                        )}
-                      </>
-                    )}
-                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Search title numbers..." />
-                    <CommandEmpty>No title number found.</CommandEmpty>
-                    <CommandGroup heading="Title number">
-                      {filteredFarm?.map((item) => (
-                        <CommandItem
-                          key={item._id}
-                          onSelect={() => {
-                            field.onChange(item._id);
-                            setIsFarmOpen(false);
-                          }}
-                        >
-                          {item.titleNumber}
-                          <Icons.check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              field.value === item._id
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mortgageToId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Mortgage to</FormLabel>
-              <Popover open={isFarmerOpen} onOpenChange={setIsFarmerOpen}>
-                <PopoverTrigger asChild disabled={isFarmersLoading}>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-label="Load a preset..."
-                    aria-expanded={isFarmerOpen}
-                    className="flex-1 justify-between w-full"
-                  >
-                    {isFarmersLoading ? (
-                      "Loading ..."
-                    ) : (
-                      <>
-                        {field.value ? (
-                          <>
-                            {selectedFarmers?.lastname +
-                              ", " +
-                              selectedFarmers?.firstname}
-                          </>
-                        ) : (
-                          "Select farmer..."
-                        )}
-                      </>
-                    )}
-                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="Search farmers..." />
-                    <CommandEmpty>No farmers found.</CommandEmpty>
-                    <CommandGroup heading="Farmers">
-                      {filteredFarmer?.map((item) => (
-                        <CommandItem
-                          key={item._id}
-                          onSelect={() => {
-                            field.onChange(item._id);
-                            setIsFarmerOpen(false);
-                          }}
-                          className="capitalize"
-                        >
-                          {item.lastname + ", " + item.firstname}
-                          <Icons.check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              field.value === item._id
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mortgageDate"
-          render={({ field: { value, onChange } }) => (
-            <FormItem>
-              <FormLabel>Contract Duration</FormLabel>
-              <CalendarDateRangePicker
-                date={{
-                  from: new Date(value.from),
-                  to: new Date(value.to),
-                }}
-                onSelect={(e) => {
-                  if (e?.from && e?.to) {
-                    onChange({
-                      from: e?.from?.toString() ?? value.from,
-                      to: e?.to?.toString() ?? value.to,
-                    });
-                  }
-                }}
-              />
-            </FormItem>
-          )}
-        />
-        <FormItem>
-          <FormLabel>Owner</FormLabel>
-          <Input
-            placeholder="owner"
-            disabled
-            className="disabled:opacity-100"
-            value={selectedFarm?.owner.fullName ?? ""}
-          />
-        </FormItem>
-        <FormItem>
-          <FormLabel>Size (Hectars)</FormLabel>
-          <Input
-            placeholder="size"
-            disabled
-            className="disabled:opacity-100"
-            value={selectedFarm?.size ?? ""}
-          />
-        </FormItem>
-        <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </Button>
-          <Button disabled={isLoading}>
-            {isLoading ? (
-              <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
-            )}
-            Update
-            <span className="sr-only">Add</span>
-          </Button>
-        </AlertDialogFooter>
-      </form>
-    </Form>
+    <MortgageGenericForm
+      form={form}
+      handleCancelClick={handleCancelClick}
+      isLoading={isLoading}
+      onSubmit={onSubmit}
+      buttonLabel="Update"
+      token={token}
+    />
   );
 }
 
@@ -752,5 +311,254 @@ function DeleteForm({ token }: { token: string }) {
         Cancel
       </AlertDialogCancel>
     </AlertDialogFooter>
+  );
+}
+
+function MortgageGenericForm({
+  form,
+  isLoading,
+  onSubmit,
+  handleCancelClick,
+  buttonLabel,
+  token,
+}: {
+  form: UseFormReturn<CreateMortgageInput, any, undefined>;
+  isLoading: boolean;
+  onSubmit(data: CreateMortgageInput): void;
+  handleCancelClick(): void;
+  buttonLabel: "Add" | "Update";
+  token: string;
+}) {
+  const [isFarmOpen, setIsFarmOpen] = useState(false);
+  const [isFarmerOpen, setIsFarmerOpen] = useState(false);
+
+  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({
+    token,
+  });
+
+  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({
+    token,
+  });
+
+  const selectedFarm = farmData?.find(
+    (item) => item._id === form.getValues("farmId")
+  );
+
+  const selectedFarmers = farmersData?.find(
+    (item) => item._id === form.getValues("mortgageToId")
+  );
+
+  const filteredFarm = farmData?.filter(
+    (farm) =>
+      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
+  );
+
+  const filteredFarmer = farmersData?.filter((farmer) => {
+    if (farmer._id === selectedFarm?.owner._id) {
+      return false;
+    }
+    return true;
+  });
+
+  return (
+    <Form {...form}>
+      <form
+        className="grid gap-4"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <FormField
+          control={form.control}
+          name="farmId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title number</FormLabel>
+              <Popover open={isFarmOpen} onOpenChange={setIsFarmOpen}>
+                <PopoverTrigger asChild disabled={isFarmLoading}>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-label="Load a preset..."
+                    aria-expanded={isFarmOpen}
+                    className="flex-1 justify-between w-full"
+                  >
+                    {isFarmLoading ? (
+                      "Loading ..."
+                    ) : (
+                      <>
+                        {field.value ? (
+                          <>{selectedFarm?.titleNumber}</>
+                        ) : (
+                          "Select title number..."
+                        )}
+                      </>
+                    )}
+                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search title numbers..." />
+                    <CommandEmpty>No title number found.</CommandEmpty>
+                    <CommandGroup heading="Title number">
+                      {filteredFarm?.map((item) => (
+                        <CommandItem
+                          key={item._id}
+                          onSelect={() => {
+                            field.onChange(item._id);
+                            setIsFarmOpen(false);
+                          }}
+                        >
+                          {item.titleNumber}
+                          <Icons.check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              field.value === item._id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="mortgageToId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mortgage to</FormLabel>
+              <Popover open={isFarmerOpen} onOpenChange={setIsFarmerOpen}>
+                <PopoverTrigger asChild disabled={isFarmersLoading}>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-label="Load a preset..."
+                    aria-expanded={isFarmerOpen}
+                    className="flex-1 justify-between w-full"
+                  >
+                    {isFarmersLoading ? (
+                      "Loading ..."
+                    ) : (
+                      <>
+                        {field.value ? (
+                          <>
+                            {selectedFarmers?.lastname +
+                              ", " +
+                              selectedFarmers?.firstname}
+                          </>
+                        ) : (
+                          "Select farmer..."
+                        )}
+                      </>
+                    )}
+                    <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Search farmers..." />
+                    <CommandEmpty>No farmers found.</CommandEmpty>
+                    <CommandGroup heading="Farmers">
+                      {filteredFarmer?.map((item) => (
+                        <CommandItem
+                          key={item._id}
+                          onSelect={() => {
+                            field.onChange(item._id);
+                            setIsFarmerOpen(false);
+                          }}
+                          className="capitalize"
+                        >
+                          {item.lastname + ", " + item.firstname}
+                          <Icons.check
+                            className={cn(
+                              "ml-auto h-4 w-4",
+                              field.value === item._id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="mortgageDate"
+          render={({ field: { value, onChange } }) => (
+            <FormItem>
+              <FormLabel>Contract Duration</FormLabel>
+              <CalendarDateRangePicker
+                date={{
+                  from: new Date(value.from),
+                  to: new Date(value.to),
+                }}
+                onSelect={(e) => {
+                  if (e?.from && e?.to) {
+                    onChange({
+                      from: e?.from?.toString() ?? value.from,
+                      to: e?.to?.toString() ?? value.to,
+                    });
+                  }
+                }}
+              />
+            </FormItem>
+          )}
+        />
+        <FormItem>
+          <FormLabel>Owner</FormLabel>
+          <Input
+            placeholder="owner"
+            disabled
+            className="disabled:opacity-100"
+            value={selectedFarm?.owner.fullName ?? ""}
+          />
+        </FormItem>
+        <FormItem>
+          <FormLabel>Size (Hectars)</FormLabel>
+          <Input
+            placeholder="size"
+            disabled
+            className="disabled:opacity-100"
+            value={selectedFarm?.size ?? ""}
+          />
+        </FormItem>
+        <AlertDialogFooter>
+          <Button
+            type="button"
+            disabled={isLoading}
+            variant={"outline"}
+            onClick={handleCancelClick}
+          >
+            Cancel
+          </Button>
+          <Button disabled={isLoading}>
+            {isLoading ? (
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+            ) : buttonLabel === "Add" ? (
+              <Icons.plus className="mr-2 h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
+            )}
+            {buttonLabel}
+            <span className="sr-only">{buttonLabel}</span>
+          </Button>
+        </AlertDialogFooter>
+      </form>
+    </Form>
   );
 }
