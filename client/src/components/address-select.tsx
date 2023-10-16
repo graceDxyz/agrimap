@@ -6,6 +6,7 @@ import AsyncSelect from "react-select/async";
 import { create } from "zustand";
 
 interface Props<T> {
+  isDisabled?: boolean;
   value?: Partial<T> | Partial<T>[] | null;
   onChange?: (
     newValue: SingleValue<Partial<T>> | null,
@@ -20,6 +21,7 @@ type GenericSelectProps<T> = Props<T> & {
 
 function GenericSelect<T>({
   defaultOptions,
+  isDisabled,
   loadOptions,
   ...props
 }: GenericSelectProps<T>) {
@@ -27,6 +29,7 @@ function GenericSelect<T>({
     <AsyncSelect
       cacheOptions
       isClearable
+      isDisabled={isDisabled}
       defaultOptions={defaultOptions}
       loadOptions={loadOptions}
       {...props}
