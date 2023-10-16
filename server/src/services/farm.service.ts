@@ -5,7 +5,7 @@ export async function getAllFarm() {
   return FarmModel.aggregate([
     {
       $lookup: {
-        from: "mortgages", // This should be the name of your mortgage collection in your MongoDB
+        from: "mortgages",
         localField: "_id",
         foreignField: "farm",
         as: "activeMortgages",
@@ -13,7 +13,7 @@ export async function getAllFarm() {
     },
     {
       $lookup: {
-        from: "farmers", // Replace with the actual name of your farmer collection
+        from: "farmers",
         localField: "owner",
         foreignField: "_id",
         as: "owner",
@@ -21,9 +21,9 @@ export async function getAllFarm() {
     },
     {
       $addFields: {
-        owner: { $arrayElemAt: ["$owner", 0] }, // Take the first element of the 'owner' array
+        owner: { $arrayElemAt: ["$owner", 0] },
         isMortgage: {
-          $in: ["Active", "$activeMortgages.status"], // Check if 'Active' is in the status array
+          $in: ["Active", "$activeMortgages.status"],
         },
       },
     },
@@ -51,7 +51,7 @@ export async function findFarm(query: FilterQuery<IFarm>) {
 export async function updateFarm(
   query: FilterQuery<IFarm>,
   update: UpdateQuery<IFarm>,
-  options: QueryOptions,
+  options: QueryOptions
 ) {
   return FarmModel.findByIdAndUpdate(query, update, options);
 }

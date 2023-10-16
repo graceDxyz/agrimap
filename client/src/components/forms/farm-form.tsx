@@ -185,7 +185,7 @@ export function FarmGenericForm({
                         role="combobox"
                         aria-label="Load a preset..."
                         aria-expanded={open}
-                        className="flex-1 justify-between w-full"
+                        className="flex-1 justify-between w-full disabled:opacity-100"
                       >
                         {isFarmerLoading ? (
                           "Loading ..."
@@ -202,7 +202,12 @@ export function FarmGenericForm({
                             )}
                           </>
                         )}
-                        <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        <Icons.chevronsUpDown
+                          className={cn(
+                            "ml-2 h-4 w-4 shrink-0 opacity-50",
+                            isEditMode ? "visible" : "hidden"
+                          )}
+                        />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0">
@@ -246,7 +251,12 @@ export function FarmGenericForm({
                 <FormItem>
                   <FormLabel>Size (m²)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="size" {...field} />
+                    <Input
+                      className="disabled:opacity-100"
+                      type="number"
+                      placeholder="size"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -260,7 +270,11 @@ export function FarmGenericForm({
                 <FormItem>
                   <FormLabel>Title Number</FormLabel>
                   <FormControl>
-                    <Input placeholder="title number" {...field} />
+                    <Input
+                      className="disabled:opacity-100"
+                      placeholder="title number"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -274,7 +288,11 @@ export function FarmGenericForm({
                 <FormItem>
                   <FormLabel>Purok/Sitio</FormLabel>
                   <FormControl>
-                    <Input placeholder="purok/sitio" {...field} />
+                    <Input
+                      className="disabled:opacity-100"
+                      placeholder="purok/sitio"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -343,7 +361,11 @@ export function FarmGenericForm({
                     <FormItem>
                       <FormLabel>Zipcode</FormLabel>
                       <FormControl>
-                        <Input placeholder="zipcode" {...field} />
+                        <Input
+                          className="disabled:opacity-100"
+                          placeholder="zipcode"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

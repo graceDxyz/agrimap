@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { ActionMeta, SingleValue } from "react-select";
 import AsyncSelect from "react-select/async";
 import { create } from "zustand";
+import { Input } from "./ui/input";
 
 interface Props<T> {
   isDisabled?: boolean;
@@ -25,7 +26,11 @@ function GenericSelect<T>({
   loadOptions,
   ...props
 }: GenericSelectProps<T>) {
-  return (
+  const value = props?.value as unknown as { label: string };
+
+  return isDisabled ? (
+    <Input className="disabled:opacity-100" disabled value={value.label} />
+  ) : (
     <AsyncSelect
       cacheOptions
       isClearable
