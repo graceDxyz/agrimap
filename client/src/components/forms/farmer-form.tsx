@@ -200,7 +200,7 @@ function UpdateForm({ token }: { token: string }) {
         if (items) {
           return items.map((item) => {
             if (item._id === upFarmer._id) {
-              return upFarmer;
+              return { ...upFarmer, totalSize: item.totalSize };
             }
             return item;
           });

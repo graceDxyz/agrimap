@@ -13,7 +13,7 @@ export const farmerSchema = z
     _id: z.string(),
     firstname: z.string(),
     lastname: z.string(),
-    middleInitial: z.string().nullish(),
+    middleInitial: z.string(),
     address: addressSchema,
     phoneNumber: z.string(),
     createdAt: z.string(),
@@ -24,9 +24,7 @@ export const farmerSchema = z
   })
   .transform((obj) => ({
     ...obj,
-    fullName: `${obj.lastname}, ${obj.firstname} ${
-      obj.middleInitial ? obj.middleInitial + "." : ""
-    }`,
+    fullName: `${obj.lastname}, ${obj.firstname} ${obj.middleInitial}.`,
     fullAddress: `${obj.address.streetAddress}, ${obj.address.barangay}, ${obj.address.municipality}, ${obj.address.cityOrProvince}, ${obj.address.zipcode}`,
   }));
 
