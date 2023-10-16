@@ -333,9 +333,9 @@ function FarmAreaPage() {
                 name="address.streetAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Street Address</FormLabel>
+                    <FormLabel>Purok/Sitio</FormLabel>
                     <FormControl>
-                      <Input placeholder="street address" {...field} />
+                      <Input placeholder="purok/sitio" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
