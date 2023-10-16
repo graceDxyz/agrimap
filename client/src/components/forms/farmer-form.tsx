@@ -40,7 +40,7 @@ import { RecentAdded } from "@/types/statistic.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import {
   BarangaySelect,
   CitySelect,
@@ -160,160 +160,13 @@ function CreateForm({ token }: { token: string }) {
   }
 
   return (
-    <Form {...form}>
-      <form
-        className="grid gap-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="firstname"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Firstname</FormLabel>
-                  <FormControl>
-                    <Input placeholder="firstname" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="lastname"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Lastname</FormLabel>
-                  <FormControl>
-                    <Input placeholder="lastname" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <FormField
-          control={form.control}
-          name="phoneNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address.streetAddress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Street Address</FormLabel>
-              <FormControl>
-                <Input placeholder="street address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.cityOrProvince"
-              render={({ field: { value, onChange } }) => (
-                <FormItem>
-                  <FormLabel>Province</FormLabel>
-                  <ProvinceSelect
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.municipality"
-              render={({ field: { value, onChange } }) => (
-                <FormItem>
-                  <FormLabel>City/Municipality</FormLabel>
-                  <CitySelect
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.barangay"
-              render={({ field: { value, onChange } }) => (
-                <FormItem>
-                  <FormLabel>Barangay</FormLabel>
-                  <BarangaySelect
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.zipcode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Zipcode</FormLabel>
-                  <FormControl>
-                    <Input placeholder="zipcode" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </Button>
-          <Button disabled={isLoading}>
-            {isLoading ? (
-              <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icons.plus className="mr-2 h-4 w-4" aria-hidden="true" />
-            )}
-            Add
-            <span className="sr-only">Add</span>
-          </Button>
-        </AlertDialogFooter>
-      </form>
-    </Form>
+    <FarmerGenericForm
+      form={form}
+      handleCancelClick={handleCancelClick}
+      isLoading={isLoading}
+      onSubmit={onSubmit}
+      buttonLabel="Add"
+    />
   );
 }
 
@@ -379,160 +232,19 @@ function UpdateForm({ token }: { token: string }) {
     if (farmer) {
       form.reset({
         ...farmer,
+        middleInitial: farmer.middleInitial ?? "",
       });
     }
   }, [farmer, form]);
 
   return (
-    <Form {...form}>
-      <form
-        className="grid gap-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
-        <FormField
-          control={form.control}
-          name="firstname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Firstname</FormLabel>
-              <FormControl>
-                <Input placeholder="firstname" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="lastname"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Lastname</FormLabel>
-              <FormControl>
-                <Input placeholder="lastname" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phoneNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <FormControl>
-                <Input placeholder="phone number" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="address.streetAddress"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Street Address</FormLabel>
-              <FormControl>
-                <Input placeholder="street address" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.cityOrProvince"
-              render={({ field: { value, onChange } }) => (
-                <FormItem>
-                  <FormLabel>Province</FormLabel>
-                  <ProvinceSelect
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.municipality"
-              render={({ field: { value, onChange } }) => (
-                <FormItem>
-                  <FormLabel>City/Municipality</FormLabel>
-                  <CitySelect
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.barangay"
-              render={({ field: { value, onChange } }) => (
-                <FormItem>
-                  <FormLabel>Barangay</FormLabel>
-                  <BarangaySelect
-                    value={value != "" ? { label: value } : undefined}
-                    onChange={(e) => onChange(e?.label)}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid gap-2">
-            <FormField
-              control={form.control}
-              name="address.zipcode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Zipcode</FormLabel>
-                  <FormControl>
-                    <Input placeholder="zipcode" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </Button>
-          <Button disabled={isLoading}>
-            {isLoading ? (
-              <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            ) : (
-              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
-            )}
-            Update
-            <span className="sr-only">Add</span>
-          </Button>
-        </AlertDialogFooter>
-      </form>
-    </Form>
+    <FarmerGenericForm
+      form={form}
+      handleCancelClick={handleCancelClick}
+      isLoading={isLoading}
+      onSubmit={onSubmit}
+      buttonLabel="Update"
+    />
   );
 }
 
@@ -592,5 +304,185 @@ function DeleteForm({ token }: { token: string }) {
         Cancel
       </AlertDialogCancel>
     </AlertDialogFooter>
+  );
+}
+
+function FarmerGenericForm({
+  form,
+  isLoading,
+  onSubmit,
+  handleCancelClick,
+  buttonLabel,
+}: {
+  form: UseFormReturn<CreateFarmerInput, any, undefined>;
+  isLoading: boolean;
+  onSubmit(data: CreateFarmerInput): void;
+  handleCancelClick(): void;
+  buttonLabel: "Add" | "Update";
+}) {
+  return (
+    <Form {...form}>
+      <form
+        className="grid gap-4"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <div className="grid grid-cols-7 gap-4">
+          <div className="col-span-3">
+            <FormField
+              control={form.control}
+              name="firstname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Firstname</FormLabel>
+                  <FormControl>
+                    <Input placeholder="firstname" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="col-span-3">
+            <FormField
+              control={form.control}
+              name="lastname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lastname</FormLabel>
+                  <FormControl>
+                    <Input placeholder="lastname" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="col-span-1">
+            <FormField
+              control={form.control}
+              name="middleInitial"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>MI.</FormLabel>
+                  <FormControl>
+                    <Input placeholder="mi" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+        <FormField
+          control={form.control}
+          name="phoneNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="phone number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="address.streetAddress"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Street Address</FormLabel>
+              <FormControl>
+                <Input placeholder="street address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="address.cityOrProvince"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>Province</FormLabel>
+                <ProvinceSelect
+                  value={value != "" ? { label: value } : undefined}
+                  onChange={(e) => onChange(e?.label)}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address.municipality"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>City/Municipality</FormLabel>
+                <CitySelect
+                  value={value != "" ? { label: value } : undefined}
+                  onChange={(e) => onChange(e?.label)}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="address.barangay"
+            render={({ field: { value, onChange } }) => (
+              <FormItem>
+                <FormLabel>Barangay</FormLabel>
+                <BarangaySelect
+                  value={value != "" ? { label: value } : undefined}
+                  onChange={(e) => onChange(e?.label)}
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="address.zipcode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Zipcode</FormLabel>
+                <FormControl>
+                  <Input placeholder="zipcode" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <AlertDialogFooter>
+          <Button
+            type="button"
+            disabled={isLoading}
+            variant={"outline"}
+            onClick={handleCancelClick}
+          >
+            Cancel
+          </Button>
+          <Button disabled={isLoading}>
+            {isLoading ? (
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+            ) : buttonLabel === "Add" ? (
+              <Icons.plus className="mr-2 h-4 w-4" aria-hidden="true" />
+            ) : (
+              <Icons.penLine className="mr-2 h-4 w-4" aria-hidden="true" />
+            )}
+            {buttonLabel}
+            <span className="sr-only">{buttonLabel}</span>
+          </Button>
+        </AlertDialogFooter>
+      </form>
+    </Form>
   );
 }

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 export interface FarmerInput {
   firstname: string;
   lastname: string;
+  middleInitial: string;
   address: {
     streetAddress: string;
     cityOrProvince: string;
@@ -27,6 +28,9 @@ const farmerSchema = new mongoose.Schema(
     lastname: {
       type: String,
       required: true,
+    },
+    middleInitial: {
+      type: String,
     },
     address: {
       streetAddress: {
@@ -55,7 +59,7 @@ const farmerSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  },
+  }
 );
 
 const FarmerModel = mongoose.model<IFarmer>("Farmer", farmerSchema);

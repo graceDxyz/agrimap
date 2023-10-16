@@ -12,6 +12,7 @@ const payload = {
   body: z.object({
     firstname: z.string(),
     lastname: z.string(),
+    middleInitial: z.string(),
     address: addressSchema,
     phoneNumber: z.string(),
   }),

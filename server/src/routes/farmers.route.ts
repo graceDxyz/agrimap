@@ -19,6 +19,7 @@ const farmersToSeed = [
   {
     firstname: "John",
     lastname: "Doe",
+    middleInitial: "D",
     address: {
       streetAddress: "123 Main St",
       cityOrProvince: "Davao City",
@@ -31,6 +32,7 @@ const farmersToSeed = [
   {
     firstname: "Jane",
     lastname: "Smith",
+    middleInitial: "D",
     address: {
       streetAddress: "456 Elm St",
       cityOrProvince: "Cagayan de Oro City",
@@ -43,6 +45,7 @@ const farmersToSeed = [
   {
     firstname: "Robert",
     lastname: "Johnson",
+    middleInitial: "D",
     address: {
       streetAddress: "789 Oak St",
       cityOrProvince: "Zamboanga City",
@@ -55,6 +58,7 @@ const farmersToSeed = [
   {
     firstname: "Emily",
     lastname: "Wilson",
+    middleInitial: "D",
     address: {
       streetAddress: "101 Pine St",
       cityOrProvince: "General Santos City",
@@ -67,6 +71,7 @@ const farmersToSeed = [
   {
     firstname: "Michael",
     lastname: "Brown",
+    middleInitial: "D",
     address: {
       streetAddress: "202 Cedar St",
       cityOrProvince: "Butuan City",
@@ -84,17 +89,17 @@ function FarmerRoutes(app: Express) {
   app.post(
     "/api/farmers",
     [requiredUser, validateResource(createFarmerSchema)],
-    createFarmerHandler,
+    createFarmerHandler
   );
   app.put(
     "/api/farmers/:farmerId",
     [requiredUser, validateResource(updateFarmerSchema)],
-    updateFarmerHandler,
+    updateFarmerHandler
   );
   app.delete(
     "/api/farmers/:farmerId",
     [requiredUser, validateResource(getFarmerSchema)],
-    deleteFarmerHandler,
+    deleteFarmerHandler
   );
 
   FarmerModel.countDocuments().then((res) => {

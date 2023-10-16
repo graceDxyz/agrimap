@@ -13,6 +13,7 @@ export const farmerSchema = z
     _id: z.string(),
     firstname: z.string(),
     lastname: z.string(),
+    middleInitial: z.string().nullish(),
     address: addressSchema,
     phoneNumber: z.string(),
     createdAt: z.string(),
@@ -23,7 +24,9 @@ export const farmerSchema = z
   })
   .transform((obj) => ({
     ...obj,
-    fullName: `${obj.lastname}, ${obj.firstname}`,
+    fullName: `${obj.lastname}, ${obj.firstname} ${
+      obj.middleInitial ? obj.middleInitial + "." : ""
+    }`,
     fullAddress: `${obj.address.streetAddress}, ${obj.address.barangay}, ${obj.address.municipality}, ${obj.address.cityOrProvince}, ${obj.address.zipcode}`,
   }));
 
@@ -34,6 +37,7 @@ export const farmersSchema = z.object({
 export const createFarmerSchema = z.object({
   firstname: z.string().min(1, { message: "Please input a firstname" }),
   lastname: z.string().min(1, { message: "Please input a lastname" }),
+  middleInitial: z.string().min(1),
   address: addressSchema,
   phoneNumber: z.string(),
 });
