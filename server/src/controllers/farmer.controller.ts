@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { deleteFarms } from "../services/farm.service";
 import {
   createFarmer,
   deleteFarmer,
@@ -6,23 +7,23 @@ import {
   getAllFarmer,
   updateFarmer,
 } from "../services/farmer.service";
+import { deleteMortgages } from "../services/mortgage.service";
 import {
   CreateFarmerInput,
   GetFarmerInput,
   UpdateFarmerInput,
 } from "../types/farmer.types";
 import logger from "../utils/logger";
-import { deleteFarms } from "../services/farm.service";
-import { deleteMortgages } from "../services/mortgage.service";
 
 const getAllFarmerHandler = async (req: Request, res: Response) => {
   const farmers = await getAllFarmer();
+  console.log(farmers);
   return res.send(farmers);
 };
 
 const getFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmerId = req.params.farmerId;
 
@@ -37,7 +38,7 @@ const getFarmerHandler = async (
 
 const createFarmerHandler = async (
   req: Request<{}, {}, CreateFarmerInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -55,7 +56,7 @@ const createFarmerHandler = async (
 
 const updateFarmerHandler = async (
   req: Request<UpdateFarmerInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmerId = req.params.farmerId;
   const update = req.body;
@@ -80,7 +81,7 @@ const updateFarmerHandler = async (
 
 const deleteFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmerId = req.params.farmerId;
   const farmer = await findFarmer({ _id: farmerId });

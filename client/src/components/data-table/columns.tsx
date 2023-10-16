@@ -97,7 +97,7 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
     ),
     cell: ({ row }) => (
       <div className="font-medium text-center">
-        {row.getValue("totalSize") ?? 0}
+        {row.getValue<number>("totalSize").toFixed(2) ?? 0}
       </div>
     ),
   },

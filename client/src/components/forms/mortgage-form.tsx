@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
   QUERY_MORTGAGES_KEY,
 } from "@/constant/query.constant";
@@ -53,6 +54,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { useGetFarmers } from "@/services/farmer.service";
 import { Farm } from "@/types/farm.type";
+import { Farmer } from "@/types/farmer.type";
 import { addMonths } from "date-fns";
 import { CalendarDateRangePicker } from "../date-range-picker";
 
@@ -122,6 +124,9 @@ function CreateForm({ token }: { token: string }) {
     mutationFn: createMortgage,
     onSuccess: ({ data }) => {
       const newMortgage = mortgageSchema.parse(data);
+      const farm = newMortgage.farm;
+      const mortgageTo = newMortgage.mortgageTo;
+
       queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (items) => {
         if (items) {
           return [newMortgage, ...items];
@@ -132,7 +137,7 @@ function CreateForm({ token }: { token: string }) {
       queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
         if (items) {
           return items.map((item) => {
-            if (item._id === data.farm?._id) {
+            if (item._id === farm._id) {
               return { ...item, isMortgage: true };
             }
             return item;
@@ -140,6 +145,27 @@ function CreateForm({ token }: { token: string }) {
         }
         return items;
       });
+
+      queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
+        if (items) {
+          return items.map((item) => {
+            if (item._id === mortgageTo._id) {
+              const totalSize = item.totalSize ?? 0;
+              return { ...item, totalSize: totalSize + farm.size };
+            }
+
+            if (item._id === farm.owner._id) {
+              const totalSize = item.totalSize ?? 0;
+              return { ...item, totalSize: totalSize - farm.size };
+            }
+
+            return item;
+          });
+        }
+        return items;
+      });
+
+      queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       handleCancelClick();
       toast({
         title: "Created",
@@ -195,6 +221,7 @@ function UpdateForm({ token }: { token: string }) {
     mutationFn: updateMortgage,
     onSuccess: ({ data }) => {
       const upMortgage = mortgageSchema.parse(data);
+
       queryClient.setQueriesData<Mortgage[]>([QUERY_MORTGAGES_KEY], (items) => {
         if (items) {
           return items.map((item) => {
@@ -206,6 +233,7 @@ function UpdateForm({ token }: { token: string }) {
         }
         return items;
       });
+      queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       handleCancelClick();
       toast({
         title: "Updated",
@@ -273,6 +301,8 @@ function DeleteForm({ token }: { token: string }) {
         }
         return prev;
       });
+
+      queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       handleCancelClick();
       toast({
         title: "Deleted",
