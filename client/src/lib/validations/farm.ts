@@ -25,7 +25,7 @@ export const farmSchema = z
   })
   .transform((obj) => ({
     ...obj,
-    ownerName: `${obj.owner.lastname}, ${obj.owner.firstname}`,
+    ownerName: `${obj.owner.lastname}, ${obj.owner.firstname} ${obj.owner.middleInitial}.`,
   }));
 
 export const farmsSchema = z.object({

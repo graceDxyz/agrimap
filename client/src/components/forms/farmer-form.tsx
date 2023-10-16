@@ -116,9 +116,7 @@ function CreateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: createFarmer,
     onSuccess: ({ data }) => {
-      const fullName = `${data.lastname}, ${data.firstname}`;
-      const fullAddress = `${data.address.streetAddress}, ${data.address.barangay}, ${data.address.municipality}, ${data.address.cityOrProvince}, ${data.address.zipcode}`;
-      const newFarmer = { ...data, fullName, fullAddress };
+      const newFarmer = farmerSchema.parse(data);
       queryClient.setQueriesData<RecentAdded>(
         [QUERY_STATISTICS_KEY, "recent"],
         (items) => {
