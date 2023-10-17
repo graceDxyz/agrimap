@@ -122,7 +122,7 @@ function FarmAreaPage() {
     if (farmData) {
       form.reset({ ...farmData, ownerId: farmData.owner._id });
     }
-  }, [farmData, form]);
+  }, [farmData, form, isEditMode]);
 
   useEffect(() => {
     resetState();

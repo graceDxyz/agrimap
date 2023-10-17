@@ -26,10 +26,14 @@ function GenericSelect<T>({
   loadOptions,
   ...props
 }: GenericSelectProps<T>) {
-  const value = props?.value as unknown as { label: string };
+  const value = props?.value as unknown as { label?: string | null };
 
   return isDisabled ? (
-    <Input className="disabled:opacity-100" disabled value={value.label} />
+    <Input
+      className="disabled:opacity-100"
+      disabled
+      value={value?.label ?? ""}
+    />
   ) : (
     <AsyncSelect
       cacheOptions
