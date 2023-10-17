@@ -152,6 +152,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
     ),
   },
   {
+    // id: "isMortgageId",
     accessorKey: "isMortgage",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Mortgage Status" />
@@ -168,7 +169,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
   },
 ];
 
-export const mortgageColumns: ColumnDef<Mortgage>[] = [
+export const landStatusColumns: ColumnDef<Mortgage>[] = [
   {
     accessorKey: "farmTitle",
     header: ({ column }) => (

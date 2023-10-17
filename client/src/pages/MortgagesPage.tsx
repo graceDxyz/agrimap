@@ -1,4 +1,4 @@
-import { mortgageColumns } from "@/components/data-table/columns";
+import { landStatusColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
 import { MortgageDialog } from "@/components/forms/mortgage-form";
 import {
@@ -55,7 +55,7 @@ function MortgagesPage() {
       >
         <DataTable
           data={data ?? []}
-          columns={mortgageColumns}
+          columns={landStatusColumns}
           searchPlaceHolder="Filter status..."
           isLoading={isLoading}
         />
