@@ -14,6 +14,23 @@ interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
 
+interface Label {
+  [key: string]: string;
+}
+
+const label: Label = {
+  phoneNumber: "Phone Number",
+  totalSize: "Owned Area",
+  fullAddress: "Address",
+  titleNumber: "Title Number",
+  isMortgage: "Status",
+  farmTitle: "Title Number",
+  mortgageToName: "Mortgage to",
+  farmerName: "Land Owner",
+  farmSize: "Farm size",
+  mortgageDateRange: "Contract Duration",
+};
+
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
@@ -25,7 +42,7 @@ export function DataTableViewOptions<TData>({
           View
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
+      <DropdownMenuContent align="end" className="w-[200px]">
         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
@@ -42,7 +59,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {label[column.id] ?? column.id}
               </DropdownMenuCheckboxItem>
             );
           })}

@@ -6,6 +6,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -21,7 +22,7 @@ export function DataTableColumnHeader<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
-  // const canHide = column.getCanHide();
+  const canHide = column.getCanHide();
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
@@ -54,7 +55,7 @@ export function DataTableColumnHeader<TData, TValue>({
             <Icons.arrowDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Desc
           </DropdownMenuItem>
-          {/* {canHide ? (
+          {canHide ? (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
@@ -62,7 +63,7 @@ export function DataTableColumnHeader<TData, TValue>({
                 Hide
               </DropdownMenuItem>
             </>
-          ) : undefined} */}
+          ) : undefined}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

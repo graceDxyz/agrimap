@@ -1,5 +1,6 @@
 import { Table } from "@tanstack/react-table";
 
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,7 +74,7 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <></>
-      {/* <DataTableViewOptions table={table} /> */}
+      <DataTableViewOptions table={table} />
     </div>
   );
 }

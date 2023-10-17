@@ -102,6 +102,7 @@ function CreateForm({ token }: { token: string }) {
     defaultValues: {
       firstname: "",
       lastname: "",
+      middleInitial: "",
       address: {
         streetAddress: "",
         cityOrProvince: "",
@@ -179,6 +180,7 @@ function UpdateForm({ token }: { token: string }) {
     defaultValues: {
       firstname: "",
       lastname: "",
+      middleInitial: "",
       address: {
         streetAddress: "",
         cityOrProvince: "",
