@@ -6,93 +6,87 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        let: { farmerId: "$_id" },
+        localField: "_id",
+        foreignField: "owner",
+        as: "farms",
+      },
+    },
+    {
+      $lookup: {
+        from: "mortgages",
+        let: { userId: "$_id" },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
-                  { $eq: ["$owner", "$$farmerId"] },
-                  { $eq: ["$isArchived", false] },
+                  {
+                    $eq: ["$mortgageTo", "$$userId"],
+                  },
+                  { $eq: ["$status", "Active"] },
                 ],
               },
             },
           },
         ],
-        as: "farms",
+        as: "mortgagesIn",
       },
     },
     {
-      $unwind: {
-        path: "$farms",
-        preserveNullAndEmptyArrays: true,
+      $lookup: {
+        from: "farms",
+        localField: "mortgagesIn.farm",
+        foreignField: "_id",
+        as: "morgageInfarms",
       },
     },
     {
       $lookup: {
         from: "mortgages",
-        localField: "farms._id",
-        foreignField: "farm",
-        as: "activeMortgages",
-      },
-    },
-    {
-      $match: {
-        "activeMortgages.status": { $ne: "Active" },
-      },
-    },
-    {
-      $group: {
-        _id: "$_id",
-        id: { $first: "$_id" },
-        firstname: { $first: "$firstname" },
-        lastname: { $first: "$lastname" },
-        middleInitial: { $first: "$middleInitial" },
-        address: { $first: "$address" },
-        phoneNumber: { $first: "$phoneNumber" },
-        createdAt: { $first: "$createdAt" },
-        updatedAt: { $first: "$updatedAt" },
-        totalSize: { $sum: "$farms.size" },
-      },
-    },
-    {
-      $lookup: {
-        from: "mortgages",
-        let: { farmerId: "$_id" },
+        let: { userId: "$_id" },
         pipeline: [
           {
             $match: {
-              $expr: { $eq: ["$mortgageTo", "$$farmerId"] },
+              $expr: {
+                $eq: ["$status", "Active"],
+              },
             },
           },
           {
             $lookup: {
               from: "farms",
-              localField: "farm",
-              foreignField: "_id",
+              let: { farmId: "$farm" },
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "farmers",
+                    let: { ownerId: "$owner" },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $eq: ["$_id", "$$ownerId"],
+                          },
+                        },
+                      },
+                    ],
+                    as: "ownerDetails",
+                  },
+                },
+              ],
               as: "farmDetails",
             },
           },
-          {
-            $unwind: {
-              path: "$farmDetails",
-              preserveNullAndEmptyArrays: true,
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              totalFarmSize: { $sum: "$farmDetails.size" },
-            },
-          },
         ],
-        as: "farmSize",
+        as: "mortgagesOut",
       },
     },
     {
-      $unwind: {
-        path: "$farmSize",
-        preserveNullAndEmptyArrays: true,
+      $lookup: {
+        from: "farms",
+        localField: "mortgagesOut.farm",
+        foreignField: "_id",
+        as: "mortgagesOutfarms",
       },
     },
     {
@@ -106,13 +100,24 @@ export async function getAllFarmer() {
         phoneNumber: 1,
         createdAt: 1,
         updatedAt: 1,
-        totalSize: { $sum: ["$totalSize", "$farmSize.totalFarmSize"] },
-      },
-    },
-    {
-      $sort: {
-        lastname: 1,
-        firstname: 1,
+        ownedArea: { $sum: "$farms.size" },
+        mortInSize: {
+          $sum: "$morgageInfarms.size",
+        },
+        mortOutSize: {
+          $sum: "$mortgagesOutfarms.size",
+        },
+        totalSize: {
+          $subtract: [
+            {
+              $add: [
+                { $ifNull: ["$ownedArea", 0] },
+                { $ifNull: ["$mortInSize", 0] },
+              ],
+            },
+            { $ifNull: ["$mortOutSize", 0] },
+          ],
+        },
       },
     },
   ]);
@@ -135,7 +140,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }
