@@ -22,6 +22,7 @@ export const farmSchema = z
     coordinates: coordinatesSchema,
     address: addressSchema,
     ownerName: z.string().nullish(),
+    isArchived: z.boolean(),
   })
   .transform((obj) => ({
     ...obj,
@@ -46,4 +47,5 @@ export const createFarmSchema = z.object({
     message: "Please select map coordinates on the map",
   }),
   address: addressSchema,
+  isArchived: z.boolean().default(false),
 });

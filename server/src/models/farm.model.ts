@@ -18,6 +18,7 @@ export interface FarmInput {
     barangay: string;
     zipcode: string;
   };
+  isArchived: boolean;
 }
 
 export interface IFarm extends FarmInput, mongoose.Document {
@@ -72,6 +73,10 @@ const farmSchema = new mongoose.Schema(
         type: String,
       },
     },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -79,7 +84,7 @@ const farmSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  },
+  }
 );
 
 const FarmModel = mongoose.model<IFarm>("Farm", farmSchema);
