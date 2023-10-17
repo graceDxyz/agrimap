@@ -92,7 +92,7 @@ function App() {
           ),
         },
         {
-          path: "mortgages",
+          path: "land-status",
           element: (
             <Suspense fallback={<Loader />}>
               <MortgagesPage />

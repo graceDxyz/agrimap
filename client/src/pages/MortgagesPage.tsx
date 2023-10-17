@@ -37,16 +37,16 @@ function MortgagesPage() {
       >
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
-            Mortgage land
+            Land status
           </PageHeaderHeading>
           {isAdmin ? (
             <Button size="sm" onClick={handleCreateClick}>
-              Add mortgage land
+              Add data
             </Button>
           ) : undefined}
         </div>
         <PageHeaderDescription size="sm">
-          Manage the mortgage land
+          Manage the land status
         </PageHeaderDescription>
       </PageHeader>
       <section
@@ -56,7 +56,7 @@ function MortgagesPage() {
         <DataTable
           data={data ?? []}
           columns={mortgageColumns}
-          searchPlaceHolder="Filter mortgages..."
+          searchPlaceHolder="Filter status..."
           isLoading={isLoading}
         />
         <MortgageDialog />

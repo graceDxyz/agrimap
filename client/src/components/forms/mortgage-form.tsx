@@ -69,18 +69,18 @@ export function MortgageDialog() {
       description: "View mortgage details.",
     },
     create: {
-      title: "Add Mortgage",
-      description: "add a new mortgage.",
+      title: "Add Data",
+      description: "add a land status.",
       form: <CreateForm token={user?.accessToken ?? ""} />,
     },
     update: {
-      title: "Update Mortgage",
-      description: "Update mortgage information.",
+      title: "Update Data",
+      description: "update a land status.",
       form: <UpdateForm token={user?.accessToken ?? ""} />,
     },
     delete: {
       title: "Are you absolutely sure?",
-      description: "Delete mortgage data (cannot be undone).",
+      description: "Delete land status (cannot be undone).",
       form: <DeleteForm token={user?.accessToken ?? ""} />,
     },
   };
