@@ -25,7 +25,7 @@ export function DataTableViewOptions<TData>({
           View
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[200px]">
+      <DropdownMenuContent align="end" className="w-[150px]">
         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
@@ -35,11 +35,6 @@ export function DataTableViewOptions<TData>({
               typeof column.accessorFn !== "undefined" && column.getCanHide()
           )
           .map((column) => {
-            const str = column.columnDef.header?.toString() ?? "";
-            const titleRegex = /title: "(.*?)"/;
-            const match = str.match(titleRegex);
-            const title = match ? match[1] : null;
-
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
@@ -47,7 +42,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {title}
+                {column.id}
               </DropdownMenuCheckboxItem>
             );
           })}

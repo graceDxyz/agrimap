@@ -1,12 +1,11 @@
 import { Table } from "@tanstack/react-table";
 
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -73,7 +72,8 @@ export function DataTableToolbar<TData>({
           </>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <></>
+      {/* <DataTableViewOptions table={table} /> */}
     </div>
   );
 }
