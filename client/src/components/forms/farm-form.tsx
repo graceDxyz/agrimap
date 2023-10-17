@@ -12,11 +12,12 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
-import { deleteFarm } from "@/services/farm.service";
+import { farmSchema } from "@/lib/validations/farm";
+import { archivedFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
@@ -45,7 +46,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function FarmDialog() {
   const { user } = useGetAuth();
-  const { mode } = useBoundStore((state) => state.farm);
+  const { mode, farm } = useBoundStore((state) => state.farm);
   const isOpen = mode !== "view";
 
   const modeToTitle: Record<Mode, DialogHeaderDetail> = {
@@ -63,8 +64,10 @@ export function FarmDialog() {
     },
     delete: {
       title: "Are you absolutely sure?",
-      description: "Delete farm data (cannot be undone).",
-      form: <DeleteForm token={user?.accessToken ?? ""} />,
+      description: `${
+        farm?.isArchived ? "Unarchived" : "Archived"
+      } farm data (reversible action).`,
+      form: <ArchivedForm token={user?.accessToken ?? ""} />,
     },
   };
 
@@ -84,23 +87,33 @@ export function FarmDialog() {
   );
 }
 
-function DeleteForm({ token }: { token: string }) {
+function ArchivedForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { farm, setMode } = useBoundStore((state) => state.farm);
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: deleteFarm,
-    onSuccess: () => {
-      queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (prev) => {
-        const farms = prev as Farm[];
-        return farms.filter((item) => item._id !== farm?._id);
+    mutationFn: archivedFarm,
+    onSuccess: ({ data }) => {
+      const updateFarm = farmSchema.parse(data);
+      queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
+      queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
+        if (items) {
+          return items.map((item) => {
+            if (item._id === updateFarm._id) {
+              return { ...updateFarm, isMortgage: item.isMortgage };
+            }
+            return item;
+          });
+        }
+        return items;
       });
-
       handleCancelClick();
       toast({
-        title: "Deleted",
-        description: `Farm ${farm?._id} deleted successfully!`,
+        title: farm?.isArchived ? "Unarchived" : "Archived",
+        description: `Farm ${farm?._id} ${
+          farm?.isArchived ? "unarchived" : "archived"
+        } successfully!`,
       });
     },
     onError: (error) => {

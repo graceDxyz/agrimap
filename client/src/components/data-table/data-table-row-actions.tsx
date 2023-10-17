@@ -12,13 +12,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { QUERY_FARM_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
+import { useGetAuth } from "@/services/session.service";
 import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
+import { Mortgage } from "@/types/mortgage.type";
 import { User } from "@/types/user.type";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Mortgage } from "@/types/mortgage.type";
-import { useGetAuth } from "@/services/session.service";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -136,7 +136,7 @@ export function FarmDataTableRowActions<TData>({
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDeleteClick}>
-          Delete
+          {original.isArchived ? "Unarchived" : "Archived"}
           <DropdownMenuShortcut></DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -156,7 +156,7 @@ export function MortgageDataTableRowActions<TData>({
   function handleViewClick() {
     queryClient.setQueryData(
       [QUERY_FARM_KEY, original.farm._id],
-      original.farm,
+      original.farm
     );
     navigate(`/dashboard/farms/${original.farm._id}`);
   }

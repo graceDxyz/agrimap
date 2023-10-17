@@ -88,3 +88,23 @@ export async function deleteFarm({ token, id }: { token: string; id: string }) {
 
   return res;
 }
+
+export async function archivedFarm({
+  token,
+  id,
+}: {
+  token: string;
+  id: string;
+}) {
+  const res = await api.post<Farm>(
+    `/farms/${id}/archived`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return res;
+}

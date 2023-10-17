@@ -1,5 +1,6 @@
 import { Express } from "express";
 import {
+  archivedFarmHandler,
   createFarmHandler,
   deleteFarmHandler,
   getAllFarmHandler,
@@ -20,17 +21,22 @@ function FarmRoutes(app: Express) {
   app.post(
     "/api/farms",
     [requiredUser, validateResource(createFarmSchema)],
-    createFarmHandler,
+    createFarmHandler
   );
   app.put(
     "/api/farms/:farmId",
     [requiredUser, validateResource(updateFarmSchema)],
-    updateFarmHandler,
+    updateFarmHandler
   );
   app.delete(
     "/api/farms/:farmId",
     [requiredUser, validateResource(getFarmSchema)],
-    deleteFarmHandler,
+    deleteFarmHandler
+  );
+  app.post(
+    "/api/farms/:farmId/archived",
+    [requiredUser, validateResource(getFarmSchema)],
+    archivedFarmHandler
   );
 }
 

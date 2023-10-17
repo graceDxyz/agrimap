@@ -6,13 +6,13 @@ import {
   getAllFarm,
   updateFarm,
 } from "../services/farm.service";
+import { deleteMortgages } from "../services/mortgage.service";
 import {
   CreateFarmInput,
   GetFarmInput,
   UpdateFarmInput,
 } from "../types/farm.types";
 import logger from "../utils/logger";
-import { deleteMortgages } from "../services/mortgage.service";
 
 const getAllFarmHandler = async (req: Request, res: Response) => {
   const farms = await getAllFarm();
@@ -21,7 +21,7 @@ const getAllFarmHandler = async (req: Request, res: Response) => {
 
 const getFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmId = req.params.farmId;
 
@@ -36,7 +36,7 @@ const getFarmHandler = async (
 
 const createFarmHandler = async (
   req: Request<{}, {}, CreateFarmInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -55,7 +55,7 @@ const createFarmHandler = async (
 
 const updateFarmHandler = async (
   req: Request<UpdateFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmId = req.params.farmId;
   const update = req.body;
@@ -81,7 +81,7 @@ const updateFarmHandler = async (
 
 const deleteFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const farmId = req.params.farmId;
   const farm = await findFarm({ _id: farmId });
@@ -100,7 +100,38 @@ const deleteFarmHandler = async (
   }
 };
 
+const archivedFarmHandler = async (
+  req: Request<GetFarmInput["params"]>,
+  res: Response
+) => {
+  const farmId = req.params.farmId;
+  const farm = await findFarm({ _id: farmId });
+
+  if (!farm) {
+    return res.sendStatus(404);
+  }
+
+  try {
+    const updatedFarm = await updateFarm(
+      { _id: farmId },
+      {
+        $set: { isArchived: !farm.isArchived },
+      },
+      {
+        new: true,
+        populate: "owner",
+      }
+    );
+
+    return res.send(updatedFarm);
+  } catch (error: any) {
+    logger.error(error);
+    res.status(409).send(error.message);
+  }
+};
+
 export {
+  archivedFarmHandler,
   createFarmHandler,
   deleteFarmHandler,
   getAllFarmHandler,

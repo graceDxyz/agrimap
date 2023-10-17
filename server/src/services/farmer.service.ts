@@ -6,8 +6,19 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        localField: "_id",
-        foreignField: "owner",
+        let: { farmerId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$owner", "$$farmerId"] },
+                  { $eq: ["$isArchived", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "farms",
       },
     },
