@@ -32,10 +32,12 @@ export const farmersSchema = z.object({
   farmers: z.array(farmerSchema),
 });
 
+const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{11})$/);
+
 export const createFarmerSchema = z.object({
   firstname: z.string().min(1, { message: "Please input a firstname" }),
   lastname: z.string().min(1, { message: "Please input a lastname" }),
   middleInitial: z.string().min(1),
   address: addressSchema,
-  phoneNumber: z.string(),
+  phoneNumber: z.string().regex(phoneRegex, "Invalid Number!"),
 });
