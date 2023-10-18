@@ -63,3 +63,37 @@ export async function deleteFarm(query: FilterQuery<IFarm>) {
 export async function deleteFarms(query: FilterQuery<IFarm>) {
   return FarmModel.deleteMany(query);
 }
+
+export async function getAllFarmCrops() {
+  const result = await FarmModel.aggregate([
+    {
+      $project: {
+        crops: 1,
+        _id: 0,
+      },
+    },
+    {
+      $unwind: "$crops",
+    },
+    {
+      $group: {
+        _id: null,
+        allCrops: { $addToSet: "$crops" },
+      },
+    },
+    {
+      $unwind: "$allCrops",
+    },
+    {
+      $sort: { allCrops: 1 }, // Sort the crops alphabetically
+    },
+    {
+      $group: {
+        _id: null,
+        allCrops: { $push: "$allCrops" },
+      },
+    },
+  ]);
+
+  return result.length > 0 ? result[0].allCrops : [];
+}

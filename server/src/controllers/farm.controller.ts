@@ -4,6 +4,7 @@ import {
   deleteFarm,
   findFarm,
   getAllFarm,
+  getAllFarmCrops,
   updateFarm,
 } from "../services/farm.service";
 import { deleteMortgages } from "../services/mortgage.service";
@@ -16,7 +17,14 @@ import logger from "../utils/logger";
 
 const getAllFarmHandler = async (req: Request, res: Response) => {
   const farms = await getAllFarm();
+  const crops = await getAllFarmCrops();
+  console.log(crops);
   return res.send(farms);
+};
+
+const getAllFarmCropsHandler = async (req: Request, res: Response) => {
+  const crops = await getAllFarmCrops();
+  return res.send(crops);
 };
 
 const getFarmHandler = async (
@@ -134,6 +142,7 @@ export {
   archivedFarmHandler,
   createFarmHandler,
   deleteFarmHandler,
+  getAllFarmCropsHandler,
   getAllFarmHandler,
   getFarmHandler,
   updateFarmHandler,

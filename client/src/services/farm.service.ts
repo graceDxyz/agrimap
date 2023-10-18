@@ -1,4 +1,8 @@
-import { QUERY_FARMS_KEY, QUERY_FARM_KEY } from "@/constant/query.constant";
+import {
+  QUERY_CROPS_KEY,
+  QUERY_FARMS_KEY,
+  QUERY_FARM_KEY,
+} from "@/constant/query.constant";
 import api from "@/lib/api";
 import { farmSchema, farmsSchema } from "@/lib/validations/farm";
 import { Message } from "@/types";
@@ -106,4 +110,25 @@ export async function archivedFarm({
   );
 
   return res;
+}
+
+export function useGetFarmCrops({
+  token,
+  options,
+}: {
+  token: string;
+  options?: UseQueryOptions<string[], AxiosError>;
+}) {
+  return useQuery({
+    queryKey: [QUERY_CROPS_KEY],
+    queryFn: async () => {
+      const res = await api.get("/farms/crops", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    },
+    ...options,
+  });
 }

@@ -3,6 +3,7 @@ import {
   archivedFarmHandler,
   createFarmHandler,
   deleteFarmHandler,
+  getAllFarmCropsHandler,
   getAllFarmHandler,
   getFarmHandler,
   updateFarmHandler,
@@ -17,6 +18,7 @@ import {
 
 function FarmRoutes(app: Express) {
   app.get("/api/farms", requiredUser, getAllFarmHandler);
+  app.get("/api/farms/crops", requiredUser, getAllFarmCropsHandler);
   app.get("/api/farms/:farmId", requiredUser, getFarmHandler);
   app.post(
     "/api/farms",

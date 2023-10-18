@@ -15,3 +15,5 @@ export const QUERY_STATISTICS_KEY = "statistics";
 export const QUERY_ADDRESSES_KEY = "addresses";
 
 export const QUERY_REPORT_KEY = "report";
+
+export const QUERY_CROPS_KEY = "crops";

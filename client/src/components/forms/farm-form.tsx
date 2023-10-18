@@ -26,6 +26,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { BarangaySelect, CitySelect, ProvinceSelect } from "../address-select";
+import { CropSelect } from "../crops-select";
 import {
   Command,
   CommandEmpty,
@@ -287,6 +288,24 @@ export function FarmGenericForm({
                       className="disabled:opacity-100"
                       placeholder="title number"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="crops"
+              render={({ field: { value, onChange } }) => (
+                <FormItem>
+                  <FormLabel>Crops</FormLabel>
+                  <FormControl>
+                    <CropSelect
+                      value={value}
+                      onChange={(e) => onChange(e.map((item) => item.value))}
+                      onCreateOption={(e) => onChange([...value, e])}
+                      isDisabled={!isEditMode}
                     />
                   </FormControl>
                   <FormMessage />
