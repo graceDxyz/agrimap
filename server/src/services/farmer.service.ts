@@ -62,6 +62,11 @@ export async function getAllFarmer() {
         id: 1,
         firstname: 1,
         lastname: 1,
+        middleInitial: 1,
+        address: 1,
+        phoneNumber: 1,
+        createdAt: 1,
+        updatedAt: 1,
         ownedArea: { $sum: "$farms.size" },
         mortInSize: {
           $sum: "$morgageInfarms.size",
@@ -106,7 +111,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions,
+  options: QueryOptions
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }

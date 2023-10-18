@@ -136,7 +136,7 @@ const getStatHandler = async (
       count: match ? match.count : 0,
     };
   });
-return res.send(data);
+  return res.send(data);
 };
 
 export { getStatHandler, getStatRecentHandler };
