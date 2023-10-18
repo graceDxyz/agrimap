@@ -4,6 +4,7 @@ import { useGetAuth } from "@/services/session.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { ActionMeta, MultiValue } from "react-select";
 import AsyncCreatableSelect from "react-select/async-creatable";
+import { Badge } from "./ui/badge";
 
 interface CropOption {
   value: string;
@@ -62,10 +63,22 @@ export function CropSelect({
     onCreateOption(inputValue);
   }
 
+  if (isDisabled) {
+    return (
+      <div className="flex flex-wrap gap-2 border p-2 rounded-md">
+        {selectedOptions.map((item, index) => (
+          <Badge key={index} className="cursor-default capitalize">
+            {item.label}
+          </Badge>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <AsyncCreatableSelect
       isMulti
-      isDisabled={isDisabled}
+      isClearable={false}
       isLoading={isLoading}
       defaultOptions={cropOptions}
       loadOptions={promiseOptions}
@@ -73,6 +86,7 @@ export function CropSelect({
       value={selectedOptions}
       onChange={onChange}
       onCreateOption={handleCreateOption}
+      className="capitalize"
     />
   );
 }
