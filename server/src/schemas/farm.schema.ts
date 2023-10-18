@@ -20,6 +20,7 @@ const payload = {
     coordinates: coordinatesSchema,
     address: addressSchema,
     isArchived: z.boolean(),
+    crops: z.array(z.string()),
   }),
 };
 

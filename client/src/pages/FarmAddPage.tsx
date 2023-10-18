@@ -50,6 +50,7 @@ function FarmAddPage() {
         barangay: "",
         zipcode: "",
       },
+      crops: [],
     },
   });
 

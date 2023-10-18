@@ -23,6 +23,7 @@ export const farmSchema = z
     address: addressSchema,
     ownerName: z.string().nullish(),
     isArchived: z.boolean(),
+    crops: z.array(z.string()),
   })
   .transform((obj) => ({
     ...obj,
@@ -48,4 +49,5 @@ export const createFarmSchema = z.object({
   }),
   address: addressSchema,
   isArchived: z.boolean().default(false),
+  crops: z.array(z.string()).default([]),
 });

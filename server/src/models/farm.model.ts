@@ -19,6 +19,7 @@ export interface FarmInput {
     zipcode: string;
   };
   isArchived: boolean;
+  crops: string[];
 }
 
 export interface IFarm extends FarmInput, mongoose.Document {
@@ -76,6 +77,10 @@ const farmSchema = new mongoose.Schema(
     isArchived: {
       type: Boolean,
       default: false,
+    },
+    crops: {
+      type: [String],
+      default: [],
     },
   },
   {
