@@ -65,7 +65,7 @@ export function CropSelect({
 
   if (isDisabled) {
     return (
-      <div className="flex flex-wrap gap-2 border p-2 rounded-md">
+      <div className="flex flex-wrap gap-2 border p-2 rounded-md min-h-[40px]">
         {selectedOptions.map((item, index) => (
           <Badge key={index} className="cursor-default capitalize">
             {item.label}
