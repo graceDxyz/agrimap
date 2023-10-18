@@ -65,6 +65,7 @@ export function SignInForm() {
         <FormField
           control={form.control}
           name="email"
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -78,6 +79,7 @@ export function SignInForm() {
         <FormField
           control={form.control}
           name="password"
+          disabled={isLoading}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Password</FormLabel>
