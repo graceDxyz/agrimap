@@ -136,9 +136,7 @@ const getStatHandler = async (
       count: match ? match.count : 0,
     };
   });
-  setTimeout(() => {
-    return res.send(data);
-  }, 10000);
+return res.send(data);
 };
 
 export { getStatHandler, getStatRecentHandler };
