@@ -17,8 +17,6 @@ import logger from "../utils/logger";
 
 const getAllFarmHandler = async (req: Request, res: Response) => {
   const farms = await getAllFarm();
-  const crops = await getAllFarmCrops();
-  console.log(crops);
   return res.send(farms);
 };
 
