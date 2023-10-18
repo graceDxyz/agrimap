@@ -25,7 +25,7 @@ const app = express();
 app.use(
   helmet({
     contentSecurityPolicy: false,
-  }),
+  })
 );
 app.use(cookieParser());
 app.use(
@@ -38,11 +38,19 @@ app.use(
     ],
     credentials: true,
     allowedHeaders: ["Content-Disposition"],
-  }),
+  })
 );
 app.use(express.json()); //bodyparser
 app.use(deserializeUser);
-app.use(morgan("common"));
+if (node_env === "production") {
+  app.use(
+    morgan("common", {
+      skip: (req, res) => res.statusCode < 400,
+    })
+  );
+} else {
+  app.use(morgan("dev"));
+}
 
 // Serve static files from the React build folder
 app.use(express.static(path.join(__dirname, root_dir, "client", "dist")));
