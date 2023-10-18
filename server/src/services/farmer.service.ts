@@ -43,41 +43,8 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "mortgages",
-        let: { userId: "$_id" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $eq: ["$status", "Active"],
-              },
-            },
-          },
-          {
-            $lookup: {
-              from: "farms",
-              let: { farmId: "$farm" },
-              pipeline: [
-                {
-                  $lookup: {
-                    from: "farmers",
-                    let: { ownerId: "$owner" },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $eq: ["$_id", "$$ownerId"],
-                          },
-                        },
-                      },
-                    ],
-                    as: "ownerDetails",
-                  },
-                },
-              ],
-              as: "farmDetails",
-            },
-          },
-        ],
+        localField: "farms._id",
+        foreignField: "farm",
         as: "mortgagesOut",
       },
     },
@@ -95,11 +62,6 @@ export async function getAllFarmer() {
         id: 1,
         firstname: 1,
         lastname: 1,
-        middleInitial: 1,
-        address: 1,
-        phoneNumber: 1,
-        createdAt: 1,
-        updatedAt: 1,
         ownedArea: { $sum: "$farms.size" },
         mortInSize: {
           $sum: "$morgageInfarms.size",
@@ -111,11 +73,15 @@ export async function getAllFarmer() {
           $subtract: [
             {
               $add: [
-                { $ifNull: ["$ownedArea", 0] },
-                { $ifNull: ["$mortInSize", 0] },
+                { $sum: "$farms.size" },
+                {
+                  $sum: "$morgageInfarms.size",
+                },
               ],
             },
-            { $ifNull: ["$mortOutSize", 0] },
+            {
+              $sum: "$mortgagesOutfarms.size",
+            },
           ],
         },
       },
