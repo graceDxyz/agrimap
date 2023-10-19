@@ -16,7 +16,7 @@ interface Props {
   value: string[];
   onChange: (
     newValue: MultiValue<CropOption>,
-    actionMeta: ActionMeta<CropOption>
+    actionMeta: ActionMeta<CropOption>,
   ) => void;
   onCreateOption: (inputValue: string) => void;
 }
@@ -38,7 +38,7 @@ export function CropSelect({
 
   const filterColors = (inputValue: string) => {
     return cropOptions.filter((i) =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
+      i.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
   };
 
@@ -50,7 +50,7 @@ export function CropSelect({
     });
 
   const selectedOptions = cropOptions.filter((item) =>
-    value.includes(item.value)
+    value.includes(item.value),
   );
 
   function handleCreateOption(inputValue: string) {
@@ -67,7 +67,11 @@ export function CropSelect({
     return (
       <div className="flex flex-wrap gap-2 border p-2 rounded-md min-h-[40px]">
         {selectedOptions.map((item, index) => (
-          <Badge key={index} className="cursor-default capitalize">
+          <Badge
+            variant="secondary"
+            key={index}
+            className="cursor-default capitalize"
+          >
             {item.label}
           </Badge>
         ))}
