@@ -1,7 +1,7 @@
 import {
-  countStatSchema,
   farmerDataSchema,
   recentAddedSchema,
+  statCountSchema,
 } from "@/lib/validations/statistic";
 import * as z from "zod";
 
@@ -13,7 +13,7 @@ export enum StatsBy {
 
 export type RecentAdded = z.infer<typeof recentAddedSchema>;
 export type FarmerData = z.infer<typeof farmerDataSchema>;
-export type StatCount = z.infer<typeof countStatSchema>;
+export type StatCount = z.infer<typeof statCountSchema>;
 
 export type StatsQuery = {
   by?: StatsBy;

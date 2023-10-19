@@ -45,6 +45,8 @@ function DashboardPage() {
     token: user?.accessToken ?? "",
   });
 
+  const totalMortgageSize = countData?.totalMortgageSize ?? 0;
+  const totalFarmSize = countData?.totalFarmSize ?? 0;
   return (
     <Shell variant="sidebar">
       <PageHeader
@@ -125,11 +127,7 @@ function DashboardPage() {
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {parseFloat(
-                      (
-                        (countData?.totalMortgageSize /
-                          countData?.totalFarmSize) *
-                        100
-                      ).toString()
+                      ((totalMortgageSize / totalFarmSize) * 100).toString()
                     ).toFixed(2)}{" "}
                     % of Total farm size
                   </p>
