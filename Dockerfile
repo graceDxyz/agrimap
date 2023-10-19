@@ -23,8 +23,8 @@ WORKDIR /app/server
 # Build the server
 RUN npm run build
 
-# Copy the 'json' folder to the server's 'build' directory
-COPY server/src/json ./build/src/json
+# Copy the 'sqlite.db' file to the server's 'build' directory
+COPY server/sqlite.db ./build/sqlite.db
 
 # # Start your Express.js server
 CMD ["node", "build/src/app.js"]

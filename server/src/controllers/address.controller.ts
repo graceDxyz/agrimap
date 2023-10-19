@@ -1,12 +1,16 @@
 import { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
+import { db } from "../db";
 import {
   Barangay,
   City,
-  GetAddressInput,
   Province,
-} from "../types/address.types";
+  barangays,
+  cities,
+  provinces,
+} from "../db/schema";
+import { GetAddressInput } from "../types/address.types";
 
 const dataDirectory = path.join(__dirname, "..", "json");
 const provFilePath = path.join(dataDirectory, "provinces.json");
@@ -15,11 +19,38 @@ const bgyFilePath = path.join(dataDirectory, "barangays.json");
 
 export const getAddressHandler = async (req: Request, res: Response) => {
   try {
-    const provinces = (await readFilePromise<Province>(provFilePath)).data;
-    const cities = (await readFilePromise<City>(cityFilePath)).data;
-    const barangays = (await readFilePromise<Barangay>(bgyFilePath)).data;
+    const provRes = db.select().from(provinces).all();
+    const citRes = db.select().from(cities).all();
+    const brgyRes = db.select().from(barangays).all();
 
-    res.json({ provinces, cities, barangays });
+    res.json({ provinces: provRes, cities: citRes, barangays: brgyRes });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error parsing JSON data");
+  }
+};
+
+export const seedAddressHandler = async (req: Request, res: Response) => {
+  try {
+    // const [provJson, cityJson, brgyJson] = await Promise.all([
+    //   readFilePromise<Province>(provFilePath),
+    //   readFilePromise<City>(cityFilePath),
+    //   readFilePromise<Barangay>(bgyFilePath),
+    // ]);
+
+    // const chunkSize = 1000;
+    // const data = cityJson.data ?? [];
+    // for (let i = 0; i < data.length; i += chunkSize) {
+    //   const chunk = data.slice(i, i + chunkSize);
+    //   await db.insert(cities).values(chunk);
+    // }
+
+    // for (let i = 0; i < data.length; i += chunkSize) {
+    //   const chunk = data.slice(i, i + chunkSize);
+    //   await db.insert(barangays).values(chunk);
+    // }
+
+    res.send();
   } catch (err) {
     console.error(err);
     res.status(500).send("Error parsing JSON data");

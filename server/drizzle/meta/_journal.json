@@ -1,0 +1,41 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1697700573342,
+      "tag": "0000_spooky_tusk",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1697701054382,
+      "tag": "0001_certain_stone_men",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1697701482669,
+      "tag": "0002_watery_vargas",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1697701582784,
+      "tag": "0003_yielding_ghost_rider",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1697702289338,
+      "tag": "0004_eager_trauma",
+      "breakpoints": true
+    }
+  ]
+}
