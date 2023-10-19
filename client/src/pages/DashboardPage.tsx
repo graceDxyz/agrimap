@@ -82,7 +82,7 @@ function DashboardPage() {
             </CardHeader>
             <CardContent>
               {isCountLoading ? (
-                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-8 w-full" />
               ) : (
                 <div className="text-2xl font-bold">
                   {countData?.totalFarmers}
@@ -98,7 +98,7 @@ function DashboardPage() {
             </CardHeader>
             <CardContent>
               {isCountLoading ? (
-                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-8 w-full" />
               ) : (
                 <div className="text-2xl font-bold">
                   {countData?.totalFarmSize}
@@ -109,16 +109,31 @@ function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Mortgage farm (m²)
+                Mortgage farm size (m²)
               </CardTitle>
             </CardHeader>
             <CardContent>
               {isCountLoading ? (
-                <Skeleton className="h-10 w-full" />
-              ) : (
-                <div className="text-2xl font-bold">
-                  {countData?.totalMortgageSize}
+                <div className="space-y-1">
+                  <Skeleton className="h-8 w-full" />
+                  <Skeleton className="h-5 w-full" />
                 </div>
+              ) : (
+                <>
+                  <div className="text-2xl font-bold">
+                    {countData?.totalMortgageSize}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {parseFloat(
+                      (
+                        (countData?.totalMortgageSize /
+                          countData?.totalFarmSize) *
+                        100
+                      ).toString()
+                    ).toFixed(2)}{" "}
+                    % of Total farm size
+                  </p>
+                </>
               )}
             </CardContent>
           </Card>
