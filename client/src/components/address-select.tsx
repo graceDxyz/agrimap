@@ -8,6 +8,7 @@ import { Input } from "./ui/input";
 
 interface Props<T> {
   isDisabled?: boolean;
+  isLoading?: boolean;
   value?: Partial<T> | Partial<T>[] | null;
   onChange?: (
     newValue: SingleValue<Partial<T>> | null,
@@ -23,6 +24,7 @@ type GenericSelectProps<T> = Props<T> & {
 function GenericSelect<T>({
   defaultOptions,
   isDisabled,
+  isLoading,
   loadOptions,
   ...props
 }: GenericSelectProps<T>) {
@@ -38,6 +40,7 @@ function GenericSelect<T>({
     <AsyncSelect
       cacheOptions
       isClearable
+      isLoading={isLoading}
       isDisabled={isDisabled}
       defaultOptions={defaultOptions}
       loadOptions={loadOptions}
@@ -62,7 +65,7 @@ export const useAddressState = create<AddressState>()((set) => ({
 
 const useGetOptions = () => {
   const { prov, city } = useAddressState();
-  const { data } = useGetPhAddress();
+  const { data, isLoading } = useGetPhAddress();
   const { provinces = [], cities = [], barangays = [] } = data || {};
 
   const fileredProvinces = provinces.filter((item) =>
@@ -99,6 +102,7 @@ const useGetOptions = () => {
     });
 
   return {
+    isLoading,
     barangays,
     defaultBrgyOptions: limitedBarangays,
     promiseBrgyOptions: (inputValue: string) =>
@@ -116,7 +120,8 @@ const useGetOptions = () => {
 
 export const ProvinceSelect = (props: Props<Province>) => {
   const { setAddressState, prov } = useAddressState();
-  const { defaultProvOptions, promiseProvOptions, provinces } = useGetOptions();
+  const { defaultProvOptions, promiseProvOptions, provinces, isLoading } =
+    useGetOptions();
 
   const propsValue = props.value as { label?: string };
   const selectedItem = provinces.find((item) => {
@@ -130,6 +135,7 @@ export const ProvinceSelect = (props: Props<Province>) => {
 
   return (
     <GenericSelect<Province>
+      isLoading={isLoading}
       defaultOptions={defaultProvOptions}
       loadOptions={promiseProvOptions}
       {...props}
@@ -139,7 +145,8 @@ export const ProvinceSelect = (props: Props<Province>) => {
 
 export const CitySelect = (props: Props<City>) => {
   const { setAddressState, prov } = useAddressState();
-  const { defaultCityOptions, promiseCityOptions, cities } = useGetOptions();
+  const { defaultCityOptions, promiseCityOptions, cities, isLoading } =
+    useGetOptions();
 
   const propsValue = props.value as { label?: string };
   const selectedItem = cities.find((item) => {
@@ -156,6 +163,7 @@ export const CitySelect = (props: Props<City>) => {
 
   return (
     <GenericSelect<City>
+      isLoading={isLoading}
       defaultOptions={defaultCityOptions}
       loadOptions={promiseCityOptions}
       {...props}
@@ -165,7 +173,8 @@ export const CitySelect = (props: Props<City>) => {
 
 export const BarangaySelect = (props: Props<Barangay>) => {
   const { setAddressState, city, prov } = useAddressState();
-  const { defaultBrgyOptions, promiseBrgyOptions, barangays } = useGetOptions();
+  const { defaultBrgyOptions, promiseBrgyOptions, barangays, isLoading } =
+    useGetOptions();
 
   const propsValue = props.value as { label?: string };
   const selectedItem = barangays.find((item) => {
@@ -183,6 +192,7 @@ export const BarangaySelect = (props: Props<Barangay>) => {
 
   return (
     <GenericSelect<Barangay>
+      isLoading={isLoading}
       defaultOptions={defaultBrgyOptions}
       loadOptions={promiseBrgyOptions}
       {...props}
