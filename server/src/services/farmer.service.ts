@@ -6,8 +6,19 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        localField: "_id",
-        foreignField: "owner",
+        let: { farmerId: "$_id" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$owner", "$$farmerId"] },
+                  { $eq: ["$isArchived", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "farms",
       },
     },
@@ -111,7 +122,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }
