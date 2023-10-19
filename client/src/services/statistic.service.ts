@@ -1,7 +1,10 @@
 import { QUERY_STATISTICS_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { recentAddedSchema } from "@/lib/validations/statistic";
-import { RecentAdded, StatsQuery } from "@/types/statistic.type";
+import {
+  statCountSchema,
+  recentAddedSchema,
+} from "@/lib/validations/statistic";
+import { RecentAdded, StatCount, StatsQuery } from "@/types/statistic.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
@@ -58,6 +61,28 @@ export function useGetStatistics({
       });
 
       return res.data;
+    },
+    ...options,
+  });
+}
+
+export function useGetStatCount({
+  token,
+  options,
+}: {
+  token: string;
+  options?: UseQueryOptions<StatCount, AxiosError>;
+}) {
+  return useQuery({
+    queryKey: [QUERY_STATISTICS_KEY, "count"],
+    queryFn: async () => {
+      const res = await api.get("/statistics/count", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return statCountSchema.parse(res.data);
     },
     ...options,
   });

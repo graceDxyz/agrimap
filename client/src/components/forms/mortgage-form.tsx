@@ -30,6 +30,7 @@ import {
   QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
   QUERY_MORTGAGES_KEY,
+  QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import {
@@ -166,6 +167,7 @@ function CreateForm({ token }: { token: string }) {
       });
 
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
+      queryClient.refetchQueries([QUERY_STATISTICS_KEY, "count"]);
       handleCancelClick();
       toast({
         title: "Created",
@@ -234,6 +236,7 @@ function UpdateForm({ token }: { token: string }) {
         return items;
       });
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
+      queryClient.refetchQueries([QUERY_STATISTICS_KEY, "count"]);
       handleCancelClick();
       toast({
         title: "Updated",
@@ -303,6 +306,7 @@ function DeleteForm({ token }: { token: string }) {
       });
 
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
+      queryClient.refetchQueries([QUERY_STATISTICS_KEY, "count"]);
       handleCancelClick();
       toast({
         title: "Deleted",
@@ -378,10 +382,14 @@ function MortgageGenericForm({
     (item) => item._id === form.getValues("mortgageToId")
   );
 
-  const filteredFarm = farmData?.filter(
-    (farm) =>
-      !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
-  );
+  const filteredFarm = farmData
+    ?.filter((farm) => !farm.isArchived)
+    .filter(
+      (farm) =>
+        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
+    );
+
+  console.log(filteredFarm);
 
   const filteredFarmer = farmersData?.filter((farmer) => {
     if (farmer._id === selectedFarm?.owner._id) {

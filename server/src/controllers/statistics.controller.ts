@@ -3,7 +3,10 @@ import isoWeek from "dayjs/plugin/isoWeek";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import { Request, Response } from "express";
 import FarmerModel from "../models/farmer.model";
-import { getStatisticsRecent } from "../services/statistic.service";
+import {
+  getStatisticsCount,
+  getStatisticsRecent,
+} from "../services/statistic.service";
 import { StatsQuery } from "../types/farmer.types";
 dayjs.extend(weekOfYear);
 dayjs.extend(isoWeek);
@@ -11,6 +14,11 @@ dayjs.extend(isoWeek);
 const getStatRecentHandler = async (req: Request, res: Response) => {
   const statistics = await getStatisticsRecent();
   return res.send(statistics);
+};
+
+const getStatCountHandler = async (req: Request, res: Response) => {
+  const count = await getStatisticsCount();
+  return res.send(count[0]);
 };
 
 const getStatHandler = async (
@@ -139,4 +147,4 @@ const getStatHandler = async (
   return res.send(data);
 };
 
-export { getStatHandler, getStatRecentHandler };
+export { getStatCountHandler, getStatHandler, getStatRecentHandler };

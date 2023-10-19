@@ -66,120 +66,94 @@ export async function getStatisticsRecent() {
   return result[0];
 }
 
-export async function getStatisticsOld() {
-  const today = dayjs();
-  const todayStart = today.startOf("day");
-  const todayEnd = today.endOf("day");
-  const currentMonthStart = today.startOf("month");
-
-  const result = await FarmerModel.aggregate([
+export function getStatisticsCount() {
+  return FarmerModel.aggregate([
     {
-      $facet: {
-        todayFarmers: [
+      $lookup: {
+        from: "farms",
+        let: { farmerId: "$_id" },
+        pipeline: [
           {
             $match: {
-              createdAt: { $gte: todayStart.toDate(), $lte: todayEnd.toDate() },
-            },
-          },
-        ],
-        monthlyCount: [
-          {
-            $match: {
-              createdAt: {
-                $gte: currentMonthStart.toDate(),
-                $lte: todayEnd.toDate(),
+              $expr: {
+                $and: [
+                  { $eq: ["$owner", "$$farmerId"] },
+                  { $eq: ["$isArchived", false] },
+                ],
               },
             },
           },
-          {
-            $count: "count",
-          },
         ],
-        annuallyData: [
+        as: "farms",
+      },
+    },
+    {
+      $lookup: {
+        from: "mortgages",
+        let: { userId: "$_id" },
+        pipeline: [
           {
-            $group: {
-              _id: { $dateToString: { format: "%b", date: "$createdAt" } },
-              count: { $sum: 1 },
-            },
-          },
-          {
-            $sort: { _id: 1 },
-          },
-        ],
-        monthlyData: [
-          {
-            $group: {
-              _id: { $week: "$createdAt" },
-              count: { $sum: 1 },
-            },
-          },
-        ],
-        weeklyData: [
-          {
-            $group: {
-              _id: { $week: { date: "$createdAt", timezone: "Asia/Manila" } },
-              count: { $sum: 1 },
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ["$mortgageTo", "$$userId"],
+                  },
+                  { $eq: ["$status", "Active"] },
+                ],
+              },
             },
           },
         ],
+        as: "mortgagesIn",
+      },
+    },
+    {
+      $lookup: {
+        from: "farms",
+        localField: "mortgagesIn.farm",
+        foreignField: "_id",
+        as: "mortgageInFarms",
+      },
+    },
+    {
+      $lookup: {
+        from: "mortgages",
+        localField: "farms._id",
+        foreignField: "farm",
+        as: "mortgagesOut",
+      },
+    },
+    {
+      $lookup: {
+        from: "farms",
+        localField: "mortgagesOut.farm",
+        foreignField: "_id",
+        as: "mortgagesOutFarms",
       },
     },
     {
       $project: {
-        todayFarmers: 1,
-        count: { $arrayElemAt: ["$monthlyCount.count", 0] },
-        annuallyData: 1,
-        monthlyData: 1,
-        weeklyData: 1,
+        _id: 1,
+        id: 1,
+        firstname: 1,
+        lastname: 1,
+        middleInitial: 1,
+        address: 1,
+        phoneNumber: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        totalFarmSize: { $sum: "$farms.size" },
+        totalMortgageFarmSize: { $sum: "$mortgageInFarms.size" },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalFarmers: { $sum: 1 },
+        totalFarmSize: { $sum: "$totalFarmSize" },
+        totalMortgageSize: { $sum: "$totalMortgageFarmSize" },
       },
     },
   ]);
-
-  const annuallyData = months.map((month) => {
-    const match = result[0].annuallyData.find(
-      (monthData: { _id: string; count: number }) => monthData._id === month,
-    );
-    return {
-      name: month,
-      count: match ? match.count : 0,
-    };
-  });
-
-  const weeklyData = days.map((day, index) => {
-    const dayNumber = index + 1; // Convert day name to number
-    const match = result[0].weeklyData.find(
-      (dayData: { _id: number; count: number }) => dayData._id === dayNumber,
-    );
-    return {
-      name: day,
-      count: match ? match.count : 0,
-    };
-  });
-
-  return { ...result[0], annuallyData, weeklyData };
 }
-
-const months: string[] = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
-const days: string[] = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
