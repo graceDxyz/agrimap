@@ -1,19 +1,16 @@
 import logoimg from "@/assets/logo-leaf.png";
 import { dashboardConfig } from "@/config/siteConfig";
-import { QUERY_ADDRESSES_KEY } from "@/constant/query.constant";
-import { fetchAddress } from "@/services/address.service";
-import { useQueryClient } from "@tanstack/react-query";
 import { Link, Outlet } from "react-router-dom";
 import { SidebarNav } from "../layouts/sidebar-nav";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 
 export function DashboardShell() {
-  const queryClient = useQueryClient();
-  queryClient.prefetchQuery({
-    queryKey: [QUERY_ADDRESSES_KEY],
-    queryFn: fetchAddress,
-  });
+  // const queryClient = useQueryClient();
+  // queryClient.prefetchQuery({
+  //   queryKey: [QUERY_ADDRESSES_KEY],
+  //   queryFn: fetchAddress,
+  // });
 
   return (
     <div className="flex min-h-screen flex-col">
