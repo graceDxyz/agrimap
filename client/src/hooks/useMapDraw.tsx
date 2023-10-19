@@ -1,12 +1,12 @@
 import { MAP_POLYGON_KEY } from "@/constant/map.constant";
 import { DrawEvent } from "@/types";
-import { Coordinates } from "@/types/farm.type";
+import { Coordinates, Farm } from "@/types/farm.type";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
@@ -145,6 +145,37 @@ export function useMapDraw({
   return ref;
 }
 
+interface UseMapViewProps {
+  farms?: Farm[];
+}
+
+export function useMapView({ farms }: UseMapViewProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      const map = new mapboxgl.Map({
+        container: ref.current || "",
+        center: [124.74735434277659, 7.745449162964974],
+        zoom: 11.259085067438566,
+        style: "mapbox://styles/mapbox/satellite-streets-v12",
+      });
+
+      map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
+
+      map.on("load", ({ target }) => {
+        farms?.forEach((farm) => addPolyfon({ target, farm }));
+      });
+
+      return () => {
+        map.remove();
+      };
+    }
+  }, [ref, farms]);
+
+  return ref;
+}
+
 function findCenter(coordinates: Coordinates): { lng: number; lat: number } {
   const featureCollection: GeoJSON.FeatureCollection<
     GeoJSON.Polygon,
@@ -170,4 +201,101 @@ function findCenter(coordinates: Coordinates): { lng: number; lat: number } {
   const newCenter = center.geometry.coordinates;
 
   return { lng: newCenter[0], lat: newCenter[1] };
+}
+
+function addPolyfon({ target, farm }: { target: mapboxgl.Map; farm: Farm }) {
+  const coordinates = farm.coordinates;
+  const farmId = farm._id;
+
+  const layerId = farmId + "-layer";
+  const crops = farm.crops.join(", ");
+  // Add the combined source to the target
+  target.addSource(farmId, {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      properties: { ...farm, crops: crops },
+      geometry: {
+        type: "Polygon",
+        coordinates: coordinates,
+      },
+    },
+  });
+
+  // Add a layer for the combined source
+  target.addLayer({
+    id: layerId,
+    type: "fill", // Change the type to "fill"
+    source: farmId, // Use the combined source
+    paint: {
+      "fill-color": [
+        "case",
+        ["boolean", ["feature-state", "clicked"], false], // Set this to false
+        "#3246a8",
+        "#FFA500",
+      ],
+      "fill-opacity": 0.15, // Fill opacity (adjust as needed)
+    },
+  });
+
+  // Add a border layer for the combined source
+  target.addLayer({
+    id: farmId + "combinedBorder",
+    type: "line",
+    source: farmId, // Use the combined source
+    paint: {
+      "line-color": "#FFA500",
+      "line-width": 4,
+    },
+  });
+
+  target.on("click", layerId, function (e: mapboxgl.MapLayerMouseEvent) {
+    const features = e.features ?? [];
+    if (features.length > 0) {
+      const propFarm = features[0].properties as Farm;
+      const activeLayerId = features[0].layer.id;
+      target.setFeatureState(
+        {
+          source: farmId,
+          id: activeLayerId,
+        },
+        {
+          clicked: true,
+        },
+      );
+
+      new mapboxgl.Popup({ closeButton: false })
+        .setLngLat(e.lngLat)
+        .setHTML(popOverStyle(propFarm))
+        .setMaxWidth("400px") // Set the maximum width of the popup
+        .addTo(target);
+    }
+  });
+
+  target.on("mouseenter", layerId, () => {
+    target.getCanvas().style.cursor = "pointer";
+  });
+
+  // Change the cursor back to a pointer
+  // when it leaves the states layer.
+  target.on("mouseleave", layerId, () => {
+    target.getCanvas().style.cursor = "";
+  });
+}
+
+function popOverStyle(farm: Farm) {
+  return `<table>
+    <tr>
+        <td class="p-2 text-gray-600 text-right font-bold">Title no.:</td>
+        <td class="p-2 text-gray-600 text-left">${farm.titleNumber}</td>
+    </tr>
+    <tr>
+        <td class="p-2 text-gray-600 text-right font-bold">Owner:</td>
+        <td class="p-2 text-gray-600 text-left">${farm.ownerName}</td>
+    </tr>
+    <tr>
+        <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
+        <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
+    </tr>
+</table>`;
 }

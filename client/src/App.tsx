@@ -18,6 +18,7 @@ const MortgagesPage = lazy(() => import("@/pages/MortgagesPage"));
 const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
 const SignInPage = lazy(() => import("@/pages/SignInPage"));
 const UsersPage = lazy(() => import("@/pages/UsersPage"));
+const MapPage = lazy(() => import("@/pages/MapPage"));
 
 function Loader() {
   return <>Loading...</>;
@@ -113,6 +114,14 @@ function App() {
             <Suspense fallback={<Loader />}>
               {" "}
               <UsersPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "map",
+          element: (
+            <Suspense fallback={<Loader />}>
+              <MapPage />
             </Suspense>
           ),
         },

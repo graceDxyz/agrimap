@@ -154,7 +154,10 @@ function FarmAddPage() {
         aria-labelledby="dashboard-farms-heading"
         className="grid grid-cols-5 gap-4"
       >
-        <div className="h-[80vh] col-span-3 overflow-hidden" ref={mapRef} />
+        <div
+          className="h-[calc(100vh-10rem)] col-span-3 overflow-hidden"
+          ref={mapRef}
+        />
         <FarmGenericForm
           form={form}
           token={user?.accessToken ?? ""}

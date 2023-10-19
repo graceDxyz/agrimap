@@ -10,6 +10,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   ChevronsUpDown,
+  Compass,
   Contact,
   CreditCard,
   Dices,
@@ -82,6 +83,7 @@ export const Icons = {
   fileDownload: FileDownIcon,
   plusCircle: PlusCircle,
   calendar: Calendar,
+  compass: Compass,
   spinner: (props: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
