@@ -27,9 +27,10 @@ function MapPage() {
       label: farmer.fullName,
     })) ?? [];
 
-  const farms = data?.filter((farm) =>
-    farmer ? farmer.value === farm.owner._id : true,
-  );
+  const farms =
+    data?.filter(
+      (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
+    ) || [];
 
   const mapRef = useMapView({ farms });
 
