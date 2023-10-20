@@ -1,5 +1,6 @@
 import { farmColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
+import { useFarmVisibleFilter } from "@/components/farm-visible-select";
 import { FarmDialog } from "@/components/forms/farm-form";
 import {
   PageHeader,
@@ -8,13 +9,14 @@ import {
 } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
 import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetAuth } from "@/services/session.service";
-import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
 function FarmsPage() {
   const { user } = useGetAuth();
+  const { value } = useFarmVisibleFilter();
 
   const { data, isLoading } = useGetFarms({
     token: user?.accessToken ?? "",
@@ -23,6 +25,12 @@ function FarmsPage() {
   if (isLoading) {
     return <>Loading...</>;
   }
+
+  const filter = value.value;
+  const farms =
+    data?.filter((farm) =>
+      filter != undefined ? filter === farm.isArchived : true
+    ) ?? [];
 
   return (
     <Shell variant="sidebar">
@@ -40,7 +48,7 @@ function FarmsPage() {
             className={cn(
               buttonVariants({
                 size: "sm",
-              }),
+              })
             )}
           >
             Add farm
@@ -52,7 +60,7 @@ function FarmsPage() {
       </PageHeader>
       <section id="dashboard-farms" aria-labelledby="dashboard-farms-heading">
         <DataTable
-          data={data ?? []}
+          data={farms}
           columns={farmColumns}
           searchPlaceHolder="Filter farms..."
           isLoading={isLoading}

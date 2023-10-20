@@ -1,6 +1,7 @@
 import { Table } from "@tanstack/react-table";
 
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+import FarmVisibleSelect from "@/components/farm-visible-select";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,11 +65,14 @@ export function DataTableToolbar<TData>({
         {facetFilter && (
           <>
             {table.getColumn("ownerName") && (
-              <DataTableFacetedFilter
-                column={table.getColumn("ownerName")}
-                title="Owner"
-                options={owners}
-              />
+              <>
+                <FarmVisibleSelect />
+                <DataTableFacetedFilter
+                  column={table.getColumn("ownerName")}
+                  title="Owner"
+                  options={owners}
+                />
+              </>
             )}
           </>
         )}
