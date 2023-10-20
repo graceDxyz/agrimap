@@ -46,8 +46,19 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        localField: "mortgagesIn.farm",
-        foreignField: "_id",
+        let: { farmId: "$mortgagesIn.farm" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$_id", "$$farmId"] },
+                  { $eq: ["$isArchive", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "morgageInfarms",
       },
     },
@@ -62,8 +73,19 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        localField: "mortgagesOut.farm",
-        foreignField: "_id",
+        let: { farmId: "$mortgagesOut.farm" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$_id", "$$farmId"] },
+                  { $eq: ["$isArchive", false] },
+                ],
+              },
+            },
+          },
+        ],
         as: "mortgagesOutfarms",
       },
     },

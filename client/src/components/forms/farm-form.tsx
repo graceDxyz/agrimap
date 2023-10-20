@@ -12,7 +12,11 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
-import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
+import {
+  QUERY_FARMERS_KEY,
+  QUERY_FARMS_KEY,
+  QUERY_MORTGAGES_KEY,
+} from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
@@ -98,6 +102,7 @@ function ArchivedForm({ token }: { token: string }) {
     onSuccess: ({ data }) => {
       const updateFarm = farmSchema.parse(data);
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
+      queryClient.refetchQueries([QUERY_MORTGAGES_KEY]);
       queryClient.setQueriesData<Farm[]>([QUERY_FARMS_KEY], (items) => {
         if (items) {
           return items.map((item) => {

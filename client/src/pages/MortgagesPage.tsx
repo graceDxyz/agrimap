@@ -29,6 +29,8 @@ function MortgagesPage() {
     setMode({ mode: "create" });
   }
 
+  const morgages = data?.filter((item) => !item.farm.isArchived) ?? [];
+
   return (
     <Shell variant="sidebar">
       <PageHeader
@@ -54,7 +56,7 @@ function MortgagesPage() {
         aria-labelledby="dashboard-stores-page-stores-heading"
       >
         <DataTable
-          data={data ?? []}
+          data={morgages}
           columns={landStatusColumns}
           searchPlaceHolder="Filter status..."
           isLoading={isLoading}

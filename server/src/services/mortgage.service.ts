@@ -6,40 +6,12 @@ import MortgageModel, {
 
 export async function getAllMortgage() {
   return MortgageModel.find()
-    .populate([{ path: "farm", populate: { path: "owner" } }, "mortgageTo"])
+    .populate({
+      path: "farm",
+      populate: { path: "owner" },
+    })
+    .populate("mortgageTo")
     .sort({ "farm.titleNumber": 1 });
-  // return MortgageModel.aggregate([
-  //{
-  //   $and: [{ farm: { $ne: null } }, { mortgageTo: { $ne: null } }],
-  // }
-  //   {
-  //     $lookup: {
-  //       from: "farms", // Assuming 'farms' is the name of the collection to populate from
-  //       localField: "farm",
-  //       foreignField: "_id",
-  //       as: "farm",
-  //     },
-  //   },
-  //   {
-  //     $lookup: {
-  //       from: "farmers", // Replace with the actual name of the collection to populate from
-  //       localField: "mortgageTo",
-  //       foreignField: "_id",
-  //       as: "mortgageTo",
-  //     },
-  //   },
-  //   {
-  //     $match: {
-  //       $and: [
-  //         { farm: { $ne: [] } }, // Check if farm is not an empty array
-  //         { mortgageTo: { $ne: [] } }, // Check if mortgageTo is not an empty array
-  //       ],
-  //     },
-  //   },
-  //   {
-  //     $sort: { "mortgageTo.lastname": 1 },
-  //   },
-  // ]);
 }
 
 export async function createMortgage(input: MortgageInput) {
@@ -65,7 +37,7 @@ export async function findMortgage(query: FilterQuery<IMortgage>) {
 export async function updateMortgage(
   query: FilterQuery<IMortgage>,
   update: UpdateQuery<IMortgage>,
-  options: QueryOptions,
+  options: QueryOptions
 ) {
   return MortgageModel.findByIdAndUpdate(query, update, options);
 }
