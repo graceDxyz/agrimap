@@ -29,7 +29,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "Farm Coordinates",
       href: "/dashboard/farms",
-      icon: "locateFixed",
+      icon: "landPlot",
       items: [],
       audience: ["ADMIN"],
     },
