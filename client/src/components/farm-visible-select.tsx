@@ -27,7 +27,7 @@ const options: Option[] = [
 ];
 
 export const useFarmVisibleFilter = create<BearState>()((set) => ({
-  value: options[0],
+  value: options[2],
   setValue: (value) => set(() => ({ value })),
 }));
 
