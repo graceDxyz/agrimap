@@ -1,7 +1,5 @@
-import { farmColumns } from "@/components/data-table/columns";
+import { disbursementColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { useFarmVisibleFilter } from "@/components/farm-visible-select";
-import { FarmDialog } from "@/components/forms/farm-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -10,23 +8,20 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useGetFarms } from "@/services/farm.service";
+import { useGetDisbursements } from "@/services/disbursement.service";
 import { useGetAuth } from "@/services/session.service";
 import { Link } from "react-router-dom";
 
-function FarmsPage() {
+function DisbursementsPage() {
   const { user } = useGetAuth();
-  const { value } = useFarmVisibleFilter();
 
-  const { data, isLoading } = useGetFarms({
+  const { data, isLoading } = useGetDisbursements({
     token: user?.accessToken ?? "",
   });
 
-  const filter = value.value;
-  const farms =
-    data?.filter((farm) =>
-      filter != undefined ? filter === farm.isArchived : true
-    ) ?? [];
+  if (isLoading) {
+    return <>Loading...</>;
+  }
 
   return (
     <Shell variant="sidebar">
@@ -36,36 +31,38 @@ function FarmsPage() {
       >
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
-            Farms
+            Disbursements
           </PageHeaderHeading>
           <Link
-            aria-label="Add farm"
-            to={"/dashboard/farms/add"}
+            aria-label="Add disbursement"
+            to={"/dashboard/disbursements/add"}
             className={cn(
               buttonVariants({
                 size: "sm",
               })
             )}
           >
-            Add farm
+            Add disbursement
           </Link>
         </div>
         <PageHeaderDescription size="sm">
-          Manage the farms
+          Manage the disbursements
         </PageHeaderDescription>
       </PageHeader>
-      <section id="dashboard-farms" aria-labelledby="dashboard-farms-heading">
+      <section
+        id="dashboard-disbursements"
+        aria-labelledby="dashboard-disbursements-heading"
+      >
         <DataTable
-          data={farms}
-          columns={farmColumns}
-          searchPlaceHolder="Filter farms..."
+          data={data ?? []}
+          columns={disbursementColumns}
+          searchPlaceHolder="Filter disbursement..."
           isLoading={isLoading}
-          facetFilter
         />
       </section>
-      <FarmDialog />
+      {/* <DisbursementDialog /> */}
     </Shell>
   );
 }
 
-export default FarmsPage;
+export default DisbursementsPage;

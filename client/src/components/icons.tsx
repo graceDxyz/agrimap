@@ -13,6 +13,7 @@ import {
   Compass,
   Contact,
   CreditCard,
+  Database,
   Dices,
   DollarSign,
   Eye,
@@ -84,6 +85,7 @@ export const Icons = {
   plusCircle: PlusCircle,
   calendar: Calendar,
   compass: Compass,
+  database: Database,
   landPlot: (props: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"

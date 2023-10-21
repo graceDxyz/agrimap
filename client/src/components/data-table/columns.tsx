@@ -8,6 +8,7 @@ import {
   UserDataTableRowActions,
 } from "@/components/data-table/data-table-row-actions";
 import { Badge } from "@/components/ui/badge";
+import { Disbursement } from "@/types/disbursement.type";
 import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
 import { Mortgage } from "@/types/mortgage.type";
@@ -222,6 +223,46 @@ export const landStatusColumns: ColumnDef<Mortgage>[] = [
     cell: ({ row }) => (
       <div className="w-auto font-medium">
         {row.getValue("mortgageDateRange")}
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <MortgageDataTableRowActions row={row} />,
+  },
+];
+
+export const disbursementColumns: ColumnDef<Disbursement>[] = [
+  {
+    accessorKey: "receiverName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Farmer Name" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("receiverName")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "assistanceName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Assisteance Name" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("assistanceName")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "receivedDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Received" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("receivedDate")}
       </div>
     ),
   },

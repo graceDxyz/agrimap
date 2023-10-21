@@ -40,6 +40,13 @@ export const dashboardConfig: DashboardConfig = {
       items: [],
     },
     {
+      title: "Disbursements",
+      href: "/dashboard/disbursements",
+      icon: "database",
+      items: [],
+      audience: ["ADMIN"],
+    },
+    {
       title: "Users",
       href: "/dashboard/users",
       icon: "users",
