@@ -29,7 +29,7 @@ function FarmsPage() {
   const filter = value.value;
   const farms =
     data?.filter((farm) =>
-      filter != undefined ? filter === farm.isArchived : true
+      filter != undefined ? filter === farm.isArchived : true,
     ) ?? [];
 
   return (
@@ -48,7 +48,7 @@ function FarmsPage() {
             className={cn(
               buttonVariants({
                 size: "sm",
-              })
+              }),
             )}
           >
             Add farm
