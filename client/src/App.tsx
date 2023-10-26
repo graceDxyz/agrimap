@@ -27,14 +27,14 @@ function App() {
   const { data, isLoading } = useGetSession();
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader type="default" />;
   }
 
   const routes = createBrowserRouter([
     {
       index: true,
       element: (
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<Loader type="signin" />}>
           <SignInPage activeUser={data} />
         </Suspense>
       ),
