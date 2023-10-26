@@ -43,7 +43,7 @@ export const createFarmSchema = z.object({
   proofFiles: z.array(fileSchema),
   size: z.coerce
     .number()
-    .nonnegative({ message: "Hectars must be greater than or equal to 0" }),
+    .nonnegative({ message: "Size must be greater than or equal to 0" }),
   coordinates: coordinatesSchema.min(1, {
     message: "Please select map coordinates on the map",
   }),

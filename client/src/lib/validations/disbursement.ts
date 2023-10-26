@@ -26,7 +26,7 @@ export const createDisbursementSchema = z.object({
   farmer: z.string().min(1, { message: "Please select a farmer" }),
   size: z.coerce
     .number()
-    .nonnegative({ message: "Hectars must be greater than or equal to 0" }),
+    .nonnegative({ message: "Size must be greater than or equal to 0" }),
   assistances: z.array(z.string()).default([]),
   receivedDate: z.string().min(1, { message: "Please select a date" }),
 });

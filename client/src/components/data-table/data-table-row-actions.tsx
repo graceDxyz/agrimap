@@ -160,7 +160,7 @@ export function MortgageDataTableRowActions<TData>({
   function handleViewClick() {
     queryClient.setQueryData(
       [QUERY_FARM_KEY, original.farm._id],
-      original.farm
+      original.farm,
     );
     navigate(`/dashboard/farms/${original.farm._id}`);
   }
@@ -208,15 +208,8 @@ export function MortgageDataTableRowActions<TData>({
 export function DisbursementDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { setMode } = useBoundStore((state) => state.disbursement);
   const original = row.original as object as Disbursement;
-
-  function handleViewClick() {
-    queryClient.setQueryData([QUERY_DISBURSEMENTS_KEY, original._id], original);
-    navigate(`/dashboard/disbursements/${original._id}`);
-  }
 
   function handleEditClick() {
     setMode({ mode: "update", disbursement: original });
@@ -238,7 +231,6 @@ export function DisbursementDataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDeleteClick}>
