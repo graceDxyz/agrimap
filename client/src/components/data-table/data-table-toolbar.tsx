@@ -5,8 +5,9 @@ import FarmVisibleSelect from "@/components/farm-visible-select";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useGetFarmers } from "@/services/farmer.service";
-import { useGetAuth } from "@/services/session.service";
+import { QUERY_FARMS_KEY } from "@/constant/query.constant";
+import { Farm } from "@/types/farm.type";
+import { useQueryClient } from "@tanstack/react-query";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
@@ -22,20 +23,17 @@ export function DataTableToolbar<TData>({
   disabled,
   facetFilter,
 }: DataTableToolbarProps<TData>) {
+  const queryClient = useQueryClient();
   const globalFilter = table.getState().globalFilter;
-  const { user } = useGetAuth();
-  const { data } = useGetFarmers({
-    token: user?.accessToken ?? "",
-    options: {
-      enabled: facetFilter,
-    },
-  });
+  const farmData = queryClient.getQueryData<Farm[]>([QUERY_FARMS_KEY]);
 
   const owners =
-    data?.map((farmer) => ({
-      label: farmer.fullName,
-      value: farmer.fullName,
-    })) ?? [];
+    farmData
+      ?.flatMap((farm) => farm.owner)
+      ?.map((farmer) => ({
+        label: farmer.fullName,
+        value: farmer.fullName,
+      })) ?? [];
 
   return (
     <div className="flex items-center justify-between">

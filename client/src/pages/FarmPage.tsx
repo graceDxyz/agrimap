@@ -22,10 +22,6 @@ function FarmsPage() {
     token: user?.accessToken ?? "",
   });
 
-  if (isLoading) {
-    return <>Loading...</>;
-  }
-
   const filter = value.value;
   const farms =
     data?.filter((farm) =>

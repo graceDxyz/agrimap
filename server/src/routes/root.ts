@@ -1,6 +1,7 @@
 import { Express, Request, Response } from "express";
 import { uploadthingHandler } from "../utils/uploadthing";
 import AddressRoutes from "./address.route";
+import DisbursementRoutes from "./disbursement.route";
 import FarmRoutes from "./farm.route";
 import FarmerRoutes from "./farmers.route";
 import MortgageRoutes from "./mortgage.route";
@@ -32,6 +33,7 @@ function root(app: Express) {
   StatisticsRoutes(app);
   AddressRoutes(app);
   ReportRoutes(app);
+  DisbursementRoutes(app);
 }
 
 export default root;

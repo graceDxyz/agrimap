@@ -46,7 +46,7 @@ import {
   CitySelect,
   ProvinceSelect,
   useAddressState,
-} from "../address-select";
+} from "../select/address-select";
 
 export function FarmerDialog() {
   const { user } = useGetAuth();

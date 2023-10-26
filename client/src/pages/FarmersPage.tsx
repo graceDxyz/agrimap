@@ -20,9 +20,6 @@ function FarmersPage() {
     token: user?.accessToken ?? "",
   });
 
-  if (isLoading) {
-    return <>Loading...</>;
-  }
   function handleCreateClick() {
     setMode({ mode: "create" });
   }

@@ -1,12 +1,12 @@
-import { QUERY_CROPS_KEY } from "@/constant/query.constant";
-import { useGetFarmCrops } from "@/services/farm.service";
+import { Badge } from "@/components/ui/badge";
+import { QUERY_ASSISTANCES_KEY } from "@/constant/query.constant";
+import { useGetAssistances } from "@/services/disbursement.service";
 import { useGetAuth } from "@/services/session.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { ActionMeta, MultiValue } from "react-select";
 import AsyncCreatableSelect from "react-select/async-creatable";
-import { Badge } from "./ui/badge";
 
-interface CropOption {
+interface AssistanceOption {
   value: string;
   label: string;
 }
@@ -15,13 +15,13 @@ interface Props {
   isDisabled?: boolean;
   value: string[];
   onChange: (
-    newValue: MultiValue<CropOption>,
-    actionMeta: ActionMeta<CropOption>,
+    newValue: MultiValue<AssistanceOption>,
+    actionMeta: ActionMeta<AssistanceOption>
   ) => void;
   onCreateOption: (inputValue: string) => void;
 }
 
-export function CropSelect({
+export function AssistanceSelect({
   isDisabled,
   value,
   onChange,
@@ -29,32 +29,32 @@ export function CropSelect({
 }: Props) {
   const queryClient = useQueryClient();
   const { user } = useGetAuth();
-  const { data, isLoading } = useGetFarmCrops({
+  const { data, isLoading } = useGetAssistances({
     token: user?.accessToken ?? "",
   });
 
-  const cropOptions: CropOption[] =
+  const assistanceOptions: AssistanceOption[] =
     data?.map((crop) => ({ value: crop, label: crop })) ?? [];
 
-  const filterColors = (inputValue: string) => {
-    return cropOptions.filter((i) =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase()),
+  const filterAssistances = (inputValue: string) => {
+    return assistanceOptions.filter((i) =>
+      i.label.toLowerCase().includes(inputValue.toLowerCase())
     );
   };
 
   const promiseOptions = (inputValue: string) =>
-    new Promise<CropOption[]>((resolve) => {
+    new Promise<AssistanceOption[]>((resolve) => {
       setTimeout(() => {
-        resolve(filterColors(inputValue));
+        resolve(filterAssistances(inputValue));
       }, 500);
     });
 
-  const selectedOptions = cropOptions.filter((item) =>
-    value.includes(item.value),
+  const selectedOptions = assistanceOptions.filter((item) =>
+    value.includes(item.value)
   );
 
   function handleCreateOption(inputValue: string) {
-    queryClient.setQueriesData<string[]>([QUERY_CROPS_KEY], (items) => {
+    queryClient.setQueriesData<string[]>([QUERY_ASSISTANCES_KEY], (items) => {
       if (items) {
         return [...items, inputValue].sort();
       }
@@ -84,9 +84,9 @@ export function CropSelect({
       isMulti
       isClearable={false}
       isLoading={isLoading}
-      defaultOptions={cropOptions}
+      defaultOptions={assistanceOptions}
       loadOptions={promiseOptions}
-      placeholder="Select crops..."
+      placeholder="Select assistance..."
       value={selectedOptions}
       onChange={onChange}
       onCreateOption={handleCreateOption}

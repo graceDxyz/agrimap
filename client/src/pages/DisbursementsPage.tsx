@@ -1,6 +1,6 @@
-import { landStatusColumns } from "@/components/data-table/columns";
+import { disbursementColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { MortgageDialog } from "@/components/forms/mortgage-form";
+import { DisbursementDialog } from "@/components/forms/disbursement-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -9,23 +9,20 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
-import { useGetMortgages } from "@/services/mortgage.service";
+import { useGetDisbursements } from "@/services/disbursement.service";
 import { useGetAuth } from "@/services/session.service";
 
-function MortgagesPage() {
+function DisbursementsPage() {
   const { user } = useGetAuth();
-  const isAdmin = user?.user.role === "ADMIN";
-  const { setMode } = useBoundStore((state) => state.mortgage);
+  const { setMode } = useBoundStore((state) => state.disbursement);
 
-  const { data, isLoading } = useGetMortgages({
+  const { data, isLoading } = useGetDisbursements({
     token: user?.accessToken ?? "",
   });
 
   function handleCreateClick() {
     setMode({ mode: "create" });
   }
-
-  const morgages = data?.filter((item) => !item.farm.isArchived) ?? [];
 
   return (
     <Shell variant="sidebar">
@@ -35,32 +32,31 @@ function MortgagesPage() {
       >
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
-            Land status
+            Disbursements
           </PageHeaderHeading>
-          {isAdmin ? (
-            <Button size="sm" onClick={handleCreateClick}>
-              Add data
-            </Button>
-          ) : undefined}
+
+          <Button size="sm" onClick={handleCreateClick}>
+            Add disbursement
+          </Button>
         </div>
         <PageHeaderDescription size="sm">
-          Manage the land status
+          Manage the disbursements
         </PageHeaderDescription>
       </PageHeader>
       <section
-        id="dashboard-stores-page-stores"
-        aria-labelledby="dashboard-stores-page-stores-heading"
+        id="dashboard-disbursements"
+        aria-labelledby="dashboard-disbursements-heading"
       >
         <DataTable
-          data={morgages}
-          columns={landStatusColumns}
-          searchPlaceHolder="Filter status..."
+          data={data ?? []}
+          columns={disbursementColumns}
+          searchPlaceHolder="Filter disbursement..."
           isLoading={isLoading}
         />
-        <MortgageDialog />
       </section>
+      <DisbursementDialog />
     </Shell>
   );
 }
 
-export default MortgagesPage;
+export default DisbursementsPage;

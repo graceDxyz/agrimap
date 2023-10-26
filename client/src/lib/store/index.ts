@@ -1,5 +1,9 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import {
+  DisbursementSlice,
+  createDisbursementSlice,
+} from "./disbursementSlice";
 import { FarmSlice, createFarmSlice } from "./farmSlice";
 import { FarmerSlice, createFarmerSlice } from "./farmerSlice";
 import { MortgageSlice, createMortgageSlice } from "./mortgageSlice";
@@ -13,7 +17,12 @@ type UnionToIntersection<U> = (
   : never;
 
 export type StoreState = UnionToIntersection<
-  UserSlice | FarmerSlice | FarmSlice | MortgageSlice | OverviewSlice
+  | UserSlice
+  | FarmerSlice
+  | FarmSlice
+  | MortgageSlice
+  | OverviewSlice
+  | DisbursementSlice
 >;
 
 const useBoundStore = create<StoreState>()(
@@ -23,6 +32,7 @@ const useBoundStore = create<StoreState>()(
     ...createFarmSlice(...a),
     ...createMortgageSlice(...a),
     ...createSwitcherSlice(...a),
+    ...createDisbursementSlice(...a),
   }))
 );
 

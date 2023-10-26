@@ -10,9 +10,13 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { QUERY_FARM_KEY } from "@/constant/query.constant";
+import {
+  QUERY_DISBURSEMENTS_KEY,
+  QUERY_FARM_KEY,
+} from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { useGetAuth } from "@/services/session.service";
+import { Disbursement } from "@/types/disbursement.type";
 import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
 import { Mortgage } from "@/types/mortgage.type";
@@ -175,6 +179,51 @@ export function MortgageDataTableRowActions<TData>({
         View
       </Button>
     );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+        >
+          <Icons.horizontalThreeDots className="h-4 w-4" />
+          <span className="sr-only">Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleDeleteClick}>
+          Delete
+          <DropdownMenuShortcut></DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+export function DisbursementDataTableRowActions<TData>({
+  row,
+}: DataTableRowActionsProps<TData>) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { setMode } = useBoundStore((state) => state.disbursement);
+  const original = row.original as object as Disbursement;
+
+  function handleViewClick() {
+    queryClient.setQueryData([QUERY_DISBURSEMENTS_KEY, original._id], original);
+    navigate(`/dashboard/disbursements/${original._id}`);
+  }
+
+  function handleEditClick() {
+    setMode({ mode: "update", disbursement: original });
+  }
+
+  function handleDeleteClick() {
+    setMode({ mode: "delete", disbursement: original });
   }
 
   return (

@@ -2,12 +2,14 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
+  DisbursementDataTableRowActions,
   FarmDataTableRowActions,
   FarmerDataTableRowActions,
   MortgageDataTableRowActions,
   UserDataTableRowActions,
 } from "@/components/data-table/data-table-row-actions";
 import { Badge } from "@/components/ui/badge";
+import { Disbursement } from "@/types/disbursement.type";
 import { Farm } from "@/types/farm.type";
 import { Farmer } from "@/types/farmer.type";
 import { Mortgage } from "@/types/mortgage.type";
@@ -228,5 +230,45 @@ export const landStatusColumns: ColumnDef<Mortgage>[] = [
   {
     id: "actions",
     cell: ({ row }) => <MortgageDataTableRowActions row={row} />,
+  },
+];
+
+export const disbursementColumns: ColumnDef<Disbursement>[] = [
+  {
+    accessorKey: "receiverName",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Farmer Name" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("receiverName")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "assistances",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Assistance Name" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue<String[]>("assistances").join(", ")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "receivedDateFormat",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Received Date" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("receivedDateFormat")}
+      </div>
+    ),
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => <DisbursementDataTableRowActions row={row} />,
   },
 ];

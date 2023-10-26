@@ -1,4 +1,5 @@
 import { Icons } from "@/components/icons";
+import { CropSelect } from "@/components/select/crops-select";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -29,8 +30,11 @@ import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { BarangaySelect, CitySelect, ProvinceSelect } from "../address-select";
-import { CropSelect } from "../crops-select";
+import {
+  BarangaySelect,
+  CitySelect,
+  ProvinceSelect,
+} from "../select/address-select";
 import {
   Command,
   CommandEmpty,
