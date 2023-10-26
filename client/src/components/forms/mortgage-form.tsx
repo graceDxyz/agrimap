@@ -389,8 +389,6 @@ function MortgageGenericForm({
         !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
     );
 
-  console.log(filteredFarm);
-
   const filteredFarmer = farmersData?.filter((farmer) => {
     if (farmer._id === selectedFarm?.owner._id) {
       return false;

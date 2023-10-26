@@ -3,6 +3,7 @@ import {
   createDisbursement,
   deleteDisbursement,
   findDisbursement,
+  getAllAssistances,
   getAllDisbursement,
   updateDisbursement,
 } from "../services/disbursement.service";
@@ -18,6 +19,11 @@ import logger from "../utils/logger";
 const getAllDisbursementHandler = async (req: Request, res: Response) => {
   const disbursements = await getAllDisbursement();
   return res.send(disbursements);
+};
+
+const getAllAssistancesHandler = async (req: Request, res: Response) => {
+  const assistances = await getAllAssistances();
+  return res.send(assistances);
 };
 
 const getDisbursementHandler = async (
@@ -107,6 +113,7 @@ const deleteDisbursementHandler = async (
 export {
   createDisbursementHandler,
   deleteDisbursementHandler,
+  getAllAssistancesHandler,
   getAllDisbursementHandler,
   getDisbursementHandler,
   updateDisbursementHandler,

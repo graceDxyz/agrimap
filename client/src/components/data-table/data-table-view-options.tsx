@@ -30,8 +30,8 @@ const label: Label = {
   farmSize: "Farm size",
   mortgageDateRange: "Contract Duration",
   receiverName: "Farmer Name",
-  assistanceName: "Assistance Name",
-  receivedDate: "Received Date",
+  assistances: "Assistances",
+  receivedDateFormat: "Received Date",
 };
 
 export function DataTableViewOptions<TData>({

@@ -2,6 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
+  DisbursementDataTableRowActions,
   FarmDataTableRowActions,
   FarmerDataTableRowActions,
   MortgageDataTableRowActions,
@@ -245,29 +246,29 @@ export const disbursementColumns: ColumnDef<Disbursement>[] = [
     ),
   },
   {
-    accessorKey: "assistanceName",
+    accessorKey: "assistances",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Assisteance Name" />
+      <DataTableColumnHeader column={column} title="Assistance Name" />
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">
-        {row.getValue("assistanceName")}
+        {row.getValue<String[]>("assistances").join(", ")}
       </div>
     ),
   },
   {
-    accessorKey: "receivedDate",
+    accessorKey: "receivedDateFormat",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Received" />
+      <DataTableColumnHeader column={column} title="Received Date" />
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">
-        {row.getValue("receivedDate")}
+        {row.getValue("receivedDateFormat")}
       </div>
     ),
   },
   {
     id: "actions",
-    cell: ({ row }) => <MortgageDataTableRowActions row={row} />,
+    cell: ({ row }) => <DisbursementDataTableRowActions row={row} />,
   },
 ];

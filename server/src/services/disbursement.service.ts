@@ -4,6 +4,40 @@ import DisbursementModel, {
   IDisbursement,
 } from "../models/disbursement.model";
 
+export async function getAllAssistances() {
+  const result = await DisbursementModel.aggregate([
+    {
+      $project: {
+        assistances: 1,
+        _id: 0,
+      },
+    },
+    {
+      $unwind: "$assistances",
+    },
+    {
+      $group: {
+        _id: null,
+        allAssistances: { $addToSet: "$assistances" },
+      },
+    },
+    {
+      $unwind: "$allAssistances",
+    },
+    {
+      $sort: { allAssistances: 1 }, // Sort the assistances alphabetically
+    },
+    {
+      $group: {
+        _id: null,
+        allAssistances: { $push: "$allAssistances" },
+      },
+    },
+  ]);
+
+  return result.length > 0 ? result[0].allAssistances : [];
+}
+
 export async function getAllDisbursement() {
   return DisbursementModel.find().populate("farmer").sort({ created: -1 });
 }

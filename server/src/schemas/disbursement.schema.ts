@@ -3,7 +3,8 @@ import * as z from "zod";
 const payload = {
   body: z.object({
     farmer: z.string(),
-    assistanceName: z.array(z.string()),
+    size: z.number(),
+    assistances: z.array(z.string()),
     receivedDate: z.string(),
   }),
 };

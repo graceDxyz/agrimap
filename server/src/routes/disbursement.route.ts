@@ -2,6 +2,7 @@ import { Express } from "express";
 import {
   createDisbursementHandler,
   deleteDisbursementHandler,
+  getAllAssistancesHandler,
   getAllDisbursementHandler,
   getDisbursementHandler,
   updateDisbursementHandler,
@@ -16,6 +17,11 @@ import {
 
 function DisbursementRoutes(app: Express) {
   app.get("/api/disbursements", requiredUser, getAllDisbursementHandler);
+  app.get(
+    "/api/disbursements/assistances",
+    requiredUser,
+    getAllAssistancesHandler
+  );
   app.get(
     "/api/disbursements/:disbursementId",
     requiredUser,

@@ -1,4 +1,7 @@
-import { QUERY_DISBURSEMENTS_KEY } from "@/constant/query.constant";
+import {
+  QUERY_ASSISTANCES_KEY,
+  QUERY_DISBURSEMENTS_KEY,
+} from "@/constant/query.constant";
 import api from "@/lib/api";
 import { disbursementsSchema } from "@/lib/validations/disbursement";
 import { Message } from "@/types";
@@ -62,7 +65,7 @@ export async function updateDisbursement({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 }
 
@@ -80,4 +83,25 @@ export async function deleteDisbursement({
   });
 
   return res;
+}
+
+export function useGetAssistances({
+  token,
+  options,
+}: {
+  token: string;
+  options?: UseQueryOptions<string[], AxiosError>;
+}) {
+  return useQuery({
+    queryKey: [QUERY_ASSISTANCES_KEY],
+    queryFn: async () => {
+      const res = await api.get("/disbursements/assistances", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    },
+    ...options,
+  });
 }

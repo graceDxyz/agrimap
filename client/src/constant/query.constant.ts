@@ -20,3 +20,5 @@ export const QUERY_ADDRESSES_KEY = "addresses";
 export const QUERY_REPORT_KEY = "report";
 
 export const QUERY_CROPS_KEY = "crops";
+
+export const QUERY_ASSISTANCES_KEY = "assistances";

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { ActionMeta, SingleValue } from "react-select";
 import AsyncSelect from "react-select/async";
 import { create } from "zustand";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 
 interface Props<T> {
   isDisabled?: boolean;

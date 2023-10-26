@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import * as z from "zod";
 import { farmerSchema } from "./farmer";
 
@@ -5,13 +6,16 @@ export const disbursementSchema = z
   .object({
     _id: z.string(),
     farmer: farmerSchema,
-    assistanceName: z.array(z.string()),
+    size: z.number(),
+    assistances: z.array(z.string()),
     receivedDate: z.string(),
     receiverName: z.string().nullish(),
+    receivedDateFormat: z.string().nullish(),
   })
   .transform((obj) => ({
     ...obj,
     receiverName: obj.farmer.fullName,
+    receivedDateFormat: format(new Date(obj.receivedDate), "LLL dd, y"),
   }));
 
 export const disbursementsSchema = z.object({
@@ -20,6 +24,9 @@ export const disbursementsSchema = z.object({
 
 export const createDisbursementSchema = z.object({
   farmer: z.string().min(1, { message: "Please select a farmer" }),
-  crops: z.array(z.string()).default([]),
+  size: z.coerce
+    .number()
+    .nonnegative({ message: "Hectars must be greater than or equal to 0" }),
+  assistances: z.array(z.string()).default([]),
   receivedDate: z.string().min(1, { message: "Please select a date" }),
 });

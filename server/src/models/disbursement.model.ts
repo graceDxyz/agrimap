@@ -3,7 +3,8 @@ import { IFarmer } from "./farmer.model";
 
 export interface DisbursementInput {
   farmer: IFarmer["_id"];
-  assistanceName: string[];
+  size: number;
+  assistances: string[];
   receivedDate: string;
 }
 
@@ -19,7 +20,12 @@ const disbursementSchema = new mongoose.Schema(
       ref: "Farmer",
       required: true,
     },
-    assistanceName: { type: [String], default: [] },
+    size: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    assistances: { type: [String], default: [] },
     receivedDate: { type: Date, required: true },
   },
   {
