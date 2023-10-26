@@ -4,13 +4,11 @@ import { Link, Outlet } from "react-router-dom";
 import { SidebarNav } from "../layouts/sidebar-nav";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
+import { useGetAuth } from "@/services/session.service";
+import { DashboardContextType } from "@/types";
 
 export function DashboardShell() {
-  // const queryClient = useQueryClient();
-  // queryClient.prefetchQuery({
-  //   queryKey: [QUERY_ADDRESSES_KEY],
-  //   queryFn: fetchAddress,
-  // });
+  const { user, logout } = useGetAuth();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -35,48 +33,9 @@ export function DashboardShell() {
           </ScrollArea>
         </aside>
         <main className="flex w-full flex-col overflow-hidden pl-2">
-          <Outlet />
+          <Outlet context={{ user, logout } satisfies DashboardContextType} />
         </main>
       </div>
     </div>
   );
 }
-
-// function DashboardShellLoader() {
-//   return (
-//     <div className="flex min-h-screen flex-col">
-//       <header className="sticky top-0 z-50 w-full border-b bg-background">
-//         <div className="container flex h-16 items-center">
-//           <MainNav />
-//           <div className="flex flex-1 items-center justify-end space-x-4">
-//             <nav className="flex items-center space-x-2">
-//               <Skeleton className="h-8 w-8 rounded-full" />
-//             </nav>
-//           </div>
-//         </div>
-//       </header>
-//       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-5">
-//         <aside className="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
-//           <ScrollArea className="py-6 pr-6 lg:py-8">
-//             <SidebarNav items={dashboardConfig.sidebarNav} isLoading />
-//           </ScrollArea>
-//         </aside>
-//         <main className="flex w-full flex-col overflow-hidden">
-//           <Shell variant="sidebar">
-//             <PageHeader
-//               id="dashboard-stores-page-header"
-//               aria-labelledby="dashboard-stores-page-header-heading"
-//             >
-//               <div className="flex space-x-4 justify-between">
-//                 <Skeleton className="h-10 w-64" />
-//                 <Skeleton className="h-10 w-40" />
-//               </div>
-//               <Skeleton className="h-5 w-36" />
-//             </PageHeader>
-//             <section></section>
-//           </Shell>
-//         </main>
-//       </div>
-//     </div>
-//   );
-// }

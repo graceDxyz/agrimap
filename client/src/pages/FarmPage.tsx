@@ -11,21 +11,20 @@ import { Shell } from "@/components/shells/shell";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useGetFarms } from "@/services/farm.service";
-import { useGetAuth } from "@/services/session.service";
-import { Link } from "react-router-dom";
+import { farmLoader } from "@/services/loader";
+import { Link, useLoaderData } from "react-router-dom";
 
 function FarmsPage() {
-  const { user } = useGetAuth();
+  const initialData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof farmLoader>>
+  >;
+  const { data, isLoading } = useGetFarms({ initialData });
+
   const { value } = useFarmVisibleFilter();
-
-  const { data, isLoading } = useGetFarms({
-    token: user?.accessToken ?? "",
-  });
-
   const filter = value.value;
   const farms =
     data?.filter((farm) =>
-      filter != undefined ? filter === farm.isArchived : true
+      filter != undefined ? filter === farm.isArchived : true,
     ) ?? [];
 
   return (
@@ -44,7 +43,7 @@ function FarmsPage() {
             className={cn(
               buttonVariants({
                 size: "sm",
-              })
+              }),
             )}
           >
             Add farm

@@ -1,4 +1,5 @@
 import {
+  QUERY_ACTIVE_USER_KEY,
   QUERY_MORTGAGE_KEY,
   QUERY_MORTGAGES_KEY,
 } from "@/constant/query.constant";
@@ -6,27 +7,36 @@ import api from "@/lib/api";
 import { mortgageSchema, mortgagesSchema } from "@/lib/validations/mortgage";
 import { Message } from "@/types";
 import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { ActiveUser } from "@/types/user.type";
+import {
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useGetMortgages({
-  token,
-  options,
-}: {
-  token: string;
-  options?: UseQueryOptions<Mortgage[], AxiosError>;
-}) {
-  return useQuery({
-    queryKey: [QUERY_MORTGAGES_KEY],
-    queryFn: async () => {
-      const res = await api.get("/mortgages", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return mortgagesSchema.parse({ mortgages: res.data }).mortgages;
+export async function fetchMortgages(token: string) {
+  const res = await api.get("/mortgages", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
+  });
+  return mortgagesSchema.parse({ mortgages: res.data }).mortgages;
+}
+
+export const getMortgagesQuery = (token: string) => ({
+  queryKey: [QUERY_MORTGAGES_KEY],
+  queryFn: async () => await fetchMortgages(token),
+});
+
+export function useGetMortgages(
+  options?: UseQueryOptions<Mortgage[], AxiosError>,
+) {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
+
+  return useQuery({
+    ...getMortgagesQuery(user?.accessToken ?? ""),
     ...options,
   });
 }

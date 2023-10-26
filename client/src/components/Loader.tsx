@@ -27,7 +27,7 @@ export default function Loader({ type, heading }: Props) {
                 </div>
                 <span className="w-full border-t" />
               </div>
-              <Skeleton className="h-[217px]" />
+              <Skeleton className="h-[218px]" />
             </CardContent>
           </Card>
         </div>

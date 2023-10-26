@@ -3,8 +3,9 @@ import { Shell } from "@/components/shells/shell";
 import { useMapView } from "@/hooks/useMapDraw";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
-import { useGetAuth } from "@/services/session.service";
+import { mapLoader } from "@/services/loader";
 import { useState } from "react";
+import { useLoaderData } from "react-router-dom";
 import Select from "react-select";
 
 interface Option {
@@ -13,14 +14,15 @@ interface Option {
 }
 
 function MapPage() {
-  const [farmer, setFarmer] = useState<Option | undefined>(undefined);
-
-  const { user } = useGetAuth();
-  const token = user?.accessToken ?? "";
-  const { data } = useGetFarms({ token });
+  const { farmers: initFarmers, farms: initFarms } = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof mapLoader>>
+  >;
+  const { data: farmsData } = useGetFarms({ initialData: initFarms });
   const { data: farmersData, isLoading: isFarmerLoading } = useGetFarmers({
-    token,
+    initialData: initFarmers,
   });
+
+  const [farmer, setFarmer] = useState<Option | undefined>(undefined);
   const farmerOptions: Option[] =
     farmersData?.map((farmer) => ({
       value: farmer._id,
@@ -28,8 +30,9 @@ function MapPage() {
     })) ?? [];
 
   const farms =
-    data?.filter(
-      (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
+    farmsData?.filter(
+      (farm) =>
+        !farm.isArchived && (!farmer || farmer.value === farm.owner._id),
     ) || [];
 
   const mapRef = useMapView({ farms });

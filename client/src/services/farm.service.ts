@@ -1,4 +1,5 @@
 import {
+  QUERY_ACTIVE_USER_KEY,
   QUERY_CROPS_KEY,
   QUERY_FARMS_KEY,
   QUERY_FARM_KEY,
@@ -7,26 +8,33 @@ import api from "@/lib/api";
 import { farmSchema, farmsSchema } from "@/lib/validations/farm";
 import { Message } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { ActiveUser } from "@/types/user.type";
+import {
+  UseQueryOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useGetFarms({
-  token,
-  options,
-}: {
-  token: string;
-  options?: UseQueryOptions<Farm[], AxiosError>;
-}) {
-  return useQuery({
-    queryKey: [QUERY_FARMS_KEY],
-    queryFn: async () => {
-      const res = await api.get("/farms", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return farmsSchema.parse({ farms: res.data }).farms;
+export async function fetchFarms(token: string) {
+  const res = await api.get("/farms", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
+  });
+  return farmsSchema.parse({ farms: res.data }).farms;
+}
+
+export const getFarmsQuery = (token: string) => ({
+  queryKey: [QUERY_FARMS_KEY],
+  queryFn: async () => await fetchFarms(token),
+});
+
+export function useGetFarms(options?: UseQueryOptions<Farm[], AxiosError>) {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
+  return useQuery({
+    ...getFarmsQuery(user?.accessToken ?? ""),
     ...options,
   });
 }
@@ -106,7 +114,7 @@ export async function archivedFarm({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 
   return res;

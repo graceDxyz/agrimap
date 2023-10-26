@@ -1,29 +1,37 @@
-import { QUERY_USERS_KEY } from "@/constant/query.constant";
+import {
+  QUERY_ACTIVE_USER_KEY,
+  QUERY_USERS_KEY,
+} from "@/constant/query.constant";
 import api from "@/lib/api";
 import { usersSchema } from "@/lib/validations/user";
-import { CreateUserInput, User } from "@/types/user.type";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { ActiveUser, CreateUserInput, User } from "@/types/user.type";
+import {
+  UseQueryOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Message } from "react-hook-form";
 
-export function useGetUsers({
-  token,
-  options,
-}: {
-  token: string;
-  options?: UseQueryOptions<User[], AxiosError>;
-}) {
-  return useQuery({
-    queryKey: [QUERY_USERS_KEY],
-    queryFn: async () => {
-      const res = await api.get("/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return usersSchema.parse({ users: res.data }).users;
+export async function fetchUsers(token: string) {
+  const res = await api.get("/users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
+  });
+  return usersSchema.parse({ users: res.data }).users;
+}
+
+export const getUsersQuery = (token: string) => ({
+  queryKey: [QUERY_USERS_KEY],
+  queryFn: async () => await fetchUsers(token),
+});
+
+export function useGetUsers(options?: UseQueryOptions<User[], AxiosError>) {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
+  return useQuery({
+    ...getUsersQuery(user?.accessToken ?? ""),
     ...options,
   });
 }

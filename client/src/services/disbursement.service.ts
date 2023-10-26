@@ -1,4 +1,5 @@
 import {
+  QUERY_ACTIVE_USER_KEY,
   QUERY_ASSISTANCES_KEY,
   QUERY_DISBURSEMENTS_KEY,
 } from "@/constant/query.constant";
@@ -9,28 +10,37 @@ import {
   CreateDisbursementInput,
   Disbursement,
 } from "@/types/disbursement.type";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { ActiveUser } from "@/types/user.type";
+import {
+  UseQueryOptions,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AxiosError } from "axios";
 
-export function useGetDisbursements({
-  token,
-  options,
-}: {
-  token: string;
-  options?: UseQueryOptions<Disbursement[], AxiosError>;
-}) {
-  return useQuery({
-    queryKey: [QUERY_DISBURSEMENTS_KEY],
-    queryFn: async () => {
-      const res = await api.get("/disbursements", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return disbursementsSchema.parse({ disbursements: res.data })
-        .disbursements;
+export async function fetchDisbursements(token: string) {
+  const res = await api.get("/disbursements", {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
+  });
+
+  return disbursementsSchema.parse({ disbursements: res.data }).disbursements;
+}
+
+export const getDisbursementsQuery = (token: string) => ({
+  queryKey: [QUERY_DISBURSEMENTS_KEY],
+  queryFn: async () => await fetchDisbursements(token),
+});
+
+export function useGetDisbursements(
+  options?: UseQueryOptions<Disbursement[], AxiosError>,
+) {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
+
+  return useQuery({
+    ...getDisbursementsQuery(user?.accessToken ?? ""),
     ...options,
   });
 }

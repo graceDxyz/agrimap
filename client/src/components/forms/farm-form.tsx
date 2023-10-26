@@ -163,19 +163,17 @@ function ArchivedForm({ token }: { token: string }) {
 
 export function FarmGenericForm({
   form,
-  token,
   isEditMode,
 }: {
   form: UseFormReturn<CreateFarmInput, any, undefined>;
-  token: string;
   isEditMode: boolean;
 }) {
   const [open, setOpen] = useState(false);
 
-  const { data, isLoading: isFarmerLoading } = useGetFarmers({ token });
+  const { data, isLoading: isFarmerLoading } = useGetFarmers({});
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
   return (
@@ -228,7 +226,7 @@ export function FarmGenericForm({
                         <Icons.chevronsUpDown
                           className={cn(
                             "ml-2 h-4 w-4 shrink-0 opacity-50",
-                            isEditMode ? "visible" : "hidden"
+                            isEditMode ? "visible" : "hidden",
                           )}
                         />
                       </Button>
@@ -253,7 +251,7 @@ export function FarmGenericForm({
                                   "ml-auto h-4 w-4",
                                   field.value === item._id
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </CommandItem>
@@ -455,7 +453,7 @@ export function FarmGenericForm({
                                   size: "sm",
                                   variant: "link",
                                 }),
-                                "w-full justify-start"
+                                "w-full justify-start",
                               )}
                             >
                               {item.fileName}
@@ -468,8 +466,8 @@ export function FarmGenericForm({
                               onClick={() => {
                                 field.onChange(
                                   field.value.filter(
-                                    (file) => file.fileKey !== item.fileKey
-                                  )
+                                    (file) => file.fileKey !== item.fileKey,
+                                  ),
                                 );
                               }}
                             >

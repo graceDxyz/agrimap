@@ -8,18 +8,22 @@ import {
 } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/useUser";
 import { useBoundStore } from "@/lib/store";
+import { mortgageLoader } from "@/services/loader";
 import { useGetMortgages } from "@/services/mortgage.service";
-import { useGetAuth } from "@/services/session.service";
+import { useLoaderData } from "react-router-dom";
 
 function MortgagesPage() {
-  const { user } = useGetAuth();
-  const isAdmin = user?.user.role === "ADMIN";
-  const { setMode } = useBoundStore((state) => state.mortgage);
+  const initialData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof mortgageLoader>>
+  >;
 
-  const { data, isLoading } = useGetMortgages({
-    token: user?.accessToken ?? "",
-  });
+  const { user } = useUser();
+  const isAdmin = user?.user.role === "ADMIN";
+
+  const { data, isLoading } = useGetMortgages({ initialData });
+  const { setMode } = useBoundStore((state) => state.mortgage);
 
   function handleCreateClick() {
     setMode({ mode: "create" });

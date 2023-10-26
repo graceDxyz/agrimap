@@ -9,16 +9,16 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
-import { useGetAuth } from "@/services/session.service";
+import { userLoader } from "@/services/loader";
 import { useGetUsers } from "@/services/user.service";
+import { useLoaderData } from "react-router-dom";
 
 function UsersPage() {
-  const { user } = useGetAuth();
+  const initialData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof userLoader>>
+  >;
+  const { data, isLoading } = useGetUsers({ initialData });
   const { setMode } = useBoundStore((state) => state.user);
-
-  const { data, isLoading } = useGetUsers({
-    token: user?.accessToken ?? "",
-  });
 
   function handleCreateClick() {
     setMode({ mode: "create" });

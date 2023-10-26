@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { useGetFarmers } from "@/services/farmer.service";
-import { useGetAuth } from "@/services/session.service";
 import { ActionMeta, SingleValue } from "react-select";
 import AsyncSelect from "react-select/async";
 
@@ -14,15 +13,12 @@ interface Props {
   value: string;
   onChange: (
     newValue: SingleValue<FarmerOption>,
-    actionMeta: ActionMeta<FarmerOption>
+    actionMeta: ActionMeta<FarmerOption>,
   ) => void;
 }
 
 export function FarmerSelect({ isDisabled, value, onChange }: Props) {
-  const { user } = useGetAuth();
-  const { data, isLoading } = useGetFarmers({
-    token: user?.accessToken ?? "",
-  });
+  const { data, isLoading } = useGetFarmers({});
 
   const farmerOptions: FarmerOption[] =
     data?.map((farmer) => ({ value: farmer._id, label: farmer.fullName })) ??
@@ -30,7 +26,7 @@ export function FarmerSelect({ isDisabled, value, onChange }: Props) {
 
   const filterFarmers = (inputValue: string) => {
     return farmerOptions.filter((i) =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
+      i.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
   };
 

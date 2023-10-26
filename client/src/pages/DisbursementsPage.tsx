@@ -10,15 +10,16 @@ import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
 import { useGetDisbursements } from "@/services/disbursement.service";
-import { useGetAuth } from "@/services/session.service";
+import { disbursementLoader } from "@/services/loader";
+import { useLoaderData } from "react-router-dom";
 
 function DisbursementsPage() {
-  const { user } = useGetAuth();
-  const { setMode } = useBoundStore((state) => state.disbursement);
+  const initialData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof disbursementLoader>>
+  >;
 
-  const { data, isLoading } = useGetDisbursements({
-    token: user?.accessToken ?? "",
-  });
+  const { data, isLoading } = useGetDisbursements({ initialData });
+  const { setMode } = useBoundStore((state) => state.disbursement);
 
   function handleCreateClick() {
     setMode({ mode: "create" });

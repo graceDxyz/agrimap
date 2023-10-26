@@ -195,7 +195,6 @@ function CreateForm({ token }: { token: string }) {
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Add"
-      token={token}
     />
   );
 }
@@ -274,7 +273,6 @@ function UpdateForm({ token }: { token: string }) {
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Update"
-      token={token}
     />
   );
 }
@@ -354,39 +352,32 @@ function MortgageGenericForm({
   onSubmit,
   handleCancelClick,
   buttonLabel,
-  token,
 }: {
   form: UseFormReturn<CreateMortgageInput, any, undefined>;
   isLoading: boolean;
   onSubmit(data: CreateMortgageInput): void;
   handleCancelClick(): void;
   buttonLabel: "Add" | "Update";
-  token: string;
 }) {
   const [isFarmOpen, setIsFarmOpen] = useState(false);
   const [isFarmerOpen, setIsFarmerOpen] = useState(false);
 
-  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({
-    token,
-  });
-
-  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({
-    token,
-  });
+  const { data: farmData, isLoading: isFarmLoading } = useGetFarms({});
+  const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({});
 
   const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId")
+    (item) => item._id === form.getValues("farmId"),
   );
 
   const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId")
+    (item) => item._id === form.getValues("mortgageToId"),
   );
 
   const filteredFarm = farmData
     ?.filter((farm) => !farm.isArchived)
     .filter(
       (farm) =>
-        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
+        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
     );
 
   const filteredFarmer = farmersData?.filter((farmer) => {
@@ -450,7 +441,7 @@ function MortgageGenericForm({
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                         </CommandItem>
@@ -516,7 +507,7 @@ function MortgageGenericForm({
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                         </CommandItem>

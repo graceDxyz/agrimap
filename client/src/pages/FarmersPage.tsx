@@ -10,15 +10,16 @@ import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
 import { useGetFarmers } from "@/services/farmer.service";
-import { useGetAuth } from "@/services/session.service";
+import { farmerLoader } from "@/services/loader";
+import { useLoaderData } from "react-router-dom";
 
 function FarmersPage() {
-  const { user } = useGetAuth();
-  const { setMode } = useBoundStore((state) => state.farmer);
+  const initialData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof farmerLoader>>
+  >;
 
-  const { data, isLoading } = useGetFarmers({
-    token: user?.accessToken ?? "",
-  });
+  const { data, isLoading } = useGetFarmers({ initialData });
+  const { setMode } = useBoundStore((state) => state.farmer);
 
   function handleCreateClick() {
     setMode({ mode: "create" });
