@@ -140,7 +140,7 @@ function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, disbursement } = useBoundStore(
-    (state) => state.disbursement
+    (state) => state.disbursement,
   );
 
   const form = useForm<CreateDisbursementInput>({
@@ -203,7 +203,7 @@ function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { disbursement, setMode } = useBoundStore(
-    (state) => state.disbursement
+    (state) => state.disbursement,
   );
 
   const { mutate, isLoading } = useMutation({
@@ -216,7 +216,7 @@ function DeleteForm({ token }: { token: string }) {
             return prev.filter((item) => item._id !== disbursement?._id);
           }
           return prev;
-        }
+        },
       );
 
       handleCancelClick();
