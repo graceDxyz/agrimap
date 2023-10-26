@@ -39,7 +39,7 @@ export async function getAllAssistances() {
 }
 
 export async function getAllDisbursement() {
-  return DisbursementModel.find().populate("farmer").sort({ created: -1 });
+  return DisbursementModel.find().populate("farmer").sort({ receivedDate: -1 });
 }
 
 export async function createDisbursement(input: DisbursementInput) {

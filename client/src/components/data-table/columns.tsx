@@ -257,6 +257,17 @@ export const disbursementColumns: ColumnDef<Disbursement>[] = [
     ),
   },
   {
+    accessorKey: "size",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Size (m²)" />
+    ),
+    cell: ({ row }) => (
+      <div className="w-auto capitalize font-medium">
+        {row.getValue("size")}
+      </div>
+    ),
+  },
+  {
     accessorKey: "receivedDateFormat",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Received Date" />

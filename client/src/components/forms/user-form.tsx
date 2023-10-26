@@ -101,18 +101,14 @@ function CreateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: createUser,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
-        if (items) {
-          return [data, ...items];
-        }
-        return items;
-      });
-
       handleCancelClick();
       toast({
         title: "Created",
         description: `User ${data.email} created successfully!`,
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries([QUERY_USERS_KEY]);
     },
     onError: (error) => {
       console.log({ error });
@@ -271,22 +267,14 @@ function UpdateForm({ token }: { token: string }) {
   const { mutate, isLoading } = useMutation({
     mutationFn: updateUser,
     onSuccess: ({ data }) => {
-      queryClient.setQueriesData<User[]>([QUERY_USERS_KEY], (items) => {
-        if (items) {
-          return items.map((item) => {
-            if (item._id === data._id) {
-              return data;
-            }
-            return item;
-          });
-        }
-        return items;
-      });
       handleCancelClick();
       toast({
         title: "Updted",
         description: `User ${data.email} updated successfully!`,
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries([QUERY_USERS_KEY]);
     },
     onError: (error) => {
       console.log({ error });

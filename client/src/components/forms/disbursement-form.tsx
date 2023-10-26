@@ -40,6 +40,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
+import { Input } from "../ui/input";
 
 export function DisbursementDialog() {
   const { user } = useGetAuth();
@@ -140,7 +141,7 @@ function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, disbursement } = useBoundStore(
-    (state) => state.disbursement,
+    (state) => state.disbursement
   );
 
   const form = useForm<CreateDisbursementInput>({
@@ -203,7 +204,7 @@ function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { disbursement, setMode } = useBoundStore(
-    (state) => state.disbursement,
+    (state) => state.disbursement
   );
 
   const { mutate, isLoading } = useMutation({
@@ -216,7 +217,7 @@ function DeleteForm({ token }: { token: string }) {
             return prev.filter((item) => item._id !== disbursement?._id);
           }
           return prev;
-        },
+        }
       );
 
       handleCancelClick();
@@ -289,6 +290,24 @@ function DisbursementGenericForm({
                 <FarmerSelect
                   value={value}
                   onChange={(e) => onChange(e?.value)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="size"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Size (m²)</FormLabel>
+              <FormControl>
+                <Input
+                  className="disabled:opacity-100"
+                  type="number"
+                  placeholder="size"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />
