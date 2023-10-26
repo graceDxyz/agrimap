@@ -10,10 +10,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  QUERY_DISBURSEMENTS_KEY,
-  QUERY_FARM_KEY,
-} from "@/constant/query.constant";
+import { QUERY_FARM_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { useGetAuth } from "@/services/session.service";
 import { Disbursement } from "@/types/disbursement.type";
