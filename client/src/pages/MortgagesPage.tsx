@@ -10,13 +10,13 @@ import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { useBoundStore } from "@/lib/store";
-import { mortgageLoader } from "@/services/loader";
+import { mortgagesLoader } from "@/services/loader";
 import { useGetMortgages } from "@/services/mortgage.service";
 import { useLoaderData } from "react-router-dom";
 
 function MortgagesPage() {
   const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof mortgageLoader>>
+    ReturnType<ReturnType<typeof mortgagesLoader>>
   >;
 
   const { user } = useUser();

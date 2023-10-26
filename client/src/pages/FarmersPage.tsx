@@ -10,12 +10,12 @@ import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
 import { useGetFarmers } from "@/services/farmer.service";
-import { farmerLoader } from "@/services/loader";
+import { farmersLoader } from "@/services/loader";
 import { useLoaderData } from "react-router-dom";
 
 function FarmersPage() {
   const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof farmerLoader>>
+    ReturnType<ReturnType<typeof farmersLoader>>
   >;
 
   const { data, isLoading } = useGetFarmers({ initialData });

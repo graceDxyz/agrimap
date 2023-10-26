@@ -27,22 +27,26 @@ const getAllFarmCropsHandler = async (req: Request, res: Response) => {
 
 const getFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
-  const farmId = req.params.farmId;
+  try {
+    const farmId = req.params.farmId;
 
-  const farm = await findFarm({ _id: farmId });
+    const farm = await findFarm({ _id: farmId });
 
-  if (!farm) {
-    return res.sendStatus(404);
+    if (!farm) {
+      return res.sendStatus(404);
+    }
+
+    return res.send(farm);
+  } catch (error: any) {
+    return res.status(404).send(error.message);
   }
-
-  return res.send(farm);
 };
 
 const createFarmHandler = async (
   req: Request<{}, {}, CreateFarmInput["body"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const body = req.body;
@@ -61,7 +65,7 @@ const createFarmHandler = async (
 
 const updateFarmHandler = async (
   req: Request<UpdateFarmInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const farmId = req.params.farmId;
   const update = req.body;
@@ -87,7 +91,7 @@ const updateFarmHandler = async (
 
 const deleteFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const farmId = req.params.farmId;
   const farm = await findFarm({ _id: farmId });
@@ -108,7 +112,7 @@ const deleteFarmHandler = async (
 
 const archivedFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const farmId = req.params.farmId;
   const farm = await findFarm({ _id: farmId });
@@ -126,7 +130,7 @@ const archivedFarmHandler = async (
       {
         new: true,
         populate: "owner",
-      }
+      },
     );
 
     return res.send(updatedFarm);

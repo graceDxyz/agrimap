@@ -9,13 +9,13 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
-import { userLoader } from "@/services/loader";
+import { usersLoader } from "@/services/loader";
 import { useGetUsers } from "@/services/user.service";
 import { useLoaderData } from "react-router-dom";
 
 function UsersPage() {
   const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof userLoader>>
+    ReturnType<ReturnType<typeof usersLoader>>
   >;
   const { data, isLoading } = useGetUsers({ initialData });
   const { setMode } = useBoundStore((state) => state.user);

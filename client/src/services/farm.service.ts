@@ -39,24 +39,31 @@ export function useGetFarms(options?: UseQueryOptions<Farm[], AxiosError>) {
   });
 }
 
-export function useGetFarm({
+export const getFarmQuery = ({
   token,
   farmId,
 }: {
   token: string;
   farmId: string;
-}) {
-  return useQuery({
-    queryKey: [QUERY_FARM_KEY, farmId],
-    queryFn: async () => {
-      const res = await api.get(`/farms/${farmId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+}) => ({
+  queryKey: [QUERY_FARM_KEY, farmId],
+  queryFn: async () => {
+    const res = await api.get(`/farms/${farmId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      return farmSchema.parse(res.data);
-    },
+    return farmSchema.parse(res.data);
+  },
+});
+
+export function useGetFarm(farmId: string) {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
+
+  return useQuery({
+    ...getFarmQuery({ token: user?.accessToken ?? "", farmId }),
   });
 }
 

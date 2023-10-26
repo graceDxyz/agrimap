@@ -10,12 +10,12 @@ import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
 import { useGetDisbursements } from "@/services/disbursement.service";
-import { disbursementLoader } from "@/services/loader";
+import { disbursementsLoader } from "@/services/loader";
 import { useLoaderData } from "react-router-dom";
 
 function DisbursementsPage() {
   const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof disbursementLoader>>
+    ReturnType<ReturnType<typeof disbursementsLoader>>
   >;
 
   const { data, isLoading } = useGetDisbursements({ initialData });

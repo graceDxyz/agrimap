@@ -19,26 +19,30 @@ import {
 function FarmRoutes(app: Express) {
   app.get("/api/farms", requiredUser, getAllFarmHandler);
   app.get("/api/farms/crops", requiredUser, getAllFarmCropsHandler);
-  app.get("/api/farms/:farmId", requiredUser, getFarmHandler);
+  app.get(
+    "/api/farms/:farmId",
+    [requiredUser, validateResource(getFarmSchema)],
+    getFarmHandler,
+  );
   app.post(
     "/api/farms",
     [requiredUser, validateResource(createFarmSchema)],
-    createFarmHandler
+    createFarmHandler,
   );
   app.put(
     "/api/farms/:farmId",
     [requiredUser, validateResource(updateFarmSchema)],
-    updateFarmHandler
+    updateFarmHandler,
   );
   app.delete(
     "/api/farms/:farmId",
     [requiredUser, validateResource(getFarmSchema)],
-    deleteFarmHandler
+    deleteFarmHandler,
   );
   app.post(
     "/api/farms/:farmId/archived",
     [requiredUser, validateResource(getFarmSchema)],
-    archivedFarmHandler
+    archivedFarmHandler,
   );
 }
 

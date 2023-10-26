@@ -17,7 +17,8 @@ import {
   createFarmSchema,
   farmSchema,
 } from "@/lib/validations/farm";
-import { updateFarm, useGetFarm } from "@/services/farm.service";
+import { updateFarm } from "@/services/farm.service";
+import { farmLoader } from "@/services/loader";
 import { useGetAuth } from "@/services/session.service";
 import { DrawEvent } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
@@ -26,11 +27,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 function FarmAreaPage() {
   const location = useLocation();
-  const params = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useGetAuth();
@@ -39,10 +44,9 @@ function FarmAreaPage() {
   const isEditMode = location.pathname.includes("edit");
   const isAdmin = user?.user.role === "ADMIN";
 
-  const { data: farmData } = useGetFarm({
-    token: user?.accessToken ?? "",
-    farmId: params.farmId ?? "",
-  });
+  const farmData = useLoaderData() as Awaited<
+    ReturnType<ReturnType<typeof farmLoader>>
+  >;
 
   const form = useForm<CreateFarmInput>({
     resolver: zodResolver(createFarmSchema),

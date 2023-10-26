@@ -11,12 +11,12 @@ import { Shell } from "@/components/shells/shell";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useGetFarms } from "@/services/farm.service";
-import { farmLoader } from "@/services/loader";
+import { farmsLoader } from "@/services/loader";
 import { Link, useLoaderData } from "react-router-dom";
 
 function FarmsPage() {
   const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof farmLoader>>
+    ReturnType<ReturnType<typeof farmsLoader>>
   >;
   const { data, isLoading } = useGetFarms({ initialData });
 
@@ -24,7 +24,7 @@ function FarmsPage() {
   const filter = value.value;
   const farms =
     data?.filter((farm) =>
-      filter != undefined ? filter === farm.isArchived : true,
+      filter != undefined ? filter === farm.isArchived : true
     ) ?? [];
 
   return (
@@ -43,7 +43,7 @@ function FarmsPage() {
             className={cn(
               buttonVariants({
                 size: "sm",
-              }),
+              })
             )}
           >
             Add farm

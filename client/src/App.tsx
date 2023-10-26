@@ -7,18 +7,20 @@ import {
 } from "react-router-dom";
 
 import {
-  disbursementLoader,
-  farmerLoader,
+  disbursementsLoader,
+  farmersLoader,
   farmLoader,
+  farmsLoader,
   mapLoader,
-  mortgageLoader,
-  userLoader,
+  mortgagesLoader,
+  usersLoader,
 } from "@/services/loader";
 import { useGetSession } from "@/services/session.service";
 
 import Loader from "@/components/Loader";
 import { DashboardShell } from "@/components/shells/layout-shell";
 import { Toaster } from "@/components/ui/toaster";
+import { Page404 } from "./pages/Page404";
 
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
@@ -36,7 +38,7 @@ function App() {
   const { data, isLoading } = useGetSession();
 
   if (isLoading) {
-    return <Loader type="default" />;
+    return <Loader isDefault />;
   }
 
   const token = data?.accessToken ?? "";
@@ -46,7 +48,7 @@ function App() {
       {
         index: true,
         element: (
-          <Suspense fallback={<Loader type="signin" />}>
+          <Suspense fallback={<Loader isDefault />}>
             <SignInPage activeUser={data} />
           </Suspense>
         ),
@@ -74,7 +76,7 @@ function App() {
           },
           {
             path: "farmers",
-            loader: farmerLoader({ token, queryClient }),
+            loader: farmersLoader({ token, queryClient }),
             element: (
               <Suspense fallback={<Loader heading="Farmers" />}>
                 <FarmersPage />
@@ -83,7 +85,7 @@ function App() {
           },
           {
             path: "farms",
-            loader: farmLoader({ token, queryClient }),
+            loader: farmsLoader({ token, queryClient }),
             element: (
               <Suspense fallback={<Loader heading="Farms" />}>
                 <FarmPage />
@@ -100,6 +102,8 @@ function App() {
           },
           {
             path: "farms/:farmId",
+            loader: farmLoader({ token, queryClient }),
+            errorElement: <Page404 />,
             element: (
               <Suspense fallback={<Loader heading="Farms" />}>
                 <FarmAreaPage />
@@ -108,6 +112,8 @@ function App() {
           },
           {
             path: "farms/:farmId/edit",
+            loader: farmLoader({ token, queryClient }),
+            errorElement: <Page404 />,
             element: (
               <Suspense fallback={<Loader heading="Farms" />}>
                 <FarmAreaPage />
@@ -116,7 +122,7 @@ function App() {
           },
           {
             path: "land-status",
-            loader: mortgageLoader({ token, queryClient }),
+            loader: mortgagesLoader({ token, queryClient }),
             element: (
               <Suspense fallback={<Loader heading="Land status" />}>
                 <MortgagesPage />
@@ -125,7 +131,7 @@ function App() {
           },
           {
             path: "disbursements",
-            loader: disbursementLoader({ token, queryClient }),
+            loader: disbursementsLoader({ token, queryClient }),
             element: (
               <Suspense fallback={<Loader heading="Disbursements" />}>
                 <DisbursementsPage />
@@ -134,7 +140,7 @@ function App() {
           },
           {
             path: "users",
-            loader: userLoader({ token, queryClient }),
+            loader: usersLoader({ token, queryClient }),
             element: (
               <Suspense fallback={<Loader heading="Users" />}>
                 <UsersPage />
