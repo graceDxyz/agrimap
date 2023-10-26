@@ -9,6 +9,8 @@ import { useGetSession } from "@/services/session.service";
 
 import { DashboardShell } from "@/components/shells/layout-shell";
 import { Toaster } from "@/components/ui/toaster";
+import Loader from "@/components/Loader";
+
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
 const FarmAreaPage = lazy(() => import("@/pages/FarmAreaPage"));
@@ -20,10 +22,6 @@ const SignInPage = lazy(() => import("@/pages/SignInPage"));
 const UsersPage = lazy(() => import("@/pages/UsersPage"));
 const MapPage = lazy(() => import("@/pages/MapPage"));
 const DisbursementsPage = lazy(() => import("@/pages/DisbursementsPage"));
-
-function Loader() {
-  return <>Loading...</>;
-}
 
 function App() {
   const { data, isLoading } = useGetSession();
@@ -48,15 +46,23 @@ function App() {
         {
           index: true,
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Dashboard" />}>
               <DashboardPage />
+            </Suspense>
+          ),
+        },
+        {
+          path: "map",
+          element: (
+            <Suspense fallback={<Loader heading="Map" />}>
+              <MapPage />
             </Suspense>
           ),
         },
         {
           path: "farmers",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Farmers" />}>
               <FarmersPage />
             </Suspense>
           ),
@@ -64,7 +70,7 @@ function App() {
         {
           path: "farms",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Farms" />}>
               <FarmPage />
             </Suspense>
           ),
@@ -72,7 +78,7 @@ function App() {
         {
           path: "farms/add",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Farms" />}>
               <FarmAddPage />
             </Suspense>
           ),
@@ -80,7 +86,7 @@ function App() {
         {
           path: "farms/:farmId",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Farms" />}>
               <FarmAreaPage />
             </Suspense>
           ),
@@ -88,7 +94,7 @@ function App() {
         {
           path: "farms/:farmId/edit",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Farms" />}>
               <FarmAreaPage />
             </Suspense>
           ),
@@ -96,7 +102,7 @@ function App() {
         {
           path: "land-status",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Land status" />}>
               <MortgagesPage />
             </Suspense>
           ),
@@ -104,7 +110,7 @@ function App() {
         {
           path: "disbursements",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Disbursements" />}>
               <DisbursementsPage />
             </Suspense>
           ),
@@ -112,7 +118,7 @@ function App() {
         {
           path: "reports",
           element: (
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loader heading="Users" />}>
               <ReportsPage />
             </Suspense>
           ),
@@ -120,17 +126,8 @@ function App() {
         {
           path: "users",
           element: (
-            <Suspense fallback={<Loader />}>
-              {" "}
+            <Suspense fallback={<Loader heading="Users" />}>
               <UsersPage />
-            </Suspense>
-          ),
-        },
-        {
-          path: "map",
-          element: (
-            <Suspense fallback={<Loader />}>
-              <MapPage />
             </Suspense>
           ),
         },
