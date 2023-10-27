@@ -1,15 +1,19 @@
-import { PageHeader, PageHeaderHeading } from "./page-header";
-import { Shell } from "./shells/shell";
-import { Skeleton } from "./ui/skeleton";
+import { PageHeader, PageHeaderHeading } from "@/components/page-header";
+import { Shell } from "@/components/shells/shell";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Props {
   heading?: string;
-  isDefault?: boolean;
+  variant?: "content" | "auth";
 }
 
-export default function Loader({ isDefault, heading }: Props) {
-  if (isDefault) {
+export default function LoaderElement({ variant, heading }: Props) {
+  if (variant === "content") {
     return <>Loading content...</>;
+  }
+
+  if (variant === "auth") {
+    return <>Authenticating...</>;
   }
 
   return (
