@@ -20,22 +20,27 @@ const getAllMortgageHandler = async (req: Request, res: Response) => {
 
 const getMortgageHandler = async (
   req: Request<GetMortgageInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
-  const mortgageId = req.params.mortgageId;
+  try {
+    const mortgageId = req.params.mortgageId;
 
-  const mortgage = await findMortgage({ _id: mortgageId });
+    const mortgage = await findMortgage({ _id: mortgageId });
 
-  if (!mortgage) {
-    return res.sendStatus(404);
+    if (!mortgage) {
+      return res.sendStatus(404);
+    }
+
+    return res.send(mortgage);
+  } catch (error: any) {
+    logger.error(error);
+    return res.status(404).send(error.message);
   }
-
-  return res.send(mortgage);
 };
 
 const createMortgageHandler = async (
   req: Request<{}, {}, CreateMortgageInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -55,7 +60,7 @@ const createMortgageHandler = async (
 
 const updateMortgageHandler = async (
   req: Request<UpdateMortgageInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const mortgageId = req.params.mortgageId;
   const update = req.body;
@@ -73,7 +78,7 @@ const updateMortgageHandler = async (
       {
         new: true,
         populate: [{ path: "farm", populate: "owner" }, { path: "mortgageTo" }],
-      },
+      }
     );
 
     return res.send(updatedMortgage);
@@ -85,7 +90,7 @@ const updateMortgageHandler = async (
 
 const deleteMortgageHandler = async (
   req: Request<GetMortgageInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const mortgageId = req.params.mortgageId;
   const mortgage = await findMortgage({ _id: mortgageId });

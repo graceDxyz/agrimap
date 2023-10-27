@@ -24,15 +24,20 @@ const getFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
   res: Response
 ) => {
-  const farmerId = req.params.farmerId;
+  try {
+    const farmerId = req.params.farmerId;
 
-  const farmer = await findFarmer({ _id: farmerId });
+    const farmer = await findFarmer({ _id: farmerId });
 
-  if (!farmer) {
-    return res.sendStatus(404);
+    if (!farmer) {
+      return res.sendStatus(404);
+    }
+
+    return res.send(farmer);
+  } catch (error: any) {
+    logger.error(error);
+    return res.status(404).send(error.message);
   }
-
-  return res.send(farmer);
 };
 
 const createFarmerHandler = async (

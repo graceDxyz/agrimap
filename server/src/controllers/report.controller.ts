@@ -4,6 +4,7 @@ import { getAllFarm } from "../services/farm.service";
 import { getAllFarmer } from "../services/farmer.service";
 import { getAllMortgage } from "../services/mortgage.service";
 import { Farm, MortgageTo } from "../types";
+import logger from "../utils/logger";
 
 const getCurrentDateFormatted = () => {
   const currentDate = new Date();
@@ -156,7 +157,7 @@ export const getReportHandler = async (req: Request, res: Response) => {
 
     res.send(buffer);
   } catch (error) {
-    console.error("Error generating Excel file:", error);
+    logger.error("Error generating Excel file:", error);
     res.status(500).send("Internal Server Error");
   }
 };

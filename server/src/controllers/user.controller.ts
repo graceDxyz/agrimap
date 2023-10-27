@@ -22,15 +22,20 @@ const getUserHandler = async (
   req: Request<GetUserInput["params"]>,
   res: Response
 ) => {
-  const userId = req.params.userId;
+  try {
+    const userId = req.params.userId;
 
-  const user = await findUser({ _id: userId });
+    const user = await findUser({ _id: userId });
 
-  if (!user) {
-    return res.sendStatus(404);
+    if (!user) {
+      return res.sendStatus(404);
+    }
+
+    return res.send(user);
+  } catch (error: any) {
+    logger.error(error);
+    return res.status(404).send(error.message);
   }
-
-  return res.send(user);
 };
 
 const createUserHandler = async (

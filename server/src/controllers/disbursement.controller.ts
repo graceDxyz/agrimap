@@ -30,15 +30,20 @@ const getDisbursementHandler = async (
   req: Request<GetDisbursementInput["params"]>,
   res: Response
 ) => {
-  const disbursementId = req.params.disbursementId;
+  try {
+    const disbursementId = req.params.disbursementId;
 
-  const disbursement = await findDisbursement({ _id: disbursementId });
+    const disbursement = await findDisbursement({ _id: disbursementId });
 
-  if (!disbursement) {
-    return res.sendStatus(404);
+    if (!disbursement) {
+      return res.sendStatus(404);
+    }
+
+    return res.send(disbursement);
+  } catch (error: any) {
+    logger.error(error);
+    return res.status(404).send(error.message);
   }
-
-  return res.send(disbursement);
 };
 
 const createDisbursementHandler = async (
