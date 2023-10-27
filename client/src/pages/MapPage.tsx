@@ -31,8 +31,7 @@ function MapPage() {
 
   const farms =
     farmsData?.filter(
-      (farm) =>
-        !farm.isArchived && (!farmer || farmer.value === farm.owner._id),
+      (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
     ) || [];
 
   const mapRef = useMapView({ farms });
@@ -67,7 +66,7 @@ function MapPage() {
           />
         </div>
         <div
-          className="h-[calc(100vh-8rem)] col-span-3 overflow-hidden"
+          className="h-[calc(100vh-10rem)] col-span-3 overflow-hidden"
           ref={mapRef}
         />
       </section>
