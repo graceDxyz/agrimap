@@ -4,6 +4,7 @@ import {
 } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { usersSchema } from "@/lib/validations/user";
+import { LoaderType } from "@/types";
 import { ActiveUser, CreateUserInput, User } from "@/types/user.type";
 import {
   UseQueryOptions,
@@ -35,6 +36,16 @@ export function useGetUsers(options?: UseQueryOptions<User[], AxiosError>) {
     ...options,
   });
 }
+
+export const usersLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async () => {
+    const query = getUsersQuery(token);
+    return (
+      queryClient.getQueryData<User[]>(query.queryKey) ??
+      (await queryClient.fetchQuery(query))
+    );
+  };
 
 export async function createUser({
   token,

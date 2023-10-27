@@ -1,9 +1,9 @@
+import image from "@/assets/agrimap.png";
 import { SignInForm } from "@/components/forms/signIn-form";
 import { Shell } from "@/components/shells/shell";
 import { Card, CardContent } from "@/components/ui/card";
-import image from "@/assets/agrimap.png";
-import { Navigate } from "react-router-dom";
 import { ActiveUser } from "@/types/user.type";
+import { Navigate } from "react-router-dom";
 
 interface Props {
   activeUser?: ActiveUser | null;

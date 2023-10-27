@@ -1,12 +1,29 @@
 import { QUERY_STATISTICS_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
 import {
-  statCountSchema,
   recentAddedSchema,
+  statCountSchema,
 } from "@/lib/validations/statistic";
+import { LoaderType } from "@/types";
 import { RecentAdded, StatCount, StatsQuery } from "@/types/statistic.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { farmsLoader } from "./farm.service";
+import { farmersLoader } from "./farmer.service";
+
+export const mapLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async () => {
+    const farmerRes = farmersLoader({ token, queryClient });
+    const farmRes = farmsLoader({ token, queryClient });
+
+    const [farmers, farms] = await Promise.all([farmerRes(), farmRes()]);
+
+    return {
+      farmers,
+      farms,
+    };
+  };
 
 export function useGetRecentAdded({
   token,

@@ -9,8 +9,7 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
-import { useGetFarmers } from "@/services/farmer.service";
-import { farmersLoader } from "@/services/loader";
+import { farmersLoader, useGetFarmers } from "@/services/farmer.service";
 import { useLoaderData } from "react-router-dom";
 
 function FarmersPage() {

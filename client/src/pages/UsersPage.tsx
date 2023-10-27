@@ -9,8 +9,7 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
-import { usersLoader } from "@/services/loader";
-import { useGetUsers } from "@/services/user.service";
+import { useGetUsers, usersLoader } from "@/services/user.service";
 import { useLoaderData } from "react-router-dom";
 
 function UsersPage() {

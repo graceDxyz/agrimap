@@ -6,16 +6,13 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import {
-  disbursementsLoader,
-  farmersLoader,
-  farmLoader,
-  farmsLoader,
-  mapLoader,
-  mortgagesLoader,
-  usersLoader,
-} from "@/services/loader";
+import { disbursementsLoader } from "@/services/disbursement.service";
+import { farmLoader, farmsLoader } from "@/services/farm.service";
+import { farmersLoader } from "@/services/farmer.service";
+import { mortgagesLoader } from "@/services/mortgage.service";
 import { useGetSession } from "@/services/session.service";
+import { mapLoader } from "@/services/statistic.service";
+import { usersLoader } from "@/services/user.service";
 
 import ErrorElement from "@/components/elements/ErrorElement";
 import LoaderElement from "@/components/elements/LoaderElement";

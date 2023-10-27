@@ -10,8 +10,7 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useGetFarms } from "@/services/farm.service";
-import { farmsLoader } from "@/services/loader";
+import { farmsLoader, useGetFarms } from "@/services/farm.service";
 import { Link, useLoaderData } from "react-router-dom";
 
 function FarmsPage() {

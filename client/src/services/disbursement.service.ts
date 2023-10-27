@@ -5,7 +5,7 @@ import {
 } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { disbursementsSchema } from "@/lib/validations/disbursement";
-import { Message } from "@/types";
+import { LoaderType, Message } from "@/types";
 import {
   CreateDisbursementInput,
   Disbursement,
@@ -34,7 +34,7 @@ export const getDisbursementsQuery = (token: string) => ({
 });
 
 export function useGetDisbursements(
-  options?: UseQueryOptions<Disbursement[], AxiosError>,
+  options?: UseQueryOptions<Disbursement[], AxiosError>
 ) {
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
@@ -44,6 +44,16 @@ export function useGetDisbursements(
     ...options,
   });
 }
+
+export const disbursementsLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async () => {
+    const query = getDisbursementsQuery(token);
+    return (
+      queryClient.getQueryData<Disbursement[]>(query.queryKey) ??
+      (await queryClient.fetchQuery(query))
+    );
+  };
 
 export async function createDisbursement({
   token,
@@ -75,7 +85,7 @@ export async function updateDisbursement({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    },
+    }
   );
 }
 

@@ -3,7 +3,7 @@ import { Shell } from "@/components/shells/shell";
 import { useMapView } from "@/hooks/useMapDraw";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
-import { mapLoader } from "@/services/loader";
+import { mapLoader } from "@/services/statistic.service";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import Select from "react-select";

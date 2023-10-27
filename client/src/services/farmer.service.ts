@@ -4,7 +4,7 @@ import {
 } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { farmersSchema } from "@/lib/validations/farmer";
-import { Message } from "@/types";
+import { LoaderType, Message } from "@/types";
 import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
 import { ActiveUser } from "@/types/user.type";
 import {
@@ -36,6 +36,16 @@ export function useGetFarmers(options?: UseQueryOptions<Farmer[], AxiosError>) {
     ...options,
   });
 }
+
+export const farmersLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async () => {
+    const query = getFarmersQuery(token);
+    return (
+      queryClient.getQueryData<Farmer[]>(query.queryKey) ??
+      (await queryClient.fetchQuery(query))
+    );
+  };
 
 export async function createFarmer({
   token,

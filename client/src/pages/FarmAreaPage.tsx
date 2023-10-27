@@ -17,8 +17,7 @@ import {
   createFarmSchema,
   farmSchema,
 } from "@/lib/validations/farm";
-import { updateFarm } from "@/services/farm.service";
-import { farmLoader } from "@/services/loader";
+import { farmLoader, updateFarm } from "@/services/farm.service";
 import { useGetAuth } from "@/services/session.service";
 import { DrawEvent } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
@@ -98,7 +97,7 @@ function FarmAreaPage() {
           {
             message: "Title number already registered",
           },
-          { shouldFocus: true },
+          { shouldFocus: true }
         );
       }
     },
@@ -109,7 +108,7 @@ function FarmAreaPage() {
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
+        e.features[0].geometry.coordinates
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -175,7 +174,7 @@ function FarmAreaPage() {
                   className={cn(
                     buttonVariants({
                       size: "sm",
-                    }),
+                    })
                   )}
                 >
                   Edit

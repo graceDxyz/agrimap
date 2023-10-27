@@ -9,8 +9,10 @@ import {
 import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useBoundStore } from "@/lib/store";
-import { useGetDisbursements } from "@/services/disbursement.service";
-import { disbursementsLoader } from "@/services/loader";
+import {
+  disbursementsLoader,
+  useGetDisbursements,
+} from "@/services/disbursement.service";
 import { useLoaderData } from "react-router-dom";
 
 function DisbursementsPage() {

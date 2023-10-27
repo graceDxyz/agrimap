@@ -5,7 +5,7 @@ import {
 } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { mortgageSchema, mortgagesSchema } from "@/lib/validations/mortgage";
-import { Message } from "@/types";
+import { LoaderType, Message } from "@/types";
 import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
 import { ActiveUser } from "@/types/user.type";
 import {
@@ -30,7 +30,7 @@ export const getMortgagesQuery = (token: string) => ({
 });
 
 export function useGetMortgages(
-  options?: UseQueryOptions<Mortgage[], AxiosError>,
+  options?: UseQueryOptions<Mortgage[], AxiosError>
 ) {
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
@@ -61,6 +61,16 @@ export function useGetMortgage({
     },
   });
 }
+
+export const mortgagesLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async () => {
+    const query = getMortgagesQuery(token);
+    return (
+      queryClient.getQueryData<Mortgage[]>(query.queryKey) ??
+      (await queryClient.fetchQuery(query))
+    );
+  };
 
 export async function createMortgage({
   token,

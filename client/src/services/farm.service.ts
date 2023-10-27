@@ -6,7 +6,7 @@ import {
 } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { farmSchema, farmsSchema } from "@/lib/validations/farm";
-import { Message } from "@/types";
+import { LoaderType, Message } from "@/types";
 import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { ActiveUser } from "@/types/user.type";
 import {
@@ -15,6 +15,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { LoaderFunctionArgs } from "react-router-dom";
 
 export async function fetchFarms(token: string) {
   const res = await api.get("/farms", {
@@ -66,6 +67,27 @@ export function useGetFarm(farmId: string) {
     ...getFarmQuery({ token: user?.accessToken ?? "", farmId }),
   });
 }
+
+export const farmsLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async () => {
+    const query = getFarmsQuery(token);
+    return (
+      queryClient.getQueryData<Farm[]>(query.queryKey) ??
+      (await queryClient.fetchQuery(query))
+    );
+  };
+
+export const farmLoader =
+  ({ token, queryClient }: LoaderType) =>
+  async ({ params }: LoaderFunctionArgs) => {
+    const farmId = params.farmId ?? "";
+    const query = getFarmQuery({ token, farmId });
+    const farm =
+      queryClient.getQueryData<Farm>(query.queryKey) ??
+      (await queryClient.fetchQuery(query));
+    return farm;
+  };
 
 export async function createFarm({
   token,
@@ -121,7 +143,7 @@ export async function archivedFarm({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    },
+    }
   );
 
   return res;

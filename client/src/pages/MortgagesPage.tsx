@@ -10,8 +10,7 @@ import { Shell } from "@/components/shells/shell";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { useBoundStore } from "@/lib/store";
-import { mortgagesLoader } from "@/services/loader";
-import { useGetMortgages } from "@/services/mortgage.service";
+import { mortgagesLoader, useGetMortgages } from "@/services/mortgage.service";
 import { useLoaderData } from "react-router-dom";
 
 function MortgagesPage() {
