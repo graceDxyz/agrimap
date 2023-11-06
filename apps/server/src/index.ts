@@ -1,8 +1,6 @@
 import dotenv from "dotenv";
-
 dotenv.config();
 
-import config from "config";
 import deserializeUser from "./middlewares/deserializeUser";
 import route from "./routes/root";
 import connect from "./utils/connect";
@@ -14,12 +12,10 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import { env } from "./env";
 import { seed } from "./utils/generated";
 
-const port = config.get<number>("port");
-const node_env = config.get<string>("env");
-const root_dir = node_env === "production" ? "../../.." : "../..";
-
+const root_dir = "../..";
 const app = express();
 
 app.use(
@@ -42,7 +38,7 @@ app.use(
 );
 app.use(express.json()); //bodyparser
 app.use(deserializeUser);
-if (node_env === "production") {
+if (env.NODE_ENV === "production") {
   app.use(
     morgan("common", {
       skip: (req, res) => res.statusCode < 400,
@@ -64,10 +60,10 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, root_dir, "client", "dist", "index.html"));
 });
 
-app.listen(port, async () => {
+app.listen(env.PORT, async () => {
   await connect();
   await seed();
   route(app);
 
-  logger.info(`App is running at http://localhost:${port}`);
+  logger.info(`App is running at http://localhost:${env.PORT}`);
 });

@@ -1,4 +1,3 @@
-import config from "config";
 import { Request, Response } from "express";
 import { get, omit } from "lodash";
 import {
@@ -26,15 +25,15 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 
     const accessToken = signJwt(
       { sub: session._id },
-      "accessTokenPrivateKey",
-      { expiresIn: config.get("accessTokenTtl") } // 15 minutes,
+      "ACCESS_TOKEN_PRIVATE_KEY",
+      { expiresIn: "1d" } // 15 minutes,
     );
 
     // create a refresh token
     const refreshToken = signJwt(
       { sub: session._id },
-      "refreshTokenPrivateKey",
-      { expiresIn: config.get("refreshTokenTtl") } // 15 minutes
+      "REFRESH_PRIVATE_KEY",
+      { expiresIn: "1y" } // 15 minutes
     );
 
     // return access & refresh tokens
@@ -55,7 +54,7 @@ export async function getUserSessionHandler(req: Request, res: Response) {
   const refreshToken = get(req, "cookies.X-Agrimap-Session");
 
   if (refreshToken) {
-    const result = verifyJwt(refreshToken as string, "refreshTokenPublicKey");
+    const result = verifyJwt(refreshToken as string, "REFRESH_PUBLIC_KEY");
     if (result.expired) {
       return res.send();
     }
@@ -66,8 +65,8 @@ export async function getUserSessionHandler(req: Request, res: Response) {
       const user = omit(session.user, ["password"]);
       const accessToken = signJwt(
         { sub: session._id },
-        "accessTokenPrivateKey",
-        { expiresIn: config.get("accessTokenTtl") } // 15 minutes,
+        "ACCESS_TOKEN_PRIVATE_KEY",
+        { expiresIn: "1d" } // 15 minutes,
       );
 
       return res.send({

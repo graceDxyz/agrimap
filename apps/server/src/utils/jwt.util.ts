@@ -1,15 +1,13 @@
 import jwt from "jsonwebtoken";
-import config from "config";
+import { env } from "../env";
 
 export function signJwt(
   object: Object,
-  keyName: "accessTokenPrivateKey" | "refreshTokenPrivateKey",
-  options?: jwt.SignOptions | undefined,
+  keyName: keyof typeof env,
+  options?: jwt.SignOptions | undefined
 ) {
-  const signingKey = Buffer.from(
-    config.get<string>(keyName),
-    "base64",
-  ).toString("ascii");
+  const key = env[keyName] as string;
+  const signingKey = Buffer.from(key, "base64").toString("ascii");
 
   return jwt.sign(object, signingKey, {
     ...(options && options),
@@ -17,13 +15,10 @@ export function signJwt(
   });
 }
 
-export function verifyJwt(
-  token: string,
-  keyName: "accessTokenPublicKey" | "refreshTokenPublicKey",
-) {
-  const publicKey = Buffer.from(config.get<string>(keyName), "base64").toString(
-    "ascii",
-  );
+export function verifyJwt(token: string, keyName: keyof typeof env) {
+  const key = env[keyName] as string;
+
+  const publicKey = Buffer.from(key, "base64").toString("ascii");
 
   try {
     const decoded = jwt.verify(token, publicKey);

@@ -1,18 +1,16 @@
-import config from "config";
 import mongoose from "mongoose";
+import { env } from "../env";
 import logger from "./logger";
 
 async function connect() {
-  const dbUri = config.get<string>("dbUri");
-
   try {
-    await mongoose.connect(dbUri, {      
-      dbName:"agrimap",
+    await mongoose.connect(env.DB_CONNECTION, {
+      dbName: "agrimap",
     });
     logger.info("DB connection established");
   } catch (error) {
     logger.error("Could not connect to db");
-    logger.error(error)
+    logger.error(error);
     process.exit(1);
   }
 }

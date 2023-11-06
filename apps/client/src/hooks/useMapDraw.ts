@@ -9,7 +9,9 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
 import { Coordinates, Farm } from "schema";
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESSTOKEN;
+mapboxgl.accessToken =
+  "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
+
 interface UseMapContainerProps {
   coordinares?: Coordinates;
   mode?: "view" | "edit";

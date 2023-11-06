@@ -1,9 +1,9 @@
-import config from "config";
 import {
   createUploadthing,
   createUploadthingExpressHandler,
   type FileRouter,
 } from "uploadthing/express";
+import { env } from "../env";
 
 const f = createUploadthing();
 
@@ -26,8 +26,8 @@ export const uploadRouter = {
   }),
 } satisfies FileRouter;
 
-const uploadthingId = config.get<string>("uploadthingId");
-const uploadthingSecret = config.get<string>("uploadthingSecret");
+const uploadthingId = env.UPLOADTHING_APP_ID;
+const uploadthingSecret = env.UPLOADTHING_SECRET;
 
 export const uploadthingHandler = createUploadthingExpressHandler({
   router: uploadRouter,
@@ -36,4 +36,3 @@ export const uploadthingHandler = createUploadthingExpressHandler({
     uploadthingSecret,
   },
 });
-

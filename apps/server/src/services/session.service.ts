@@ -1,9 +1,7 @@
 import { get } from "lodash";
-import config from "config";
 import { FilterQuery, UpdateQuery } from "mongoose";
 import SessionModel, { ISession } from "../models/session.model";
-import { verifyJwt, signJwt } from "../utils/jwt.util";
-import { findUser } from "./user.service";
+import { signJwt, verifyJwt } from "../utils/jwt.util";
 
 export async function createSession(userId: string, userAgent: string) {
   const session = await SessionModel.create({ user: userId, userAgent });
@@ -21,7 +19,7 @@ export async function findSession(query: FilterQuery<ISession>) {
 
 export async function updateSession(
   query: FilterQuery<ISession>,
-  update: UpdateQuery<ISession>,
+  update: UpdateQuery<ISession>
 ) {
   return SessionModel.updateOne(query, update);
 }
@@ -31,7 +29,7 @@ export async function reIssueAccessToken({
 }: {
   refreshToken: string;
 }) {
-  const { decoded } = verifyJwt(refreshToken, "refreshTokenPublicKey");
+  const { decoded } = verifyJwt(refreshToken, "REFRESH_PUBLIC_KEY");
 
   if (!decoded || !get(decoded, "session")) {
     return { user: null, sub: null, accessToken: null };
@@ -51,8 +49,8 @@ export async function reIssueAccessToken({
 
   const accessToken = signJwt(
     { ...user, session: session._id },
-    "accessTokenPrivateKey",
-    { expiresIn: config.get("accessTokenTtl") }, // 15 minutes
+    "ACCESS_TOKEN_PRIVATE_KEY",
+    { expiresIn: "1d" } // 15 minutes
   );
 
   return { user, sub: session._id, accessToken };

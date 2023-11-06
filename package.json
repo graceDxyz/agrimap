@@ -10,7 +10,7 @@
     "build": "turbo build",
     "clean": "turbo clean",
     "dev": "dotenv -- turbo dev --no-cache  --continue",
-    "start": "node apps/server/dist/src/index.js",
+    "start": "dotenv -- node apps/server/dist/index.js",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "typecheck": "turbo typecheck",
     "lint": "turbo lint"
