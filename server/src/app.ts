@@ -14,6 +14,7 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import { seed } from "./utils/generated";
 
 const port = config.get<number>("port");
 const node_env = config.get<string>("env");
@@ -25,7 +26,7 @@ const app = express();
 app.use(
   helmet({
     contentSecurityPolicy: false,
-  })
+  }),
 );
 app.use(cookieParser());
 app.use(
@@ -38,7 +39,7 @@ app.use(
     ],
     credentials: true,
     allowedHeaders: ["Content-Disposition"],
-  })
+  }),
 );
 app.use(express.json()); //bodyparser
 app.use(deserializeUser);
@@ -46,7 +47,7 @@ if (node_env === "production") {
   app.use(
     morgan("common", {
       skip: (req, res) => res.statusCode < 400,
-    })
+    }),
   );
 } else {
   app.use(morgan("dev"));
@@ -66,6 +67,7 @@ app.get("*", (req, res, next) => {
 
 app.listen(port, async () => {
   await connect();
+  await seed();
   route(app);
 
   logger.info(`App is running at http://localhost:${port}`);

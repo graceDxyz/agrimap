@@ -41,6 +41,7 @@
     "zod": "^3.22.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/better-sqlite3": "^7.6.6",
     "@types/config": "^3.3.1",

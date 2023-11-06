@@ -4,14 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd server && pnpm dev --host\" \"cd client && pnpm dev --host\"",
-    "prepare": "husky install"
+    "dev": "pnpm --stream -r run dev"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "concurrently": "^8.2.1",
-    "husky": "^8.0.3"
-  }
+  "license": "ISC"
 }
