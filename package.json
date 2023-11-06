@@ -15,9 +15,6 @@
     "typecheck": "turbo typecheck",
     "lint": "turbo lint"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "dotenv-cli": "latest",
     "prettier": "^3.0.3",

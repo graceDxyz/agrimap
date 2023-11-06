@@ -1,32 +1,19 @@
-# Use the official Node.js image as a base image
-FROM node:18.18.0-alpine3.17
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-# Set the working directory inside the container
-WORKDIR /app
+FROM base AS build
+COPY . /usr/src/app
+WORKDIR /usr/src/app
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run -r build
+RUN pnpm deploy --filter=server --prod /prod/server
+RUN pnpm deploy --filter=client --prod /prod/client
 
-# Copy package.json and package-lock.json for both front-end and back-end
-COPY client/package*.json ./client/
-COPY server/package*.json ./server/
-
-# Install dependencies for both front-end and back-end
-RUN cd client && npm install
-RUN cd server && npm install
-
-COPY . . 
-
-# Build the React front-end
-RUN cd client && npm run build
-
-# Change working directory to the server
-WORKDIR /app/server
-
-# Build the server
-RUN npm run build
-
-# Copy the 'sqlite.db' file to the server's 'build' directory
-COPY server/sqlite.db ./build/sqlite.db
-
-# # Start your Express.js server
-CMD ["node", "build/src/app.js"]
-
-
+FROM base AS server
+COPY --from=build /prod/server /prod/server
+COPY --from=build /prod/client /prod/client
+WORKDIR /prod/server
+# EXPOSE 8000
+CMD [ "pnpm", "start" ]
