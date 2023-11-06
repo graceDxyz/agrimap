@@ -9,7 +9,8 @@
   "scripts": {
     "build": "turbo build",
     "clean": "turbo clean",
-    "dev": "turbo dev --no-cache  --continue",
+    "dev": "dotenv -- turbo dev --no-cache  --continue",
+    "start": "node apps/server/dist/src/index.js",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "typecheck": "turbo typecheck",
     "lint": "turbo lint"
@@ -17,9 +18,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@8.10.2",
   "dependencies": {
+    "dotenv-cli": "latest",
     "prettier": "^3.0.3",
-    "turbo": "^1.10.16"
-  }
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@8.10.2"
 }

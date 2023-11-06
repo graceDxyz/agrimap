@@ -18,7 +18,6 @@ import { seed } from "./utils/generated";
 
 const port = config.get<number>("port");
 const node_env = config.get<string>("env");
-
 const root_dir = node_env === "production" ? "../../.." : "../..";
 
 const app = express();
@@ -26,7 +25,7 @@ const app = express();
 app.use(
   helmet({
     contentSecurityPolicy: false,
-  }),
+  })
 );
 app.use(cookieParser());
 app.use(
@@ -39,7 +38,7 @@ app.use(
     ],
     credentials: true,
     allowedHeaders: ["Content-Disposition"],
-  }),
+  })
 );
 app.use(express.json()); //bodyparser
 app.use(deserializeUser);
@@ -47,7 +46,7 @@ if (node_env === "production") {
   app.use(
     morgan("common", {
       skip: (req, res) => res.statusCode < 400,
-    }),
+    })
   );
 } else {
   app.use(morgan("dev"));

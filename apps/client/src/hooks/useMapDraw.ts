@@ -2,15 +2,14 @@ import { MAP_POLYGON_KEY } from "@/constant/map.constant";
 import { DrawEvent } from "@/types";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+//@ts-ignore
 import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
 import { Coordinates, Farm } from "schema";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
-
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESSTOKEN;
 interface UseMapContainerProps {
   coordinares?: Coordinates;
   mode?: "view" | "edit";

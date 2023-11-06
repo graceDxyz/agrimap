@@ -9,4 +9,6 @@ export default {
   accessTokenPublicKey: ``,
   refreshTokenPrivateKey: ``,
   refreshTokenPublicKey: ``,
+  uploadthingId: ``,
+  uploadthingSecret: ``,
 };
