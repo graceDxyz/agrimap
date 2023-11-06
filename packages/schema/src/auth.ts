@@ -16,4 +16,4 @@ export const authBody = z.object({
     .max(100),
 });
 
-export type AuthInputs = z.infer<typeof authBody>;
+export type AuthInput = z.infer<typeof authBody>;
