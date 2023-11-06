@@ -4,16 +4,20 @@ import {
   QUERY_MORTGAGES_KEY,
 } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { mortgageSchema, mortgagesSchema } from "@/lib/validations/mortgage";
 import { LoaderType, Message } from "@/types";
-import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
-import { ActiveUser } from "@/types/user.type";
 import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import {
+  ActiveUser,
+  CreateMortgageInput,
+  Mortgage,
+  mortgageSchema,
+  mortgagesSchema,
+} from "schema";
 
 export async function fetchMortgages(token: string) {
   const res = await api.get("/mortgages", {

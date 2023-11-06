@@ -6,8 +6,8 @@ import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { QUERY_FARMS_KEY } from "@/constant/query.constant";
-import { Farm } from "@/types/farm.type";
 import { useQueryClient } from "@tanstack/react-query";
+import { Farm } from "schema";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {

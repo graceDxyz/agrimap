@@ -1,5 +1,5 @@
 import { Mode } from "@/types";
-import { Mortgage } from "@/types/mortgage.type";
+import { Mortgage } from "schema";
 import { StateCreator } from "zustand";
 import { StoreState } from ".";
 

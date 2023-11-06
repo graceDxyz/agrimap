@@ -29,3 +29,8 @@ export const phAddressSchema = z.object({
   cities: z.array(citySchema),
   barangays: z.array(barangaySchema),
 });
+
+export type PhAddress = z.infer<typeof phAddressSchema>;
+export type Province = z.infer<typeof provinceSchema>;
+export type City = z.infer<typeof citySchema>;
+export type Barangay = z.infer<typeof barangaySchema>;

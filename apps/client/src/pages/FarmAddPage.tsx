@@ -12,21 +12,22 @@ import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { useMapDraw } from "@/hooks/useMapDraw";
 import { cn } from "@/lib/utils";
-import {
-  coordinatesSchema,
-  createFarmSchema,
-  farmSchema,
-} from "@/lib/validations/farm";
 import { createFarm } from "@/services/farm.service";
 import { useGetAuth } from "@/services/session.service";
 import { DrawEvent } from "@/types";
-import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  CreateFarmInput,
+  Farm,
+  coordinatesSchema,
+  createFarmBody,
+  farmSchema,
+} from "schema";
 
 function FarmAddPage() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ function FarmAddPage() {
   const { resetState } = useAddressState();
 
   const form = useForm<CreateFarmInput>({
-    resolver: zodResolver(createFarmSchema),
+    resolver: zodResolver(createFarmBody),
     defaultValues: {
       ownerId: "",
       size: 0,
@@ -58,7 +59,7 @@ function FarmAddPage() {
     mode: "edit",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
+        e.features[0].geometry.coordinates
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -94,7 +95,7 @@ function FarmAddPage() {
           {
             message: "Title number already registered",
           },
-          { shouldFocus: true },
+          { shouldFocus: true }
         );
       }
     },
@@ -125,7 +126,7 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              }),
+              })
             )}
           >
             Cancel

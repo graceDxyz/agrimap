@@ -27,7 +27,6 @@ import {
   QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { createFarmerSchema, farmerSchema } from "@/lib/validations/farmer";
 import {
   createFarmer,
   deleteFarmer,
@@ -35,12 +34,17 @@ import {
 } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
-import { RecentAdded } from "@/types/statistic.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
+import {
+  CreateFarmerInput,
+  Farmer,
+  RecentAdded,
+  createFarmerBody,
+  farmerSchema,
+} from "schema";
 import {
   BarangaySelect,
   CitySelect,
@@ -98,7 +102,7 @@ function CreateForm({ token }: { token: string }) {
   const { setMode } = useBoundStore((state) => state.farmer);
 
   const form = useForm<CreateFarmerInput>({
-    resolver: zodResolver(createFarmerSchema),
+    resolver: zodResolver(createFarmerBody),
     defaultValues: {
       firstname: "",
       lastname: "",
@@ -176,7 +180,7 @@ function UpdateForm({ token }: { token: string }) {
   const { setMode, farmer } = useBoundStore((state) => state.farmer);
 
   const form = useForm<CreateFarmerInput>({
-    resolver: zodResolver(createFarmerSchema),
+    resolver: zodResolver(createFarmerBody),
     defaultValues: {
       firstname: "",
       lastname: "",

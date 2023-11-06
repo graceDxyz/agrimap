@@ -11,7 +11,8 @@
     "db:generate": "drizzle-kit generate:sqlite",
     "db:push": "drizzle-kit push:sqlite",
     "db:introspect": "drizzle-kit introspect:sqlite",
-    "db:studio": "drizzle-kit studio --port 5001 --verbose"
+    "db:studio": "drizzle-kit studio --port 5001 --verbose",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@types/lodash": "^4.14.198",

@@ -1,6 +1,6 @@
 import { useBoundStore } from "@/lib/store";
-import { FarmerData, StatsBy } from "@/types/statistic.type";
 import { useEffect, useState } from "react";
+import { FarmerData, StatsBy } from "schema";
 
 function useRandomData(isLoading?: boolean) {
   const [data, setRandomData] = useState<FarmerData[]>([]);

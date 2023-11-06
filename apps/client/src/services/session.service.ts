@@ -1,8 +1,7 @@
 import { QUERY_ACTIVE_USER_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { activeUserSchema } from "@/lib/validations/user";
-import { ActiveUser } from "@/types/user.type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ActiveUser, activeUserSchema } from "schema";
 
 function logoutMutation(accessToken: string) {
   return api.post(

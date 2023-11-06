@@ -1,7 +1,7 @@
 import useRandomData from "@/hooks/useRandomData";
-import { FarmerData } from "@/types/statistic.type";
 import { memo } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { FarmerData } from "schema";
 
 interface Props {
   data?: FarmerData[];

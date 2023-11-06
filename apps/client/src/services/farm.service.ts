@@ -5,10 +5,7 @@ import {
   QUERY_FARM_KEY,
 } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { farmSchema, farmsSchema } from "@/lib/validations/farm";
 import { LoaderType, Message } from "@/types";
-import { CreateFarmInput, Farm } from "@/types/farm.type";
-import { ActiveUser } from "@/types/user.type";
 import {
   UseQueryOptions,
   useQuery,
@@ -16,6 +13,13 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { LoaderFunctionArgs } from "react-router-dom";
+import {
+  ActiveUser,
+  CreateFarmInput,
+  Farm,
+  farmSchema,
+  farmsSchema,
+} from "schema";
 
 export async function fetchFarms(token: string) {
   const res = await api.get("/farms", {

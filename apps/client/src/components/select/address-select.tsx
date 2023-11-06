@@ -1,8 +1,8 @@
 import { useGetPhAddress } from "@/services/address.service";
-import { Barangay, City, Province } from "@/types/address.type";
 import { useEffect } from "react";
 import { ActionMeta, SingleValue } from "react-select";
 import AsyncSelect from "react-select/async";
+import { Barangay, City, Province } from "schema";
 import { create } from "zustand";
 import { Input } from "../ui/input";
 

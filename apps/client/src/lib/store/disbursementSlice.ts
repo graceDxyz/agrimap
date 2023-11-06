@@ -1,5 +1,5 @@
 import { Mode } from "@/types";
-import { Disbursement } from "@/types/disbursement.type";
+import { Disbursement } from "schema";
 import { StateCreator } from "zustand";
 import { StoreState } from ".";
 

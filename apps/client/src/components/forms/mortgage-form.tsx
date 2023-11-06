@@ -33,10 +33,6 @@ import {
   QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import {
-  createMortgageSchema,
-  mortgageSchema,
-} from "@/lib/validations/mortgage";
 import { useGetFarms } from "@/services/farm.service";
 import {
   createMortgage,
@@ -45,7 +41,6 @@ import {
 } from "@/services/mortgage.service";
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateMortgageInput, Mortgage } from "@/types/mortgage.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -54,9 +49,15 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 import { cn } from "@/lib/utils";
 import { useGetFarmers } from "@/services/farmer.service";
-import { Farm } from "@/types/farm.type";
-import { Farmer } from "@/types/farmer.type";
 import { addMonths } from "date-fns";
+import {
+  CreateMortgageInput,
+  Farm,
+  Farmer,
+  Mortgage,
+  createMortgageBody,
+  mortgageSchema,
+} from "schema";
 import { CalendarDateRangePicker } from "../date-range-picker";
 
 export function MortgageDialog() {
@@ -108,7 +109,7 @@ function CreateForm({ token }: { token: string }) {
   const { setMode } = useBoundStore((state) => state.mortgage);
 
   const form = useForm<CreateMortgageInput>({
-    resolver: zodResolver(createMortgageSchema),
+    resolver: zodResolver(createMortgageBody),
     defaultValues: {
       status: "Active",
       farmId: "",
@@ -205,7 +206,7 @@ function UpdateForm({ token }: { token: string }) {
   const { setMode, mortgage } = useBoundStore((state) => state.mortgage);
 
   const form = useForm<CreateMortgageInput>({
-    resolver: zodResolver(createMortgageSchema),
+    resolver: zodResolver(createMortgageBody),
     defaultValues: {
       status: "Active",
       farmId: "",
@@ -366,18 +367,18 @@ function MortgageGenericForm({
   const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({});
 
   const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId"),
+    (item) => item._id === form.getValues("farmId")
   );
 
   const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId"),
+    (item) => item._id === form.getValues("mortgageToId")
   );
 
   const filteredFarm = farmData
     ?.filter((farm) => !farm.isArchived)
     .filter(
       (farm) =>
-        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
+        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
     );
 
   const filteredFarmer = farmersData?.filter((farmer) => {
@@ -441,7 +442,7 @@ function MortgageGenericForm({
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -507,7 +508,7 @@ function MortgageGenericForm({
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>

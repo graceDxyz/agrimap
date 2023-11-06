@@ -1,7 +1,7 @@
+import { Mode } from "@/types";
+import { User } from "schema";
 import { StateCreator } from "zustand";
 import { StoreState } from ".";
-import { User } from "@/types/user.type";
-import { Mode } from "@/types";
 
 type UserMode =
   | {
@@ -30,7 +30,7 @@ const intitialState: State = {
 };
 
 export const createUserSlice: StateCreator<StoreState, [], [], UserSlice> = (
-  set,
+  set
 ) => ({
   user: {
     ...intitialState,

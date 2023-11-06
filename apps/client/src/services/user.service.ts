@@ -3,9 +3,7 @@ import {
   QUERY_USERS_KEY,
 } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { usersSchema } from "@/lib/validations/user";
 import { LoaderType } from "@/types";
-import { ActiveUser, CreateUserInput, User } from "@/types/user.type";
 import {
   UseQueryOptions,
   useQuery,
@@ -13,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { Message } from "react-hook-form";
+import { ActiveUser, CreateUserInput, User, usersSchema } from "schema";
 
 export async function fetchUsers(token: string) {
   const res = await api.get("/users", {

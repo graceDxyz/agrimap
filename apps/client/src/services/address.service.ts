@@ -1,13 +1,12 @@
 import { QUERY_ADDRESSES_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { phAddressSchema } from "@/lib/validations/address";
-import { PhAddress } from "@/types/address.type";
 import {
   UseQueryOptions,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { PhAddress, phAddressSchema } from "schema";
 
 export async function fetchAddress() {
   const res = await api.get("/address");

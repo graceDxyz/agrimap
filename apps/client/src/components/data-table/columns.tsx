@@ -9,11 +9,7 @@ import {
   UserDataTableRowActions,
 } from "@/components/data-table/data-table-row-actions";
 import { Badge } from "@/components/ui/badge";
-import { Disbursement } from "@/types/disbursement.type";
-import { Farm } from "@/types/farm.type";
-import { Farmer } from "@/types/farmer.type";
-import { Mortgage } from "@/types/mortgage.type";
-import { Role, User } from "@/types/user.type";
+import { Disbursement, Farm, Farmer, Mortgage, Role, User } from "schema";
 
 export const userColumns: ColumnDef<User>[] = [
   {

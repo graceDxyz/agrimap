@@ -1,7 +1,7 @@
 import { type Icons } from "@/components/icons";
 import { DrawEventType } from "@mapbox/mapbox-gl-draw";
-import { ActiveUser, Role } from "./user.type";
 import { QueryClient } from "@tanstack/react-query";
+import { ActiveUser, Role } from "schema";
 
 export type Mode = "view" | "create" | "update" | "delete";
 

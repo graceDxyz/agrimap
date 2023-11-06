@@ -30,15 +30,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
 import useRandomString from "@/hooks/useRandomString";
 import { useBoundStore } from "@/lib/store";
-import { createUserSchema, roleSchema } from "@/lib/validations/user";
 import { useGetAuth } from "@/services/session.service";
 import { createUser, deleteUser, updateUser } from "@/services/user.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateUserInput, User } from "@/types/user.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { CreateUserInput, User, createUserBody, roleSchema } from "schema";
 
 export function UserDialog() {
   const { user } = useGetAuth();
@@ -91,7 +90,7 @@ function CreateForm({ token }: { token: string }) {
   const roles = Object.values(roleSchema.Values);
 
   const form = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(createUserBody),
     defaultValues: {
       role: "USER",
       password: randomString,
@@ -254,7 +253,7 @@ function UpdateForm({ token }: { token: string }) {
   const roles = Object.values(roleSchema.Values);
 
   const form = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
+    resolver: zodResolver(createUserBody),
     defaultValues: {
       firstname: "",
       lastname: "",

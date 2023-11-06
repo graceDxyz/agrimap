@@ -1,4 +1,4 @@
-import { StatsBy, SwitcherType } from "@/types/statistic.type";
+import { StatsBy, SwitcherType } from "schema";
 import { StateCreator } from "zustand";
 import { StoreState } from ".";
 

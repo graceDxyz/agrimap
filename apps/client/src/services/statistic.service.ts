@@ -1,13 +1,15 @@
 import { QUERY_STATISTICS_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
-import {
-  recentAddedSchema,
-  statCountSchema,
-} from "@/lib/validations/statistic";
 import { LoaderType } from "@/types";
-import { RecentAdded, StatCount, StatsQuery } from "@/types/statistic.type";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import {
+  RecentAdded,
+  StatCount,
+  StatsQuery,
+  recentAddedSchema,
+  statCountSchema,
+} from "schema";
 import { farmsLoader } from "./farm.service";
 import { farmersLoader } from "./farmer.service";
 

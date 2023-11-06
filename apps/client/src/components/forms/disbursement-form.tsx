@@ -24,7 +24,6 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_DISBURSEMENTS_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { createDisbursementSchema } from "@/lib/validations/disbursement";
 import {
   createDisbursement,
   deleteDisbursement,
@@ -32,14 +31,15 @@ import {
 } from "@/services/disbursement.service";
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import {
-  CreateDisbursementInput,
-  Disbursement,
-} from "@/types/disbursement.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
+import {
+  CreateDisbursementInput,
+  Disbursement,
+  createDisbursementBody,
+} from "schema";
 import { Input } from "../ui/input";
 
 export function DisbursementDialog() {
@@ -91,7 +91,7 @@ function CreateForm({ token }: { token: string }) {
   const { setMode } = useBoundStore((state) => state.disbursement);
 
   const form = useForm<CreateDisbursementInput>({
-    resolver: zodResolver(createDisbursementSchema),
+    resolver: zodResolver(createDisbursementBody),
     defaultValues: {
       farmer: "",
       assistances: [],
@@ -141,11 +141,11 @@ function UpdateForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, disbursement } = useBoundStore(
-    (state) => state.disbursement,
+    (state) => state.disbursement
   );
 
   const form = useForm<CreateDisbursementInput>({
-    resolver: zodResolver(createDisbursementSchema),
+    resolver: zodResolver(createDisbursementBody),
     defaultValues: {
       assistances: [],
       size: 0,
@@ -204,7 +204,7 @@ function DeleteForm({ token }: { token: string }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { disbursement, setMode } = useBoundStore(
-    (state) => state.disbursement,
+    (state) => state.disbursement
   );
 
   const { mutate, isLoading } = useMutation({
@@ -217,7 +217,7 @@ function DeleteForm({ token }: { token: string }) {
             return prev.filter((item) => item._id !== disbursement?._id);
           }
           return prev;
-        },
+        }
       );
 
       handleCancelClick();

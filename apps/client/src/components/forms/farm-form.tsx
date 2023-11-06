@@ -21,15 +21,14 @@ import {
 import { useBoundStore } from "@/lib/store";
 import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
-import { farmSchema } from "@/lib/validations/farm";
 import { archivedFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
-import { CreateFarmInput, Farm } from "@/types/farm.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { CreateFarmInput, Farm, farmSchema } from "schema";
 import {
   BarangaySelect,
   CitySelect,
@@ -173,7 +172,7 @@ export function FarmGenericForm({
   const { data, isLoading: isFarmerLoading } = useGetFarmers({});
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId"),
+    (item) => item._id === form.getValues("ownerId")
   );
 
   return (
@@ -226,7 +225,7 @@ export function FarmGenericForm({
                         <Icons.chevronsUpDown
                           className={cn(
                             "ml-2 h-4 w-4 shrink-0 opacity-50",
-                            isEditMode ? "visible" : "hidden",
+                            isEditMode ? "visible" : "hidden"
                           )}
                         />
                       </Button>
@@ -251,7 +250,7 @@ export function FarmGenericForm({
                                   "ml-auto h-4 w-4",
                                   field.value === item._id
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </CommandItem>
@@ -453,7 +452,7 @@ export function FarmGenericForm({
                                   size: "sm",
                                   variant: "link",
                                 }),
-                                "w-full justify-start",
+                                "w-full justify-start"
                               )}
                             >
                               {item.fileName}
@@ -466,8 +465,8 @@ export function FarmGenericForm({
                               onClick={() => {
                                 field.onChange(
                                   field.value.filter(
-                                    (file) => file.fileKey !== item.fileKey,
-                                  ),
+                                    (file) => file.fileKey !== item.fileKey
+                                  )
                                 );
                               }}
                             >

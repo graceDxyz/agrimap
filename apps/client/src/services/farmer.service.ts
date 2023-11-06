@@ -3,16 +3,14 @@ import {
   QUERY_FARMERS_KEY,
 } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { farmersSchema } from "@/lib/validations/farmer";
 import { LoaderType, Message } from "@/types";
-import { CreateFarmerInput, Farmer } from "@/types/farmer.type";
-import { ActiveUser } from "@/types/user.type";
 import {
   UseQueryOptions,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { ActiveUser, CreateFarmerInput, Farmer, farmersSchema } from "schema";
 
 export async function fetchFarmers(token: string) {
   const res = await api.get("/farmers", {

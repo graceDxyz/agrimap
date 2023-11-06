@@ -4,19 +4,19 @@ import {
   QUERY_DISBURSEMENTS_KEY,
 } from "@/constant/query.constant";
 import api from "@/lib/api";
-import { disbursementsSchema } from "@/lib/validations/disbursement";
 import { LoaderType, Message } from "@/types";
-import {
-  CreateDisbursementInput,
-  Disbursement,
-} from "@/types/disbursement.type";
-import { ActiveUser } from "@/types/user.type";
 import {
   UseQueryOptions,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import {
+  ActiveUser,
+  CreateDisbursementInput,
+  Disbursement,
+  disbursementsSchema,
+} from "schema";
 
 export async function fetchDisbursements(token: string) {
   const res = await api.get("/disbursements", {

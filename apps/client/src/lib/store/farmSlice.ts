@@ -1,7 +1,7 @@
+import { Mode } from "@/types";
+import { Farm } from "schema";
 import { StateCreator } from "zustand";
 import { StoreState } from ".";
-import { Mode } from "@/types";
-import { Farm } from "@/types/farm.type";
 
 type FarmMode =
   | {
@@ -30,7 +30,7 @@ const intitialState: State = {
 };
 
 export const createFarmSlice: StateCreator<StoreState, [], [], FarmSlice> = (
-  set,
+  set
 ) => ({
   farm: {
     ...intitialState,
