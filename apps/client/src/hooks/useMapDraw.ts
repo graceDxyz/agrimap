@@ -327,24 +327,3 @@ function addPolyfon({
     target.getCanvas().style.cursor = "";
   });
 }
-
-function popOverStyle(farm: Farm) {
-  return `<table>
-    <tr>
-        <td class="p-2 text-gray-600 text-right font-bold">Title no.:</td>
-        <td class="p-2 text-gray-600 text-left">${farm.titleNumber}</td>
-    </tr>
-    <tr>
-        <td class="p-2 text-gray-600 text-right font-bold">Owner:</td>
-        <td class="p-2 text-gray-600 text-left">${farm.ownerName}</td>
-    </tr>
-    <tr>
-        <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
-        <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
-    </tr>
-    <tr>
-      <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
-      <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
-  </tr>
-</table>`;
-}
