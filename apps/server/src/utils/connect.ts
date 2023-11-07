@@ -5,7 +5,7 @@ import logger from "./logger";
 async function connect() {
   try {
     await mongoose.connect(env.DB_CONNECTION, {
-      dbName: "agrimap",
+      dbName: "agri-map",
     });
     logger.info("DB connection established");
   } catch (error) {

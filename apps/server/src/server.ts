@@ -5,10 +5,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 
-import deserializeUser from "./middlewares/deserializeUser";
 import { env } from "./env";
-import connect from "./utils/connect";
-import { seed } from "./utils/generated";
+import deserializeUser from "./middlewares/deserializeUser";
 import route from "./routes/root";
 
 const root_dir = "../..";
@@ -17,7 +15,7 @@ export const createServer = (): Express => {
   app.use(
     helmet({
       contentSecurityPolicy: false,
-    }),
+    })
   );
   app.use(cookieParser());
   app.use(
@@ -30,7 +28,7 @@ export const createServer = (): Express => {
       ],
       credentials: true,
       allowedHeaders: ["Content-Disposition"],
-    }),
+    })
   );
   app.use(express.json()); //bodyparser
   app.use(deserializeUser);
@@ -38,14 +36,12 @@ export const createServer = (): Express => {
     app.use(
       morgan("common", {
         skip: (req, res) => res.statusCode < 400,
-      }),
+      })
     );
   } else {
     app.use(morgan("dev"));
   }
 
-  connect();
-  seed();
   route(app);
 
   // Serve static files from the React build folder
@@ -58,7 +54,7 @@ export const createServer = (): Express => {
       return next();
     }
     res.sendFile(
-      path.join(__dirname, root_dir, "client", "dist", "index.html"),
+      path.join(__dirname, root_dir, "client", "dist", "index.html")
     );
   });
 
