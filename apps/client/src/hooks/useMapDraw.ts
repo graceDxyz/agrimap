@@ -7,7 +7,7 @@ import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useRef } from "react";
-import { Coordinates, Farm } from "schema";
+import { Coordinates, Farm, Mortgage } from "schema";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
@@ -148,9 +148,10 @@ export function useMapDraw({
 
 interface UseMapViewProps {
   farms?: Farm[];
+  mortgages: Mortgage[];
 }
 
-export function useMapView({ farms }: UseMapViewProps) {
+export function useMapView({ farms, mortgages }: UseMapViewProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -165,7 +166,15 @@ export function useMapView({ farms }: UseMapViewProps) {
       map.addControl(new mapboxgl.NavigationControl(), "bottom-right");
 
       map.on("load", ({ target }) => {
-        farms?.forEach((farm) => addPolyfon({ target, farm }));
+        farms?.forEach((farm) =>
+          addPolyfon({
+            target,
+            farm,
+            mortage: mortgages?.find(
+              (item) => item.farm._id === farm._id && item.status === "Active"
+            ),
+          })
+        );
       });
 
       return () => {
@@ -204,7 +213,15 @@ function findCenter(coordinates: Coordinates): { lng: number; lat: number } {
   return { lng: newCenter[0], lat: newCenter[1] };
 }
 
-function addPolyfon({ target, farm }: { target: mapboxgl.Map; farm: Farm }) {
+function addPolyfon({
+  target,
+  farm,
+  mortage,
+}: {
+  target: mapboxgl.Map;
+  farm: Farm;
+  mortage?: Mortgage;
+}) {
   const coordinates = farm.coordinates;
   const farmId = farm._id;
 
@@ -253,7 +270,7 @@ function addPolyfon({ target, farm }: { target: mapboxgl.Map; farm: Farm }) {
   target.on("click", layerId, function (e: mapboxgl.MapLayerMouseEvent) {
     const features = e.features ?? [];
     if (features.length > 0) {
-      const propFarm = features[0].properties as Farm;
+      // const propFarm = features[0].properties as Farm;
       const activeLayerId = features[0].layer.id;
       target.setFeatureState(
         {
@@ -267,7 +284,34 @@ function addPolyfon({ target, farm }: { target: mapboxgl.Map; farm: Farm }) {
 
       new mapboxgl.Popup({ closeButton: false })
         .setLngLat(e.lngLat)
-        .setHTML(popOverStyle(propFarm))
+        .setHTML(
+          `<table>
+                <tr>
+                    <td class="p-2 text-gray-600 text-right font-bold">Title no.:</td>
+                    <td class="p-2 text-gray-600 text-left">${
+                      farm.titleNumber
+                    }</td>
+                </tr>
+                <tr>
+                    <td class="p-2 text-gray-600 text-right font-bold">Owner:</td>
+                    <td class="p-2 text-gray-600 text-left">${
+                      farm.ownerName
+                    }</td>
+                </tr>
+                <tr>
+                    <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
+                    <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
+                </tr>
+                ${
+                  mortage
+                    ? `<tr>
+                    <td class="p-2 text-gray-600 text-right font-bold">Mortgage to:</td>
+                    <td class="p-2 text-gray-600 text-left">${mortage.mortgageToName}</td>
+                  </tr>`
+                    : ""
+                }
+            </table>`
+        )
         .setMaxWidth("400px") // Set the maximum width of the popup
         .addTo(target);
     }
@@ -298,5 +342,9 @@ function popOverStyle(farm: Farm) {
         <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
         <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
     </tr>
+    <tr>
+      <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
+      <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
+  </tr>
 </table>`;
 }

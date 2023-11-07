@@ -3,6 +3,7 @@ import { Shell } from "@/components/shells/shell";
 import { useMapView } from "@/hooks/useMapDraw";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
+import { useGetMortgages } from "@/services/mortgage.service";
 import { mapLoader } from "@/services/statistic.service";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
@@ -21,6 +22,7 @@ function MapPage() {
   const { data: farmersData, isLoading: isFarmerLoading } = useGetFarmers({
     initialData: initFarmers,
   });
+  const { data: mortgageData } = useGetMortgages({ initialData: [] });
 
   const [farmer, setFarmer] = useState<Option | undefined>(undefined);
   const farmerOptions: Option[] =
@@ -34,7 +36,7 @@ function MapPage() {
       (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
     ) || [];
 
-  const mapRef = useMapView({ farms });
+  const mapRef = useMapView({ farms, mortgages: mortgageData ?? [] });
 
   return (
     <Shell variant="sidebar">
