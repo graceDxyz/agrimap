@@ -29,7 +29,6 @@ import {
   deleteDisbursement,
   updateDisbursement,
 } from "@/services/disbursement.service";
-import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -43,7 +42,6 @@ import {
 import { Input } from "../ui/input";
 
 export function DisbursementDialog() {
-  const { user } = useGetAuth();
   const { mode } = useBoundStore((state) => state.disbursement);
   const isOpen = mode !== "view";
 
@@ -55,17 +53,17 @@ export function DisbursementDialog() {
     create: {
       title: "Add Data",
       description: "add a disbursement data.",
-      form: <CreateForm token={user?.accessToken ?? ""} />,
+      form: <CreateForm />,
     },
     update: {
       title: "Update Data",
       description: "update a disbursement data.",
-      form: <UpdateForm token={user?.accessToken ?? ""} />,
+      form: <UpdateForm />,
     },
     delete: {
       title: "Are you absolutely sure?",
       description: "Delete disbursement data (cannot be undone).",
-      form: <DeleteForm token={user?.accessToken ?? ""} />,
+      form: <DeleteForm />,
     },
   };
 
@@ -85,7 +83,7 @@ export function DisbursementDialog() {
   );
 }
 
-function CreateForm({ token }: { token: string }) {
+function CreateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.disbursement);
@@ -118,7 +116,7 @@ function CreateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateDisbursementInput) {
-    mutate({ token, data });
+    mutate(data);
   }
 
   function handleCancelClick() {
@@ -137,7 +135,7 @@ function CreateForm({ token }: { token: string }) {
   );
 }
 
-function UpdateForm({ token }: { token: string }) {
+function UpdateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, disbursement } = useBoundStore(
@@ -172,7 +170,7 @@ function UpdateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateDisbursementInput) {
-    mutate({ token, id: disbursement?._id as string, data });
+    mutate({ id: disbursement?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -200,7 +198,7 @@ function UpdateForm({ token }: { token: string }) {
   );
 }
 
-function DeleteForm({ token }: { token: string }) {
+function DeleteForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { disbursement, setMode } = useBoundStore(
@@ -232,7 +230,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: disbursement?._id ?? "" });
+    mutate(disbursement?._id ?? "");
   }
 
   function handleCancelClick() {

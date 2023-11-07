@@ -13,7 +13,6 @@ import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { useMapDraw } from "@/hooks/useMapDraw";
 import { cn } from "@/lib/utils";
 import { createFarm } from "@/services/farm.service";
-import { useGetAuth } from "@/services/session.service";
 import { DrawEvent } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,7 +31,6 @@ import {
 function FarmAddPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useGetAuth();
   const { toast } = useToast();
   const { resetState } = useAddressState();
 
@@ -102,7 +100,7 @@ function FarmAddPage() {
   });
 
   function onSubmit(data: CreateFarmInput) {
-    mutate({ token: user?.accessToken ?? "", data });
+    mutate(data);
   }
 
   useEffect(() => {

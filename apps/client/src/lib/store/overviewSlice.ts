@@ -1,6 +1,6 @@
+import { StoreState } from "@/lib/store";
 import { StatsBy, SwitcherType } from "schema";
 import { StateCreator } from "zustand";
-import { StoreState } from ".";
 
 interface State {
   activeSwitcher: SwitcherType;

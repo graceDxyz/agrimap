@@ -7,15 +7,12 @@ const getCurrentYear = () => {
   return currentDate.getFullYear();
 };
 
-export function useGetExcelReport({ token }: { token: string }) {
+export function useGetExcelReport() {
   return useMutation({
     mutationKey: [QUERY_REPORT_KEY],
     mutationFn: async () => {
       const response = await api.get("/report", {
         responseType: "blob", // Specify the response type as a blob
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
 
       const contentType =

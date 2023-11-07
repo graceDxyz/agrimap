@@ -1,30 +1,20 @@
 import { QUERY_ACTIVE_USER_KEY } from "@/constant/query.constant";
 import api from "@/lib/api";
+import { useBoundStore } from "@/lib/store";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ActiveUser, activeUserSchema } from "schema";
+import { activeUserSchema } from "schema";
 
-function logoutMutation(accessToken: string) {
-  return api.post(
-    "/sessions/current",
-    {},
-    {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-}
+const auth = useBoundStore.getState().auth;
 
 export function useGetSession() {
   return useQuery({
     queryKey: [QUERY_ACTIVE_USER_KEY],
     queryFn: async () => {
       const res = await api.get("/sessions/current");
-
       if (res.data) {
-        return activeUserSchema.parse(res.data);
+        const activeUser = activeUserSchema.parse(res.data);
+        auth.setAuthUser(activeUser);
+        return activeUser;
       }
       return null;
     },
@@ -33,24 +23,17 @@ export function useGetSession() {
   });
 }
 
-export function useGetAuth() {
+export function useLogOutMutation() {
   const queryClient = useQueryClient();
-  const user = useQuery<ActiveUser>([QUERY_ACTIVE_USER_KEY], {
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  }).data;
-
-  const { mutate } = useMutation({
-    mutationFn: logoutMutation,
+  return useMutation({
+    mutationFn: () => {
+      return api.post("/sessions/current", {});
+    },
     onMutate: () => {
       queryClient.setQueryData([QUERY_ACTIVE_USER_KEY], null);
     },
+    onSettled: () => {
+      auth.resetState();
+    },
   });
-
-  const logout = () => mutate(user?.accessToken ?? "");
-
-  return {
-    user,
-    logout,
-  };
 }

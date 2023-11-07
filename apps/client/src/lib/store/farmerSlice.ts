@@ -1,7 +1,7 @@
+import { StoreState } from "@/lib/store";
 import { Mode } from "@/types";
 import { Farmer } from "schema";
 import { StateCreator } from "zustand";
-import { StoreState } from ".";
 
 type FarmerMode =
   | {

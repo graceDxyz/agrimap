@@ -14,10 +14,10 @@ import { farmsLoader } from "./farm.service";
 import { farmersLoader } from "./farmer.service";
 
 export const mapLoader =
-  ({ token, queryClient }: LoaderType) =>
+  ({ queryClient }: LoaderType) =>
   async () => {
-    const farmerRes = farmersLoader({ token, queryClient });
-    const farmRes = farmsLoader({ token, queryClient });
+    const farmerRes = farmersLoader({ queryClient });
+    const farmRes = farmsLoader({ queryClient });
 
     const [farmers, farms] = await Promise.all([farmerRes(), farmRes()]);
 
@@ -27,21 +27,13 @@ export const mapLoader =
     };
   };
 
-export function useGetRecentAdded({
-  token,
-  options,
-}: {
-  token: string;
-  options?: UseQueryOptions<RecentAdded, AxiosError>;
-}) {
+export function useGetRecentAdded(
+  options?: UseQueryOptions<RecentAdded, AxiosError>
+) {
   return useQuery({
     queryKey: [QUERY_STATISTICS_KEY, "recent"],
     queryFn: async () => {
-      const res = await api.get("/statistics/recent", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.get("/statistics/recent");
 
       return recentAddedSchema.parse(res.data);
     },
@@ -50,11 +42,9 @@ export function useGetRecentAdded({
 }
 
 export function useGetStatistics({
-  token,
   query,
   options,
 }: {
-  token: string;
   query: StatsQuery;
   options?: UseQueryOptions<any, AxiosError>;
 }) {
@@ -73,11 +63,7 @@ export function useGetStatistics({
   return useQuery({
     queryKey: queryKey,
     queryFn: async () => {
-      const res = await api.get(`/statistics?${queryString}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.get(`/statistics?${queryString}`);
 
       return res.data;
     },
@@ -85,21 +71,13 @@ export function useGetStatistics({
   });
 }
 
-export function useGetStatCount({
-  token,
-  options,
-}: {
-  token: string;
-  options?: UseQueryOptions<StatCount, AxiosError>;
-}) {
+export function useGetStatCount(
+  options?: UseQueryOptions<StatCount, AxiosError>
+) {
   return useQuery({
     queryKey: [QUERY_STATISTICS_KEY, "count"],
     queryFn: async () => {
-      const res = await api.get("/statistics/count", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.get("/statistics/count");
 
       return statCountSchema.parse(res.data);
     },

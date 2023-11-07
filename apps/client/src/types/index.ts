@@ -1,7 +1,7 @@
 import { type Icons } from "@/components/icons";
 import { DrawEventType } from "@mapbox/mapbox-gl-draw";
 import { QueryClient } from "@tanstack/react-query";
-import { ActiveUser, Role } from "schema";
+import { Role, User } from "schema";
 
 export type Mode = "view" | "create" | "update" | "delete";
 
@@ -53,6 +53,6 @@ export type DrawEvent = {
   points: number;
 };
 
-export type DashboardContextType = { user?: ActiveUser; logout: () => void };
+export type DashboardContextType = { user?: User; logout: () => void };
 
-export type LoaderType = { token: string; queryClient: QueryClient };
+export type LoaderType = { queryClient: QueryClient };

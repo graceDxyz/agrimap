@@ -32,7 +32,6 @@ import {
   deleteFarmer,
   updateFarmer,
 } from "@/services/farmer.service";
-import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -53,7 +52,6 @@ import {
 } from "../select/address-select";
 
 export function FarmerDialog() {
-  const { user } = useGetAuth();
   const { mode } = useBoundStore((state) => state.farmer);
   const isOpen = mode !== "view";
 
@@ -65,17 +63,17 @@ export function FarmerDialog() {
     create: {
       title: "Add Farmer",
       description: "add a new farmer.",
-      form: <CreateForm token={user?.accessToken ?? ""} />,
+      form: <CreateForm />,
     },
     update: {
       title: "Update Farmer",
       description: "Update farmer information.",
-      form: <UpdateForm token={user?.accessToken ?? ""} />,
+      form: <UpdateForm />,
     },
     delete: {
       title: "Are you absolutely sure?",
       description: "Delete farmer data (cannot be undone).",
-      form: <DeleteForm token={user?.accessToken ?? ""} />,
+      form: <DeleteForm />,
     },
   };
 
@@ -95,7 +93,7 @@ export function FarmerDialog() {
   );
 }
 
-function CreateForm({ token }: { token: string }) {
+function CreateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { resetState } = useAddressState();
@@ -153,7 +151,7 @@ function CreateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateFarmerInput) {
-    mutate({ token, data });
+    mutate(data);
   }
 
   function handleCancelClick() {
@@ -173,7 +171,7 @@ function CreateForm({ token }: { token: string }) {
   );
 }
 
-function UpdateForm({ token }: { token: string }) {
+function UpdateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { resetState } = useAddressState();
@@ -223,7 +221,7 @@ function UpdateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateFarmerInput) {
-    mutate({ token, id: farmer?._id as string, data });
+    mutate({ id: farmer?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -252,7 +250,7 @@ function UpdateForm({ token }: { token: string }) {
   );
 }
 
-function DeleteForm({ token }: { token: string }) {
+function DeleteForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { farmer, setMode } = useBoundStore((state) => state.farmer);
@@ -282,7 +280,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: farmer?._id ?? "" });
+    mutate(farmer?._id ?? "");
   }
 
   function handleCancelClick() {

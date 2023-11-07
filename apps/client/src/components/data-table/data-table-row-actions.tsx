@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { QUERY_FARM_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
-import { useGetAuth } from "@/services/session.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Disbursement, Farm, Farmer, Mortgage, User } from "schema";
@@ -144,7 +143,7 @@ export function FarmDataTableRowActions<TData>({
 export function MortgageDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const { user } = useGetAuth();
+  const { user } = useBoundStore((state) => state.auth);
   const { setMode } = useBoundStore((state) => state.mortgage);
   const original = row.original as object as Mortgage;
   const queryClient = useQueryClient();
@@ -166,7 +165,7 @@ export function MortgageDataTableRowActions<TData>({
     setMode({ mode: "delete", mortgage: original });
   }
 
-  if (user?.user.role === "USER") {
+  if (user?.role === "USER") {
     return (
       <Button onClick={handleViewClick} size={"sm"}>
         View

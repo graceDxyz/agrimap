@@ -30,7 +30,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
 import useRandomString from "@/hooks/useRandomString";
 import { useBoundStore } from "@/lib/store";
-import { useGetAuth } from "@/services/session.service";
 import { createUser, deleteUser, updateUser } from "@/services/user.service";
 import { DialogHeaderDetail, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,7 +39,6 @@ import { useForm } from "react-hook-form";
 import { CreateUserInput, User, createUserBody, roleSchema } from "schema";
 
 export function UserDialog() {
-  const { user } = useGetAuth();
   const { mode } = useBoundStore((state) => state.user);
   const isOpen = mode !== "view";
 
@@ -52,17 +50,17 @@ export function UserDialog() {
     create: {
       title: "Add User",
       description: "Create a new user.",
-      form: <CreateForm token={user?.accessToken ?? ""} />,
+      form: <CreateForm />,
     },
     update: {
       title: "Update User",
       description: "Update user information.",
-      form: <UpdateForm token={user?.accessToken ?? ""} />,
+      form: <UpdateForm />,
     },
     delete: {
       title: "Are you absolutely sure?",
       description: "Delete user data (cannot be undone).",
-      form: <DeleteForm token={user?.accessToken ?? ""} />,
+      form: <DeleteForm />,
     },
   };
 
@@ -82,7 +80,7 @@ export function UserDialog() {
   );
 }
 
-function CreateForm({ token }: { token: string }) {
+function CreateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.user);
@@ -115,7 +113,7 @@ function CreateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateUserInput) {
-    mutate({ token, data });
+    mutate(data);
   }
 
   function handleCancelClick() {
@@ -246,7 +244,7 @@ function CreateForm({ token }: { token: string }) {
   );
 }
 
-function UpdateForm({ token }: { token: string }) {
+function UpdateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, user } = useBoundStore((state) => state.user);
@@ -281,7 +279,7 @@ function UpdateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateUserInput) {
-    mutate({ token, id: user?._id as string, data });
+    mutate({ id: user?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -409,7 +407,7 @@ function UpdateForm({ token }: { token: string }) {
   );
 }
 
-function DeleteForm({ token }: { token: string }) {
+function DeleteForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { user, setMode } = useBoundStore((state) => state.user);
@@ -436,7 +434,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: user?._id ?? "" });
+    mutate(user?._id ?? "");
   }
 
   function handleCancelClick() {

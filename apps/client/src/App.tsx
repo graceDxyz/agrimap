@@ -10,7 +10,6 @@ import { disbursementsLoader } from "@/services/disbursement.service";
 import { farmLoader, farmsLoader } from "@/services/farm.service";
 import { farmersLoader } from "@/services/farmer.service";
 import { mortgagesLoader } from "@/services/mortgage.service";
-import { useGetSession } from "@/services/session.service";
 import { mapLoader } from "@/services/statistic.service";
 import { usersLoader } from "@/services/user.service";
 
@@ -18,6 +17,7 @@ import ErrorElement from "@/components/elements/ErrorElement";
 import LoaderElement from "@/components/elements/LoaderElement";
 import { DashboardShell } from "@/components/shells/layout-shell";
 import { Toaster } from "@/components/ui/toaster";
+import { useGetSession } from "./services/session.service";
 
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
@@ -37,10 +37,7 @@ function App() {
   if (isLoading) {
     return <LoaderElement variant="content" />;
   }
-
   const user = data?.user;
-  const token = data?.accessToken ?? "";
-
   const routes = createBrowserRouter(
     [
       {
@@ -65,7 +62,7 @@ function App() {
           },
           {
             path: "map",
-            loader: mapLoader({ token, queryClient }),
+            loader: mapLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Map" />}>
@@ -75,7 +72,7 @@ function App() {
           },
           {
             path: "farmers",
-            loader: farmersLoader({ token, queryClient }),
+            loader: farmersLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Farmers" />}>
@@ -85,7 +82,7 @@ function App() {
           },
           {
             path: "farms",
-            loader: farmsLoader({ token, queryClient }),
+            loader: farmsLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Farms" />}>
@@ -103,7 +100,7 @@ function App() {
           },
           {
             path: "farms/:farmId",
-            loader: farmLoader({ token, queryClient }),
+            loader: farmLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Farms" />}>
@@ -113,7 +110,7 @@ function App() {
           },
           {
             path: "farms/:farmId/edit",
-            loader: farmLoader({ token, queryClient }),
+            loader: farmLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Farms" />}>
@@ -123,7 +120,7 @@ function App() {
           },
           {
             path: "land-status",
-            loader: mortgagesLoader({ token, queryClient }),
+            loader: mortgagesLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Land status" />}>
@@ -133,7 +130,7 @@ function App() {
           },
           {
             path: "disbursements",
-            loader: disbursementsLoader({ token, queryClient }),
+            loader: disbursementsLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Disbursements" />}>
@@ -143,7 +140,7 @@ function App() {
           },
           {
             path: "users",
-            loader: usersLoader({ token, queryClient }),
+            loader: usersLoader({ queryClient }),
             errorElement: <ErrorElement />,
             element: (
               <Suspense fallback={<LoaderElement heading="Users" />}>

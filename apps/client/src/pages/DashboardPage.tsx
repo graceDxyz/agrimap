@@ -15,7 +15,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBoundStore } from "@/lib/store";
 import { useGetExcelReport } from "@/services/report.service";
-import { useGetAuth } from "@/services/session.service";
 import {
   useGetRecentAdded,
   useGetStatCount,
@@ -24,26 +23,18 @@ import {
 
 function DashboardPage() {
   const { activeSwitcher } = useBoundStore((state) => state.overview);
-  const { user } = useGetAuth();
 
-  const { data: recentData, isLoading: isRecentLoading } = useGetRecentAdded({
-    token: user?.accessToken ?? "",
-  });
+  const { data: recentData, isLoading: isRecentLoading } = useGetRecentAdded();
 
   const { data: statData, isLoading: isStatsLoading } = useGetStatistics({
-    token: user?.accessToken ?? "",
     query: {
       by: activeSwitcher.value,
     },
   });
 
-  const { data: countData, isLoading: isCountLoading } = useGetStatCount({
-    token: user?.accessToken ?? "",
-  });
+  const { data: countData, isLoading: isCountLoading } = useGetStatCount();
 
-  const { mutate, isLoading: isDownloadLoading } = useGetExcelReport({
-    token: user?.accessToken ?? "",
-  });
+  const { mutate, isLoading: isDownloadLoading } = useGetExcelReport();
 
   const totalMortgageSize = countData?.totalMortgageSize ?? 0;
   const totalFarmSize = countData?.totalFarmSize ?? 0;

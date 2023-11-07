@@ -11,9 +11,9 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { useMapDraw } from "@/hooks/useMapDraw";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { farmLoader, updateFarm } from "@/services/farm.service";
-import { useGetAuth } from "@/services/session.service";
 import { DrawEvent } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -35,14 +35,15 @@ import {
 } from "schema";
 
 function FarmAreaPage() {
+  const { user } = useUser();
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useGetAuth();
   const { toast } = useToast();
   const { resetState } = useAddressState();
+
+  const isAdmin = user?.role === "ADMIN";
   const isEditMode = location.pathname.includes("edit");
-  const isAdmin = user?.user.role === "ADMIN";
 
   const farmData = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof farmLoader>>
@@ -120,7 +121,7 @@ function FarmAreaPage() {
   });
 
   function onSubmit(data: CreateFarmInput) {
-    mutate({ token: user?.accessToken ?? "", id: farmData?._id ?? "", data });
+    mutate({ id: farmData?._id ?? "", data });
   }
 
   useEffect(() => {

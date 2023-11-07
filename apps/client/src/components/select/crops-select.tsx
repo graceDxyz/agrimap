@@ -1,7 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { QUERY_CROPS_KEY } from "@/constant/query.constant";
 import { useGetFarmCrops } from "@/services/farm.service";
-import { useGetAuth } from "@/services/session.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { ActionMeta, MultiValue } from "react-select";
 import AsyncCreatableSelect from "react-select/async-creatable";
@@ -28,10 +27,7 @@ export function CropSelect({
   onCreateOption,
 }: Props) {
   const queryClient = useQueryClient();
-  const { user } = useGetAuth();
-  const { data, isLoading } = useGetFarmCrops({
-    token: user?.accessToken ?? "",
-  });
+  const { data, isLoading } = useGetFarmCrops();
 
   const cropOptions: CropOption[] =
     data?.map((crop) => ({ value: crop, label: crop })) ?? [];

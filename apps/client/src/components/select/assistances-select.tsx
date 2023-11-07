@@ -1,7 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { QUERY_ASSISTANCES_KEY } from "@/constant/query.constant";
 import { useGetAssistances } from "@/services/disbursement.service";
-import { useGetAuth } from "@/services/session.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { ActionMeta, MultiValue } from "react-select";
 import AsyncCreatableSelect from "react-select/async-creatable";
@@ -28,10 +27,7 @@ export function AssistanceSelect({
   onCreateOption,
 }: Props) {
   const queryClient = useQueryClient();
-  const { user } = useGetAuth();
-  const { data, isLoading } = useGetAssistances({
-    token: user?.accessToken ?? "",
-  });
+  const { data, isLoading } = useGetAssistances();
 
   const assistanceOptions: AssistanceOption[] =
     data?.map((crop) => ({ value: crop, label: crop })) ?? [];

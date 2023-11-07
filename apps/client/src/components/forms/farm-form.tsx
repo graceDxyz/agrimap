@@ -23,7 +23,6 @@ import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import { archivedFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
-import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -53,7 +52,6 @@ import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function FarmDialog() {
-  const { user } = useGetAuth();
   const { mode, farm } = useBoundStore((state) => state.farm);
   const isOpen = mode !== "view";
 
@@ -75,7 +73,7 @@ export function FarmDialog() {
       description: `${
         farm?.isArchived ? "Unarchived" : "Archived"
       } farm data (reversible action).`,
-      form: <ArchivedForm token={user?.accessToken ?? ""} />,
+      form: <ArchivedForm />,
     },
   };
 
@@ -95,7 +93,7 @@ export function FarmDialog() {
   );
 }
 
-function ArchivedForm({ token }: { token: string }) {
+function ArchivedForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { farm, setMode } = useBoundStore((state) => state.farm);
@@ -131,7 +129,7 @@ function ArchivedForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: farm?._id ?? "" });
+    mutate(farm?._id ?? "");
   }
 
   function handleCancelClick() {

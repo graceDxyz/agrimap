@@ -17,11 +17,10 @@ function MortgagesPage() {
   const initialData = useLoaderData() as Awaited<
     ReturnType<ReturnType<typeof mortgagesLoader>>
   >;
-
   const { user } = useUser();
-  const isAdmin = user?.user.role === "ADMIN";
-
+  const isAdmin = user?.role === "ADMIN";
   const { data, isLoading } = useGetMortgages({ initialData });
+
   const { setMode } = useBoundStore((state) => state.mortgage);
 
   function handleCreateClick() {

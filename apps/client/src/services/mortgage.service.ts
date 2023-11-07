@@ -1,65 +1,42 @@
 import {
-  QUERY_ACTIVE_USER_KEY,
   QUERY_MORTGAGE_KEY,
   QUERY_MORTGAGES_KEY,
 } from "@/constant/query.constant";
 import api from "@/lib/api";
 import { LoaderType, Message } from "@/types";
-import {
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import {
-  ActiveUser,
   CreateMortgageInput,
   Mortgage,
   mortgageSchema,
   mortgagesSchema,
 } from "schema";
 
-export async function fetchMortgages(token: string) {
-  const res = await api.get("/mortgages", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function fetchMortgages() {
+  const res = await api.get("/mortgages");
   return mortgagesSchema.parse({ mortgages: res.data }).mortgages;
 }
 
-export const getMortgagesQuery = (token: string) => ({
+export const getMortgagesQuery = () => ({
   queryKey: [QUERY_MORTGAGES_KEY],
-  queryFn: async () => await fetchMortgages(token),
+  queryFn: async () => await fetchMortgages(),
 });
 
 export function useGetMortgages(
   options?: UseQueryOptions<Mortgage[], AxiosError>
 ) {
-  const queryClient = useQueryClient();
-  const user = queryClient.getQueryData<ActiveUser>([QUERY_ACTIVE_USER_KEY]);
-
   return useQuery({
-    ...getMortgagesQuery(user?.accessToken ?? ""),
+    ...getMortgagesQuery(),
     ...options,
   });
 }
 
-export function useGetMortgage({
-  token,
-  mortgageId,
-}: {
-  token: string;
-  mortgageId: string;
-}) {
+export function useGetMortgage({ mortgageId }: { mortgageId: string }) {
   return useQuery({
     queryKey: [QUERY_MORTGAGE_KEY, mortgageId],
     queryFn: async () => {
-      const res = await api.get(`/mortgages/${mortgageId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await api.get(`/mortgages/${mortgageId}`);
 
       return mortgageSchema.parse(res.data);
     },
@@ -67,57 +44,31 @@ export function useGetMortgage({
 }
 
 export const mortgagesLoader =
-  ({ token, queryClient }: LoaderType) =>
+  ({ queryClient }: LoaderType) =>
   async () => {
-    const query = getMortgagesQuery(token);
+    const query = getMortgagesQuery();
     return (
       queryClient.getQueryData<Mortgage[]>(query.queryKey) ??
       (await queryClient.fetchQuery(query))
     );
   };
 
-export async function createMortgage({
-  token,
-  data,
-}: {
-  token: string;
-  data: CreateMortgageInput;
-}) {
-  return await api.post<Mortgage>("/mortgages", JSON.stringify(data), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function createMortgage(data: CreateMortgageInput) {
+  return await api.post<Mortgage>("/mortgages", JSON.stringify(data), {});
 }
 
 export async function updateMortgage({
-  token,
   id,
   data,
 }: {
-  token: string;
   id: string;
   data: CreateMortgageInput;
 }) {
-  return await api.put<Mortgage>(`/mortgages/${id}`, JSON.stringify(data), {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  return await api.put<Mortgage>(`/mortgages/${id}`, JSON.stringify(data), {});
 }
 
-export async function deleteMortgage({
-  token,
-  id,
-}: {
-  token: string;
-  id: string;
-}) {
-  const res = await api.delete<Message>(`/mortgages/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function deleteMortgage(id: string) {
+  const res = await api.delete<Message>(`/mortgages/${id}`, {});
 
   return res;
 }

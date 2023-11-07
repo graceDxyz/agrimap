@@ -39,7 +39,6 @@ import {
   deleteMortgage,
   updateMortgage,
 } from "@/services/mortgage.service";
-import { useGetAuth } from "@/services/session.service";
 import { DialogHeaderDetail, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -61,7 +60,6 @@ import {
 import { CalendarDateRangePicker } from "../date-range-picker";
 
 export function MortgageDialog() {
-  const { user } = useGetAuth();
   const { mode } = useBoundStore((state) => state.mortgage);
   const isOpen = mode !== "view";
 
@@ -73,17 +71,17 @@ export function MortgageDialog() {
     create: {
       title: "Add Data",
       description: "add a land status.",
-      form: <CreateForm token={user?.accessToken ?? ""} />,
+      form: <CreateForm />,
     },
     update: {
       title: "Update Data",
       description: "update a land status.",
-      form: <UpdateForm token={user?.accessToken ?? ""} />,
+      form: <UpdateForm />,
     },
     delete: {
       title: "Are you absolutely sure?",
       description: "Delete land status (cannot be undone).",
-      form: <DeleteForm token={user?.accessToken ?? ""} />,
+      form: <DeleteForm />,
     },
   };
 
@@ -103,7 +101,7 @@ export function MortgageDialog() {
   );
 }
 
-function CreateForm({ token }: { token: string }) {
+function CreateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode } = useBoundStore((state) => state.mortgage);
@@ -181,7 +179,7 @@ function CreateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateMortgageInput) {
-    mutate({ token, data });
+    mutate(data);
   }
 
   function handleCancelClick() {
@@ -200,7 +198,7 @@ function CreateForm({ token }: { token: string }) {
   );
 }
 
-function UpdateForm({ token }: { token: string }) {
+function UpdateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, mortgage } = useBoundStore((state) => state.mortgage);
@@ -249,7 +247,7 @@ function UpdateForm({ token }: { token: string }) {
   });
 
   function onSubmit(data: CreateMortgageInput) {
-    mutate({ token, id: mortgage?._id as string, data });
+    mutate({ id: mortgage?._id as string, data });
   }
 
   function handleCancelClick() {
@@ -278,7 +276,7 @@ function UpdateForm({ token }: { token: string }) {
   );
 }
 
-function DeleteForm({ token }: { token: string }) {
+function DeleteForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { mortgage, setMode } = useBoundStore((state) => state.mortgage);
@@ -318,7 +316,7 @@ function DeleteForm({ token }: { token: string }) {
   });
 
   function handleDeleteClick() {
-    mutate({ token, id: mortgage?._id ?? "" });
+    mutate(mortgage?._id ?? "");
   }
 
   function handleCancelClick() {

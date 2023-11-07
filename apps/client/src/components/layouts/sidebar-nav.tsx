@@ -4,13 +4,14 @@ import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
 
 import { Icons } from "@/components/icons";
-import { useGetAuth } from "@/services/session.service";
+import { useBoundStore } from "@/lib/store";
 import { Role } from "schema";
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[];
   isLoading?: boolean;
   loadingColor?: string;
+  logout(): void;
 }
 
 export function SidebarNav({
@@ -18,11 +19,11 @@ export function SidebarNav({
   className,
   isLoading,
   loadingColor,
+  logout,
   ...props
 }: SidebarNavProps) {
   const location = useLocation();
-
-  const { user, logout } = useGetAuth();
+  const { user } = useBoundStore((state) => state.auth);
 
   if (!items?.length) return null;
 
@@ -31,7 +32,7 @@ export function SidebarNav({
       {items
         .filter((item) => {
           if (item.audience) {
-            return item.audience.includes(user?.user.role as Role);
+            return item.audience.includes(user?.role as Role);
           }
           return true;
         })

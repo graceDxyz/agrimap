@@ -261,6 +261,9 @@ importers:
       schema:
         specifier: workspace:*
         version: link:../../packages/schema
+      tslib:
+        specifier: ^2.6.2
+        version: 2.6.2
       uploadthing:
         specifier: ^5.6.1
         version: 5.7.4

@@ -1,14 +1,20 @@
 import logoimg from "@/assets/logo-leaf.png";
 import { dashboardConfig } from "@/config/siteConfig";
+import { useBoundStore } from "@/lib/store";
+import { useLogOutMutation } from "@/services/session.service";
+import { DashboardContextType } from "@/types";
 import { Link, Outlet } from "react-router-dom";
 import { SidebarNav } from "../layouts/sidebar-nav";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
-import { useGetAuth } from "@/services/session.service";
-import { DashboardContextType } from "@/types";
 
 export function DashboardShell() {
-  const { user, logout } = useGetAuth();
+  const { user } = useBoundStore((state) => state.auth);
+  const logoutMutation = useLogOutMutation();
+
+  function logout() {
+    logoutMutation.mutate();
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -29,7 +35,11 @@ export function DashboardShell() {
             </div>
 
             <Separator />
-            <SidebarNav items={dashboardConfig.sidebarNav} className="p-1" />
+            <SidebarNav
+              items={dashboardConfig.sidebarNav}
+              logout={logout}
+              className="p-1"
+            />
           </ScrollArea>
         </aside>
         <main className="flex w-full flex-col overflow-hidden pl-2">

@@ -1,7 +1,7 @@
+import { StoreState } from "@/lib/store";
 import { Mode } from "@/types";
 import { Disbursement } from "schema";
 import { StateCreator } from "zustand";
-import { StoreState } from ".";
 
 type DisbursementMode =
   | {
