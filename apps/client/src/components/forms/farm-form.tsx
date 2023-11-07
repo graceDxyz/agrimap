@@ -267,7 +267,7 @@ export function FarmGenericForm({
               disabled={!isEditMode}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Size (m²)</FormLabel>
+                  <FormLabel>Size (square meter)</FormLabel>
                   <FormControl>
                     <Input
                       className="disabled:opacity-100"

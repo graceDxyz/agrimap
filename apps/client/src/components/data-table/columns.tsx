@@ -91,7 +91,10 @@ export const farmerColumns: ColumnDef<Farmer>[] = [
   {
     accessorKey: "totalSize",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Owned Area(m²)" />
+      <DataTableColumnHeader
+        column={column}
+        title="Owned Area (square meter)"
+      />
     ),
     cell: ({ row }) => (
       <div className="font-medium text-center">
@@ -143,7 +146,7 @@ export const farmColumns: ColumnDef<Farm>[] = [
   {
     accessorKey: "size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Size (m²)" />
+      <DataTableColumnHeader column={column} title="Size (square meter)" />
     ),
     cell: ({ row }) => (
       <div className="font-medium">{row.getValue("size")}</div>
@@ -204,7 +207,7 @@ export const landStatusColumns: ColumnDef<Mortgage>[] = [
   {
     accessorKey: "farmSize",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Size (m²)" />
+      <DataTableColumnHeader column={column} title="Size (square meter)" />
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">
@@ -255,7 +258,7 @@ export const disbursementColumns: ColumnDef<Disbursement>[] = [
   {
     accessorKey: "size",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Size (m²)" />
+      <DataTableColumnHeader column={column} title="Size (square meter)" />
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">

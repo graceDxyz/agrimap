@@ -75,7 +75,7 @@ export const getReportHandler = async (req: Request, res: Response) => {
     const farms = await getAllFarm();
     farmWorksheet.addRow([
       "Title Number",
-      "Size (m²)",
+      "Size (square meter)",
       "Owner",
       "Address",
       "Status",
@@ -112,7 +112,7 @@ export const getReportHandler = async (req: Request, res: Response) => {
     const mortgages = await getAllMortgage();
     mortgageWorksheet.addRow([
       "Title Number",
-      "Size (m²)",
+      "Size (square meter)",
       "Owner",
       "Mortgage to",
       "Address",
