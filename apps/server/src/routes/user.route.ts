@@ -1,4 +1,4 @@
-import { Express } from "express";
+import express, { Express } from "express";
 import {
   createUserHandler,
   deleteUserHandler,
@@ -14,24 +14,24 @@ import {
   updateUserSchema,
 } from "../schemas/user.schema";
 
-function UserRoutes(app: Express) {
-  app.get("/api/users", requiredAdmin, getAllUserHandler);
-  app.get("/api/users/:userId", requiredAdmin, getUserHandler);
-  app.post(
-    "/api/users",
-    [requiredAdmin, validateResource(createUserSchema)],
-    createUserHandler
-  );
-  app.put(
-    "/api/users/:userId",
-    [requiredAdmin, validateResource(updateUserSchema)],
-    updateUserHandler
-  );
-  app.delete(
-    "/api/users/:userId",
-    [requiredAdmin, validateResource(getUserSchema)],
-    deleteUserHandler
-  );
-}
+const router = express.Router();
 
-export default UserRoutes;
+router.get("/", requiredAdmin, getAllUserHandler);
+router.get("/:userId", requiredAdmin, getUserHandler);
+router.post(
+  "/",
+  [requiredAdmin, validateResource(createUserSchema)],
+  createUserHandler,
+);
+router.put(
+  "/:userId",
+  [requiredAdmin, validateResource(updateUserSchema)],
+  updateUserHandler,
+);
+router.delete(
+  "/:userId",
+  [requiredAdmin, validateResource(getUserSchema)],
+  deleteUserHandler,
+);
+
+export default router;

@@ -1,5 +1,4 @@
-import { Express } from "express";
-
+import express from "express";
 import {
   getAddressHandler,
   getBarangaysHandler,
@@ -10,14 +9,14 @@ import {
   seedAddressHandler,
 } from "../controllers/address.controller";
 
-function AddressRoutes(app: Express) {
-  app.get("/api/address", getAddressHandler);
-  app.get("/api/address/province", getProvincesHandler);
-  app.get("/api/address/province/:psgcCode", getProvinceHandler);
-  app.get("/api/address/city", getCitiesHandler);
-  app.get("/api/address/city/:psgcCode", getCityHandler);
-  app.get("/api/address/barangay", getBarangaysHandler);
-  app.get("/api/address/seed", seedAddressHandler);
-}
+const router = express.Router();
 
-export default AddressRoutes;
+router.get("/", getAddressHandler);
+router.get("/province", getProvincesHandler);
+router.get("/province/:psgcCode", getProvinceHandler);
+router.get("/city", getCitiesHandler);
+router.get("/city/:psgcCode", getCityHandler);
+router.get("/barangay", getBarangaysHandler);
+router.get("/seed", seedAddressHandler);
+
+export default router;

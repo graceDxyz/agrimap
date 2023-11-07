@@ -7,7 +7,8 @@ import path from "path";
 
 import { env } from "./env";
 import deserializeUser from "./middlewares/deserializeUser";
-import route from "./routes/root";
+import routes from "./routes";
+import { uploadthingHandler } from "./utils/uploadthing";
 
 const root_dir = "../..";
 export const createServer = (): Express => {
@@ -15,7 +16,7 @@ export const createServer = (): Express => {
   app.use(
     helmet({
       contentSecurityPolicy: false,
-    })
+    }),
   );
   app.use(cookieParser());
   app.use(
@@ -28,7 +29,7 @@ export const createServer = (): Express => {
       ],
       credentials: true,
       allowedHeaders: ["Content-Disposition"],
-    })
+    }),
   );
   app.use(express.json()); //bodyparser
   app.use(deserializeUser);
@@ -36,13 +37,11 @@ export const createServer = (): Express => {
     app.use(
       morgan("common", {
         skip: (req, res) => res.statusCode < 400,
-      })
+      }),
     );
   } else {
     app.use(morgan("dev"));
   }
-
-  route(app);
 
   // Serve static files from the React build folder
   app.use(express.static(path.join(__dirname, root_dir, "client", "dist")));
@@ -54,9 +53,12 @@ export const createServer = (): Express => {
       return next();
     }
     res.sendFile(
-      path.join(__dirname, root_dir, "client", "dist", "index.html")
+      path.join(__dirname, root_dir, "client", "dist", "index.html"),
     );
   });
+
+  app.use("/api", routes);
+  app.use("/api/uploadthing", uploadthingHandler);
 
   return app;
 };

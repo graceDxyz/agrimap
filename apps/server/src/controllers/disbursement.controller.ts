@@ -28,7 +28,7 @@ const getAllAssistancesHandler = async (req: Request, res: Response) => {
 
 const getDisbursementHandler = async (
   req: Request<GetDisbursementInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const disbursementId = req.params.disbursementId;
@@ -48,7 +48,7 @@ const getDisbursementHandler = async (
 
 const createDisbursementHandler = async (
   req: Request<{}, {}, CreateDisbursementInput["body"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const body = req.body;
@@ -66,9 +66,9 @@ const createDisbursementHandler = async (
 
 const updateDisbursementHandler = async (
   req: Request<UpdateDisbursementInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
-  const disbursementId = req.params.disbursementId;
+  const disbursementId = req.params?.disbursementId ?? "";
   const update = req.body;
 
   const disbursement = await findDisbursement({ _id: disbursementId });
@@ -83,7 +83,7 @@ const updateDisbursementHandler = async (
       update,
       {
         new: true,
-      }
+      },
     );
 
     return res.send(updatedDisbursement);
@@ -95,7 +95,7 @@ const updateDisbursementHandler = async (
 
 const deleteDisbursementHandler = async (
   req: Request<GetDisbursementInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const disbursementId = req.params.disbursementId;
   const disbursement = await findDisbursement({ _id: disbursementId });

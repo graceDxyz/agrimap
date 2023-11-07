@@ -1,4 +1,4 @@
-import { Express } from "express";
+import express from "express";
 import {
   archivedFarmHandler,
   createFarmHandler,
@@ -16,34 +16,34 @@ import {
   updateFarmSchema,
 } from "../schemas/farm.schema";
 
-function FarmRoutes(app: Express) {
-  app.get("/api/farms", requiredUser, getAllFarmHandler);
-  app.get("/api/farms/crops", requiredUser, getAllFarmCropsHandler);
-  app.get(
-    "/api/farms/:farmId",
-    [requiredUser, validateResource(getFarmSchema)],
-    getFarmHandler,
-  );
-  app.post(
-    "/api/farms",
-    [requiredUser, validateResource(createFarmSchema)],
-    createFarmHandler,
-  );
-  app.put(
-    "/api/farms/:farmId",
-    [requiredUser, validateResource(updateFarmSchema)],
-    updateFarmHandler,
-  );
-  app.delete(
-    "/api/farms/:farmId",
-    [requiredUser, validateResource(getFarmSchema)],
-    deleteFarmHandler,
-  );
-  app.post(
-    "/api/farms/:farmId/archived",
-    [requiredUser, validateResource(getFarmSchema)],
-    archivedFarmHandler,
-  );
-}
+const router = express.Router();
 
-export default FarmRoutes;
+router.get("/", requiredUser, getAllFarmHandler);
+router.get("/crops", requiredUser, getAllFarmCropsHandler);
+router.get(
+  "/:farmId",
+  [requiredUser, validateResource(getFarmSchema)],
+  getFarmHandler,
+);
+router.post(
+  "/",
+  [requiredUser, validateResource(createFarmSchema)],
+  createFarmHandler,
+);
+router.put(
+  "/:farmId",
+  [requiredUser, validateResource(updateFarmSchema)],
+  updateFarmHandler,
+);
+router.delete(
+  "/:farmId",
+  [requiredUser, validateResource(getFarmSchema)],
+  deleteFarmHandler,
+);
+router.post(
+  "/:farmId/archived",
+  [requiredUser, validateResource(getFarmSchema)],
+  archivedFarmHandler,
+);
+
+export default router;

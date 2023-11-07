@@ -1,4 +1,4 @@
-import { Express } from "express";
+import express from "express";
 import {
   createMortgageHandler,
   deleteMortgageHandler,
@@ -14,24 +14,24 @@ import {
   updateMortgageSchema,
 } from "../schemas/mortgage.schema";
 
-function MortgageRoutes(app: Express) {
-  app.get("/api/mortgages", requiredUser, getAllMortgageHandler);
-  app.get("/api/mortgages/:mortgageId", requiredUser, getMortgageHandler);
-  app.post(
-    "/api/mortgages",
-    [requiredUser, validateResource(createMortgageSchema)],
-    createMortgageHandler,
-  );
-  app.put(
-    "/api/mortgages/:mortgageId",
-    [requiredUser, validateResource(updateMortgageSchema)],
-    updateMortgageHandler,
-  );
-  app.delete(
-    "/api/mortgages/:mortgageId",
-    [requiredUser, validateResource(getMortgageSchema)],
-    deleteMortgageHandler,
-  );
-}
+const router = express.Router();
 
-export default MortgageRoutes;
+router.get("/", requiredUser, getAllMortgageHandler);
+router.get("/:mortgageId", requiredUser, getMortgageHandler);
+router.post(
+  "/",
+  [requiredUser, validateResource(createMortgageSchema)],
+  createMortgageHandler,
+);
+router.put(
+  "/:mortgageId",
+  [requiredUser, validateResource(updateMortgageSchema)],
+  updateMortgageHandler,
+);
+router.delete(
+  "/:mortgageId",
+  [requiredUser, validateResource(getMortgageSchema)],
+  deleteMortgageHandler,
+);
+
+export default router;

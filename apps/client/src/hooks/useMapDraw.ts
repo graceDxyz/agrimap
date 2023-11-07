@@ -171,9 +171,9 @@ export function useMapView({ farms, mortgages }: UseMapViewProps) {
             target,
             farm,
             mortage: mortgages?.find(
-              (item) => item.farm._id === farm._id && item.status === "Active"
+              (item) => item.farm._id === farm._id && item.status === "Active",
             ),
-          })
+          }),
         );
       });
 
@@ -279,7 +279,7 @@ function addPolyfon({
         },
         {
           clicked: true,
-        }
+        },
       );
 
       new mapboxgl.Popup({ closeButton: false })
@@ -300,7 +300,9 @@ function addPolyfon({
                 </tr>
                 <tr>
                     <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
-                    <td class="p-2 text-gray-600 text-left">${farm.crops}</td>
+                    <td class="p-2 text-gray-600 text-left capitalize">${
+                      farm.crops
+                    }</td>
                 </tr>
                 ${
                   mortage
@@ -310,7 +312,7 @@ function addPolyfon({
                   </tr>`
                     : ""
                 }
-            </table>`
+            </table>`,
         )
         .setMaxWidth("400px") // Set the maximum width of the popup
         .addTo(target);

@@ -1,9 +1,9 @@
-import { Express } from "express";
+import express from "express";
 import { getReportHandler } from "../controllers/report.controller";
 import requiredUser from "../middlewares/requireUser";
 
-function ReportRoutes(app: Express) {
-  app.get("/api/report", requiredUser, getReportHandler);
-}
+const router = express.Router();
 
-export default ReportRoutes;
+router.get("/", requiredUser, getReportHandler);
+
+export default router;

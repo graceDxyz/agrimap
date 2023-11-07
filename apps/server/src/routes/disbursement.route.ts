@@ -1,4 +1,4 @@
-import { Express } from "express";
+import express from "express";
 import {
   createDisbursementHandler,
   deleteDisbursementHandler,
@@ -15,33 +15,25 @@ import {
   updateDisbursementSchema,
 } from "../schemas/disbursement.schema";
 
-function DisbursementRoutes(app: Express) {
-  app.get("/api/disbursements", requiredUser, getAllDisbursementHandler);
-  app.get(
-    "/api/disbursements/assistances",
-    requiredUser,
-    getAllAssistancesHandler
-  );
-  app.get(
-    "/api/disbursements/:disbursementId",
-    requiredUser,
-    getDisbursementHandler
-  );
-  app.post(
-    "/api/disbursements",
-    [requiredUser, validateResource(createDisbursementSchema)],
-    createDisbursementHandler
-  );
-  app.put(
-    "/api/disbursements/:disbursementId",
-    [requiredUser, validateResource(updateDisbursementSchema)],
-    updateDisbursementHandler
-  );
-  app.delete(
-    "/api/disbursements/:disbursementId",
-    [requiredUser, validateResource(getDisbursementSchema)],
-    deleteDisbursementHandler
-  );
-}
+const router = express.Router();
 
-export default DisbursementRoutes;
+router.get("/", requiredUser, getAllDisbursementHandler);
+router.get("/assistances", requiredUser, getAllAssistancesHandler);
+router.get("/:disbursementId", requiredUser, getDisbursementHandler);
+router.post(
+  "/",
+  [requiredUser, validateResource(createDisbursementSchema)],
+  createDisbursementHandler,
+);
+router.put(
+  "/:disbursementId",
+  [requiredUser, validateResource(updateDisbursementSchema)],
+  updateDisbursementHandler,
+);
+router.delete(
+  "/:disbursementId",
+  [requiredUser, validateResource(getDisbursementSchema)],
+  deleteDisbursementHandler,
+);
+
+export default router;

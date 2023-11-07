@@ -1,3 +1,4 @@
+import express from "express";
 import {
   createUserSessionHandler,
   deleteSessionHandler,
@@ -6,17 +7,15 @@ import {
 import requireUser from "../middlewares/requireUser";
 import validateResource from "../middlewares/validateResource";
 import { createSessionSchema } from "../schemas/session.schema";
-import { Express } from "express";
 
-function SessionRoutes(app: Express) {
-  app.post(
-    "/api/sessions",
-    validateResource(createSessionSchema),
-    createUserSessionHandler,
-  );
+const router = express.Router();
 
-  app.get("/api/sessions/current", getUserSessionHandler);
-  app.post("/api/sessions/current", requireUser, deleteSessionHandler);
-}
+router.post(
+  "/",
+  validateResource(createSessionSchema),
+  createUserSessionHandler,
+);
+router.get("/current", getUserSessionHandler);
+router.post("/current", requireUser, deleteSessionHandler);
 
-export default SessionRoutes;
+export default router;

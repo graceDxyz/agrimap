@@ -1,4 +1,4 @@
-import { Express } from "express";
+import express from "express";
 import {
   createFarmerHandler,
   deleteFarmerHandler,
@@ -14,25 +14,24 @@ import {
   updateFarmerSchema,
 } from "../schemas/farmer.schema";
 
+const router = express.Router();
 
-function FarmerRoutes(app: Express) {
-  app.get("/api/farmers", requiredUser, getAllFarmerHandler);
-  app.get("/api/farmers/:farmerId", requiredUser, getFarmerHandler);
-  app.post(
-    "/api/farmers",
-    [requiredUser, validateResource(createFarmerSchema)],
-    createFarmerHandler
-  );
-  app.put(
-    "/api/farmers/:farmerId",
-    [requiredUser, validateResource(updateFarmerSchema)],
-    updateFarmerHandler
-  );
-  app.delete(
-    "/api/farmers/:farmerId",
-    [requiredUser, validateResource(getFarmerSchema)],
-    deleteFarmerHandler
-  );
-}
+router.get("/", requiredUser, getAllFarmerHandler);
+router.get("/:farmerId", requiredUser, getFarmerHandler);
+router.post(
+  "/",
+  [requiredUser, validateResource(createFarmerSchema)],
+  createFarmerHandler,
+);
+router.put(
+  "/:farmerId",
+  [requiredUser, validateResource(updateFarmerSchema)],
+  updateFarmerHandler,
+);
+router.delete(
+  "/:farmerId",
+  [requiredUser, validateResource(getFarmerSchema)],
+  deleteFarmerHandler,
+);
 
-export default FarmerRoutes;
+export default router;
