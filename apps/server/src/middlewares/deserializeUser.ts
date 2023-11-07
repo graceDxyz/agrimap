@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { get } from "lodash";
+import { REFRESH_COOKIE_NAME } from "../constant/constant";
 import { findSession, reIssueAccessToken } from "../services/session.service";
 import { verifyJwt } from "../utils/jwt.util";
 
@@ -13,7 +14,7 @@ const deserializeUser = async (
     ""
   );
 
-  const refreshToken = get(req, "cookies.X-Agrimap-Session");
+  const refreshToken = get(req, `cookies.${REFRESH_COOKIE_NAME}`);
 
   if (!accessToken) {
     return next();

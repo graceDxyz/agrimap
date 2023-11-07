@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { get, omit } from "lodash";
+import { REFRESH_COOKIE_NAME } from "../constant/constant";
 import {
   createSession,
   findSession,
@@ -37,7 +38,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     );
 
     // return access & refresh tokens
-    res.cookie("X-Agrimap-Session", refreshToken, {
+    res.cookie(REFRESH_COOKIE_NAME, refreshToken, {
       httpOnly: true,
     });
 
@@ -51,7 +52,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
 }
 
 export async function getUserSessionHandler(req: Request, res: Response) {
-  const refreshToken = get(req, "cookies.X-Agrimap-Session");
+  const refreshToken = get(req, `cookies.${REFRESH_COOKIE_NAME}`);
 
   if (refreshToken) {
     const result = verifyJwt(refreshToken as string, "REFRESH_PUBLIC_KEY");
@@ -84,7 +85,7 @@ export async function deleteSessionHandler(req: Request, res: Response) {
 
   await updateSession({ _id: sessionId }, { valid: false });
 
-  res.cookie("X-Agrimap-Session", "", {
+  res.cookie(REFRESH_COOKIE_NAME, "", {
     httpOnly: true,
     expires: new Date(0),
   });
