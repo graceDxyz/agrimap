@@ -15,7 +15,7 @@ export async function fetchAddress() {
 }
 
 export function useGetPhAddress(
-  options?: UseQueryOptions<PhAddress, AxiosError>
+  options?: UseQueryOptions<PhAddress, AxiosError>,
 ) {
   return useQuery({
     queryKey: [QUERY_ADDRESSES_KEY],

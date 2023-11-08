@@ -22,22 +22,22 @@ router.get("/assistances", requiredUser, getAllAssistancesHandler);
 router.get(
   "/:id",
   [requiredUser, validateResource(getDisbursementSchema)],
-  getDisbursementHandler
+  getDisbursementHandler,
 );
 router.post(
   "/",
   [requiredUser, validateResource(createDisbursementSchema)],
-  createDisbursementHandler
+  createDisbursementHandler,
 );
 router.put(
   "/:id",
   [requiredUser, validateResource(updateDisbursementSchema)],
-  updateDisbursementHandler
+  updateDisbursementHandler,
 );
 router.delete(
   "/:id",
   [requiredUser, validateResource(getDisbursementSchema)],
-  deleteDisbursementHandler
+  deleteDisbursementHandler,
 );
 
 export default router;

@@ -21,29 +21,29 @@ const router: Router = express.Router();
 router.get("/", requiredUser, getAllFarmHandler);
 router.get("/crops", requiredUser, getAllFarmCropsHandler);
 router.get(
-  "/:farmId",
+  "/:id",
   [requiredUser, validateResource(getFarmSchema)],
-  getFarmHandler
+  getFarmHandler,
 );
 router.post(
   "/",
   [requiredUser, validateResource(createFarmSchema)],
-  createFarmHandler
+  createFarmHandler,
 );
 router.put(
-  "/:farmId",
+  "/:id",
   [requiredUser, validateResource(updateFarmSchema)],
-  updateFarmHandler
+  updateFarmHandler,
 );
 router.delete(
-  "/:farmId",
+  "/:id",
   [requiredUser, validateResource(getFarmSchema)],
-  deleteFarmHandler
+  deleteFarmHandler,
 );
 router.post(
-  "/:farmId/archived",
+  "/:id/archived",
   [requiredUser, validateResource(getFarmSchema)],
-  archivedFarmHandler
+  archivedFarmHandler,
 );
 
 export default router;

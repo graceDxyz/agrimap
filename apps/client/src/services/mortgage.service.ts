@@ -24,7 +24,7 @@ export const getMortgagesQuery = () => ({
 });
 
 export function useGetMortgages(
-  options?: UseQueryOptions<Mortgage[], AxiosError>
+  options?: UseQueryOptions<Mortgage[], AxiosError>,
 ) {
   return useQuery({
     ...getMortgagesQuery(),

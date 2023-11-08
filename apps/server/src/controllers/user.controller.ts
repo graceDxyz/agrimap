@@ -16,7 +16,7 @@ const getAllUserHandler = async (req: Request, res: Response) => {
 
 const getUserHandler = async (
   req: Request<GetUserInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const id = req.params.id;
@@ -36,7 +36,7 @@ const getUserHandler = async (
 
 const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput["body"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const body = req.body;
@@ -54,7 +54,7 @@ const createUserHandler = async (
 
 const updateUserHandler = async (
   req: Request<GetUserInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const id = req.params.id;
   const update = req.body;
@@ -79,7 +79,7 @@ const updateUserHandler = async (
 
 const deleteUserHandler = async (
   req: Request<GetUserInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const id = req.params.id;
   const user = await findUser({ _id: id });

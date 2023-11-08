@@ -12,7 +12,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import {
   QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
@@ -23,7 +23,7 @@ import { UploadButton } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 import { archivedFarm } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
-import { DialogHeaderDetail, Mode } from "@/types";
+import { DialogContent, Mode } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -55,7 +55,7 @@ export function FarmDialog() {
   const { mode, farm } = useBoundStore((state) => state.farm);
   const isOpen = mode !== "view";
 
-  const modeToTitle: Record<Mode, DialogHeaderDetail> = {
+  const modeToTitle: Record<Mode, DialogContent> = {
     view: {
       title: "View Farm",
       description: "View farm details.",
@@ -170,7 +170,7 @@ export function FarmGenericForm({
   const { data, isLoading: isFarmerLoading } = useGetFarmers({});
 
   const selectedFarmer = data?.find(
-    (item) => item._id === form.getValues("ownerId")
+    (item) => item._id === form.getValues("ownerId"),
   );
 
   return (
@@ -223,7 +223,7 @@ export function FarmGenericForm({
                         <Icons.chevronsUpDown
                           className={cn(
                             "ml-2 h-4 w-4 shrink-0 opacity-50",
-                            isEditMode ? "visible" : "hidden"
+                            isEditMode ? "visible" : "hidden",
                           )}
                         />
                       </Button>
@@ -248,7 +248,7 @@ export function FarmGenericForm({
                                   "ml-auto h-4 w-4",
                                   field.value === item._id
                                     ? "opacity-100"
-                                    : "opacity-0"
+                                    : "opacity-0",
                                 )}
                               />
                             </CommandItem>
@@ -450,7 +450,7 @@ export function FarmGenericForm({
                                   size: "sm",
                                   variant: "link",
                                 }),
-                                "w-full justify-start"
+                                "w-full justify-start",
                               )}
                             >
                               {item.fileName}
@@ -463,8 +463,8 @@ export function FarmGenericForm({
                               onClick={() => {
                                 field.onChange(
                                   field.value.filter(
-                                    (file) => file.fileKey !== item.fileKey
-                                  )
+                                    (file) => file.fileKey !== item.fileKey,
+                                  ),
                                 );
                               }}
                             >

@@ -34,12 +34,12 @@ const disbursementSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  }
+  },
 );
 
 const Disbursement = mongoose.model<IDisbursement>(
   "Disbursement",
-  disbursementSchema
+  disbursementSchema,
 );
 
 export default Disbursement;

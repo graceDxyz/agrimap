@@ -89,7 +89,7 @@ const farmSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  }
+  },
 );
 
 const FarmModel = mongoose.model<IFarm>("Farm", farmSchema);

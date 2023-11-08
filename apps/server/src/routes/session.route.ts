@@ -13,7 +13,7 @@ const router: Router = express.Router();
 router.post(
   "/",
   validateResource(createSessionSchema),
-  createUserSessionHandler
+  createUserSessionHandler,
 );
 router.get("/current", getUserSessionHandler);
 router.post("/current", requireUser, deleteSessionHandler);

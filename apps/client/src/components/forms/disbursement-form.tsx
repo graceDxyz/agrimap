@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { QUERY_DISBURSEMENTS_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import {
@@ -29,7 +29,7 @@ import {
   deleteDisbursement,
   updateDisbursement,
 } from "@/services/disbursement.service";
-import { DialogHeaderDetail, Mode } from "@/types";
+import { DialogContent, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -45,7 +45,7 @@ export function DisbursementDialog() {
   const { mode } = useBoundStore((state) => state.disbursement);
   const isOpen = mode !== "view";
 
-  const modeToTitle: Record<Mode, DialogHeaderDetail> = {
+  const modeToTitle: Record<Mode, DialogContent> = {
     view: {
       title: "View Disbursement",
       description: "View disbursement details.",
@@ -139,7 +139,7 @@ function UpdateForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setMode, disbursement } = useBoundStore(
-    (state) => state.disbursement
+    (state) => state.disbursement,
   );
 
   const form = useForm<CreateDisbursementInput>({
@@ -202,7 +202,7 @@ function DeleteForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { disbursement, setMode } = useBoundStore(
-    (state) => state.disbursement
+    (state) => state.disbursement,
   );
 
   const { mutate, isLoading } = useMutation({
@@ -215,7 +215,7 @@ function DeleteForm() {
             return prev.filter((item) => item._id !== disbursement?._id);
           }
           return prev;
-        }
+        },
       );
 
       handleCancelClick();

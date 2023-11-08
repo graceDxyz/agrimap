@@ -30,7 +30,7 @@ export const mortgageSchema = z
     mortgageToName: obj.mortgageTo.fullName,
     mortgageDateRange: `${format(
       new Date(obj.mortgageDate.from),
-      "LLL dd, y"
+      "LLL dd, y",
     )} - ${format(new Date(obj.mortgageDate.to), "LLL dd, y")}`,
   }));
 

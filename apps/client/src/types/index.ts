@@ -41,7 +41,7 @@ export interface Message {
   message: string;
 }
 
-export interface DialogHeaderDetail {
+export interface DialogContent {
   title: string;
   description?: string;
   form?: JSX.Element;

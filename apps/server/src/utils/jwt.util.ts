@@ -4,7 +4,7 @@ import { env } from "../env";
 export function signJwt(
   object: Object,
   keyName: keyof typeof env,
-  options?: jwt.SignOptions | undefined
+  options?: jwt.SignOptions | undefined,
 ) {
   const key = env[keyName] as string;
   const signingKey = Buffer.from(key, "base64").toString("ascii");

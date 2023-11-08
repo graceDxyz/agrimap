@@ -51,7 +51,7 @@ export async function findFarm(query: FilterQuery<IFarm>) {
 export async function updateFarm(
   query: FilterQuery<IFarm>,
   update: UpdateQuery<IFarm>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return FarmModel.findByIdAndUpdate(query, update, options);
 }

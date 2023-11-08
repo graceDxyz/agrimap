@@ -1,6 +1,6 @@
 import { userColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { UserDialog } from "@/components/forms/user-form";
+import { CreateUserForm } from "@/components/forms/user-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -17,12 +17,15 @@ function UsersPage() {
     ReturnType<ReturnType<typeof usersLoader>>
   >;
   const { data, isLoading } = useGetUsers({ initialData });
-  const { setMode } = useBoundStore((state) => state.user);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   function handleCreateClick() {
-    setMode({ mode: "create" });
+    setDialogItem({
+      title: "Add User",
+      description: "Create a new user.",
+      form: <CreateUserForm />,
+    });
   }
-
   return (
     <Shell variant="sidebar">
       <PageHeader
@@ -49,7 +52,6 @@ function UsersPage() {
           isLoading={isLoading}
         />
       </section>
-      <UserDialog />
     </Shell>
   );
 }

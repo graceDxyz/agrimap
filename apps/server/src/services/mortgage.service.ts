@@ -37,7 +37,7 @@ export async function findMortgage(query: FilterQuery<IMortgage>) {
 export async function updateMortgage(
   query: FilterQuery<IMortgage>,
   update: UpdateQuery<IMortgage>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return MortgageModel.findByIdAndUpdate(query, update, options);
 }

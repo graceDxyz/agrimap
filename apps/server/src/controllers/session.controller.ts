@@ -27,14 +27,14 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     const accessToken = signJwt(
       { sub: session._id },
       "ACCESS_TOKEN_PRIVATE_KEY",
-      { expiresIn: "1d" } // 15 minutes,
+      { expiresIn: "1d" }, // 15 minutes,
     );
 
     // create a refresh token
     const refreshToken = signJwt(
       { sub: session._id },
       "REFRESH_PRIVATE_KEY",
-      { expiresIn: "1y" } // 15 minutes
+      { expiresIn: "1y" }, // 15 minutes
     );
 
     // return access & refresh tokens
@@ -67,7 +67,7 @@ export async function getUserSessionHandler(req: Request, res: Response) {
       const accessToken = signJwt(
         { sub: session._id },
         "ACCESS_TOKEN_PRIVATE_KEY",
-        { expiresIn: "1d" } // 15 minutes,
+        { expiresIn: "1d" }, // 15 minutes,
       );
 
       return res.send({

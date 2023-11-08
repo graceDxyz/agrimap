@@ -19,7 +19,7 @@ export async function findSession(query: FilterQuery<ISession>) {
 
 export async function updateSession(
   query: FilterQuery<ISession>,
-  update: UpdateQuery<ISession>
+  update: UpdateQuery<ISession>,
 ) {
   return SessionModel.updateOne(query, update);
 }
@@ -50,7 +50,7 @@ export async function reIssueAccessToken({
   const accessToken = signJwt(
     { ...user, session: session._id },
     "ACCESS_TOKEN_PRIVATE_KEY",
-    { expiresIn: "1d" } // 15 minutes
+    { expiresIn: "1d" }, // 15 minutes
   );
 
   return { user, sub: session._id, accessToken };

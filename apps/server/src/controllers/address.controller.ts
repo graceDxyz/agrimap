@@ -71,7 +71,7 @@ export const getProvincesHandler = async (req: Request, res: Response) => {
 
 export const getProvinceHandler = async (
   req: Request<GetAddressInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const psgcCode = req.params.psgcCode;
@@ -102,7 +102,7 @@ export const getCitiesHandler = async (req: Request, res: Response) => {
 
 export const getCityHandler = async (
   req: Request<GetAddressInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const psgcCode = req.params.psgcCode;
@@ -131,9 +131,9 @@ export const getBarangaysHandler = async (req: Request, res: Response) => {
   }
 };
 const readFilePromise = <
-  T extends { label: string; name: string; value: string }
+  T extends { label: string; name: string; value: string },
 >(
-  filePath: string
+  filePath: string,
 ): Promise<{ data: T[] | null; error: string | null }> => {
   return new Promise<{ data: T[] | null; error: string | null }>((resolve) => {
     fs.readFile(filePath, "utf8", (err, data) => {
@@ -170,7 +170,7 @@ const readFilePromise = <
 
 function paginateAndFilter<T extends { name: string }>(
   data: T[],
-  req: Request
+  req: Request,
 ): T[] {
   data.sort((a: T, b: T) => {
     const nameA = a.name.toLowerCase();
@@ -193,8 +193,8 @@ function paginateAndFilter<T extends { name: string }>(
   const filteredData = filter
     ? data.filter((item: T) =>
         Object.values(item).some((value) =>
-          value.toString().toLowerCase().includes(filter.toLowerCase())
-        )
+          value.toString().toLowerCase().includes(filter.toLowerCase()),
+        ),
       )
     : data;
 

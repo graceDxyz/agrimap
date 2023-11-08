@@ -33,7 +33,8 @@ function MapPage() {
 
   const farms =
     farmsData?.filter(
-      (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
+      (farm) =>
+        !farm.isArchived && (!farmer || farmer.value === farm.owner._id),
     ) || [];
 
   const mapRef = useMapView({ farms, mortgages: mortgageData ?? [] });

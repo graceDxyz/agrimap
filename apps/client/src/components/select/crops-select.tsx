@@ -15,7 +15,7 @@ interface Props {
   value: string[];
   onChange: (
     newValue: MultiValue<CropOption>,
-    actionMeta: ActionMeta<CropOption>
+    actionMeta: ActionMeta<CropOption>,
   ) => void;
   onCreateOption: (inputValue: string) => void;
 }
@@ -34,7 +34,7 @@ export function CropSelect({
 
   const filterColors = (inputValue: string) => {
     return cropOptions.filter((i) =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
+      i.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
   };
 
@@ -46,7 +46,7 @@ export function CropSelect({
     });
 
   const selectedOptions = cropOptions.filter((item) =>
-    value.includes(item.value)
+    value.includes(item.value),
   );
 
   function handleCreateOption(inputValue: string) {

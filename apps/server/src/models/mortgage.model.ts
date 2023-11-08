@@ -54,7 +54,7 @@ const mortgageSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  }
+  },
 );
 
 const MortgageModel = mongoose.model("Mortgage", mortgageSchema);

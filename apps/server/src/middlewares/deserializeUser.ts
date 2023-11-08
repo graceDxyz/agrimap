@@ -7,11 +7,11 @@ import { verifyJwt } from "../utils/jwt.util";
 const deserializeUser = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const accessToken = get(req, "headers.authorization", "").replace(
     /^Bearer\s/,
-    ""
+    "",
   );
 
   const refreshToken = get(req, `cookies.${REFRESH_COOKIE_NAME}`);
@@ -22,7 +22,7 @@ const deserializeUser = async (
 
   const { decoded, expired } = verifyJwt(
     accessToken,
-    "ACCESS_TOKEN_PUBLIC_KEY"
+    "ACCESS_TOKEN_PUBLIC_KEY",
   );
 
   if (decoded) {

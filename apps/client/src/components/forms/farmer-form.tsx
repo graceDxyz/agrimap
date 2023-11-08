@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import {
   QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
@@ -32,7 +32,7 @@ import {
   deleteFarmer,
   updateFarmer,
 } from "@/services/farmer.service";
-import { DialogHeaderDetail, Mode } from "@/types";
+import { DialogContent, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -55,7 +55,7 @@ export function FarmerDialog() {
   const { mode } = useBoundStore((state) => state.farmer);
   const isOpen = mode !== "view";
 
-  const modeToTitle: Record<Mode, DialogHeaderDetail> = {
+  const modeToTitle: Record<Mode, DialogContent> = {
     view: {
       title: "View Farmer",
       description: "View farmer details.",
@@ -130,7 +130,7 @@ function CreateForm() {
             };
           }
           return items;
-        }
+        },
       );
       queryClient.setQueriesData<Farmer[]>([QUERY_FARMERS_KEY], (items) => {
         if (items) {

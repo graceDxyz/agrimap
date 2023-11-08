@@ -24,7 +24,7 @@ export const getDisbursementsQuery = () => ({
 });
 
 export function useGetDisbursements(
-  options?: UseQueryOptions<Disbursement[], AxiosError>
+  options?: UseQueryOptions<Disbursement[], AxiosError>,
 ) {
   return useQuery({
     ...getDisbursementsQuery(),
@@ -46,7 +46,7 @@ export async function createDisbursement(data: CreateDisbursementInput) {
   return await api.post<Disbursement>(
     "/disbursements",
     JSON.stringify(data),
-    {}
+    {},
   );
 }
 
@@ -60,7 +60,7 @@ export async function updateDisbursement({
   return await api.put<Disbursement>(
     `/disbursements/${id}`,
     JSON.stringify(data),
-    {}
+    {},
   );
 }
 
@@ -71,7 +71,7 @@ export async function deleteDisbursement(id: string) {
 }
 
 export function useGetAssistances(
-  options?: UseQueryOptions<string[], AxiosError>
+  options?: UseQueryOptions<string[], AxiosError>,
 ) {
   return useQuery({
     queryKey: [QUERY_ASSISTANCES_KEY],

@@ -118,7 +118,7 @@ function DashboardPage() {
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {parseFloat(
-                      ((totalMortgageSize / totalFarmSize) * 100).toString()
+                      ((totalMortgageSize / totalFarmSize) * 100).toString(),
                     ).toFixed(2)}{" "}
                     % of Total farm size
                   </p>

@@ -12,7 +12,7 @@ interface Props<T> {
   value?: Partial<T> | Partial<T>[] | null;
   onChange?: (
     newValue: SingleValue<Partial<T>> | null,
-    actionMeta: ActionMeta<Partial<T>>
+    actionMeta: ActionMeta<Partial<T>>,
   ) => void;
 }
 
@@ -69,7 +69,7 @@ const useGetOptions = () => {
   const { provinces = [], cities = [], barangays = [] } = data || {};
 
   const fileredProvinces = provinces.filter((item) =>
-    prov ? item.psgcCode === prov : true
+    prov ? item.psgcCode === prov : true,
   );
 
   const filteredCities = cities.filter((item) => {
@@ -94,9 +94,9 @@ const useGetOptions = () => {
         resolve(
           data
             .filter((item) =>
-              item.label.toLowerCase().includes(inputValue.toLowerCase())
+              item.label.toLowerCase().includes(inputValue.toLowerCase()),
             )
-            .slice(0, 100)
+            .slice(0, 100),
         );
       }, 500);
     });

@@ -64,7 +64,7 @@ const farmerSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  }
+  },
 );
 
 const KalObj = {

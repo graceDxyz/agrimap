@@ -24,7 +24,7 @@ const getStatCountHandler = async (req: Request, res: Response) => {
 
 const getStatHandler = async (
   req: Request<{}, {}, {}, StatsQuery>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const qYear = req.query.year;
@@ -44,8 +44,8 @@ const getStatHandler = async (
       tempList.push(
         ...Array.from(
           { length: 5 },
-          (_, index) => currentYear - index
-        ).reverse()
+          (_, index) => currentYear - index,
+        ).reverse(),
       );
     }
 
@@ -144,7 +144,7 @@ const getStatHandler = async (
               ? today.day((resData._id as number) - 1).format("ddd")
               : resData._id;
           return tempId === _id;
-        }
+        },
       );
       return {
         _id,

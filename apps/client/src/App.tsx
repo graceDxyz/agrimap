@@ -18,6 +18,7 @@ import LoaderElement from "@/components/elements/LoaderElement";
 import { DashboardShell } from "@/components/shells/layout-shell";
 import { Toaster } from "@/components/ui/toaster";
 import { useGetSession } from "./services/session.service";
+import DialogContainer from "./components/dialog-container";
 
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
@@ -151,13 +152,14 @@ function App() {
         ],
       },
     ],
-    {}
+    {},
   );
 
   return (
     <>
       <RouterProvider router={routes} />
       <Toaster />
+      <DialogContainer />
     </>
   );
 }

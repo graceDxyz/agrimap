@@ -10,6 +10,7 @@ import { OverviewSlice, createSwitcherSlice } from "@/lib/store/overviewSlice";
 import { UserSlice, createUserSlice } from "@/lib/store/userSlice";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { DialogSlice, createDialogSlice } from "./dialogSlice";
 
 type UnionToIntersection<U> = (
   U extends infer T ? (k: T) => void : never
@@ -25,6 +26,7 @@ export type StoreState = UnionToIntersection<
   | OverviewSlice
   | DisbursementSlice
   | AuthSlice
+  | DialogSlice
 >;
 
 const useBoundStore = create<StoreState>()(
@@ -36,7 +38,8 @@ const useBoundStore = create<StoreState>()(
     ...createSwitcherSlice(...a),
     ...createDisbursementSlice(...a),
     ...createAuthSlice(...a),
-  }))
+    ...createDialogSlice(...a),
+  })),
 );
 
 export { useBoundStore };

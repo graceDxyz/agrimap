@@ -145,7 +145,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }

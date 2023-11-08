@@ -15,7 +15,7 @@ interface Props {
   value: string[];
   onChange: (
     newValue: MultiValue<AssistanceOption>,
-    actionMeta: ActionMeta<AssistanceOption>
+    actionMeta: ActionMeta<AssistanceOption>,
   ) => void;
   onCreateOption: (inputValue: string) => void;
 }
@@ -34,7 +34,7 @@ export function AssistanceSelect({
 
   const filterAssistances = (inputValue: string) => {
     return assistanceOptions.filter((i) =>
-      i.label.toLowerCase().includes(inputValue.toLowerCase())
+      i.label.toLowerCase().includes(inputValue.toLowerCase()),
     );
   };
 
@@ -46,7 +46,7 @@ export function AssistanceSelect({
     });
 
   const selectedOptions = assistanceOptions.filter((item) =>
-    value.includes(item.value)
+    value.includes(item.value),
   );
 
   function handleCreateOption(inputValue: string) {

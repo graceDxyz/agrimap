@@ -90,7 +90,7 @@ export async function archivedFarm(id: string) {
 }
 
 export function useGetFarmCrops(
-  options?: UseQueryOptions<string[], AxiosError>
+  options?: UseQueryOptions<string[], AxiosError>,
 ) {
   return useQuery({
     queryKey: [QUERY_CROPS_KEY],

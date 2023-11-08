@@ -17,21 +17,21 @@ import {
 const router: Router = express.Router();
 
 router.get("/", requiredUser, getAllFarmerHandler);
-router.get("/:farmerId", requiredUser, getFarmerHandler);
+router.get("/:id", requiredUser, getFarmerHandler);
 router.post(
   "/",
   [requiredUser, validateResource(createFarmerSchema)],
-  createFarmerHandler
+  createFarmerHandler,
 );
 router.put(
-  "/:farmerId",
+  "/:id",
   [requiredUser, validateResource(updateFarmerSchema)],
-  updateFarmerHandler
+  updateFarmerHandler,
 );
 router.delete(
-  "/:farmerId",
+  "/:id",
   [requiredUser, validateResource(getFarmerSchema)],
-  deleteFarmerHandler
+  deleteFarmerHandler,
 );
 
 export default router;

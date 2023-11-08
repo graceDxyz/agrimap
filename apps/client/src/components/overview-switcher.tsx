@@ -24,7 +24,7 @@ export default function OverviewSwitcher({
   isLoading,
 }: OverviewSwitcherProps) {
   const { options, activeSwitcher, setSwitcherValue } = useBoundStore(
-    (state) => state.overview
+    (state) => state.overview,
   );
   const [open, setOpen] = React.useState(false);
   const [showNewOverviewDialog, setShowNewOverviewDialog] =
@@ -65,7 +65,7 @@ export default function OverviewSwitcher({
                       "ml-auto h-4 w-4",
                       activeSwitcher.value === filter.value
                         ? "opacity-100"
-                        : "opacity-0"
+                        : "opacity-0",
                     )}
                   />
                 </CommandItem>

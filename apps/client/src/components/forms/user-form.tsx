@@ -1,12 +1,7 @@
 import { Icons } from "@/components/icons";
 import {
-  AlertDialog,
   AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,65 +20,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
 import useRandomString from "@/hooks/useRandomString";
 import { useBoundStore } from "@/lib/store";
 import { createUser, deleteUser, updateUser } from "@/services/user.service";
-import { DialogHeaderDetail, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { CreateUserInput, User, createUserBody, roleSchema } from "schema";
 
-export function UserDialog() {
-  const { mode } = useBoundStore((state) => state.user);
-  const isOpen = mode !== "view";
-
-  const modeToTitle: Record<Mode, DialogHeaderDetail> = {
-    view: {
-      title: "View User",
-      description: "View user details.",
-    },
-    create: {
-      title: "Add User",
-      description: "Create a new user.",
-      form: <CreateForm />,
-    },
-    update: {
-      title: "Update User",
-      description: "Update user information.",
-      form: <UpdateForm />,
-    },
-    delete: {
-      title: "Are you absolutely sure?",
-      description: "Delete user data (cannot be undone).",
-      form: <DeleteForm />,
-    },
-  };
-
-  const { title, description, form } = modeToTitle[mode];
-
-  return (
-    <AlertDialog open={isOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description} </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Separator />
-        <div>{form}</div>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-}
-
-function CreateForm() {
+export function CreateUserForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode } = useBoundStore((state) => state.user);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const [randomString, regenerateRandomString] = useRandomString(8);
   const roles = Object.values(roleSchema.Values);
 
@@ -98,7 +49,7 @@ function CreateForm() {
   const { mutate, isLoading } = useMutation({
     mutationFn: createUser,
     onSuccess: ({ data }) => {
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Created",
         description: `User ${data.email} created successfully!`,
@@ -114,11 +65,6 @@ function CreateForm() {
 
   function onSubmit(data: CreateUserInput) {
     mutate(data);
-  }
-
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-    form.reset();
   }
 
   return (
@@ -218,14 +164,7 @@ function CreateForm() {
           )}
         />
         <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </Button>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <Button disabled={isLoading}>
             {isLoading ? (
               <Icons.spinner
@@ -244,29 +183,26 @@ function CreateForm() {
   );
 }
 
-function UpdateForm() {
+export function UpdateUserForm({ user }: { user: User }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode, user } = useBoundStore((state) => state.user);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const roles = Object.values(roleSchema.Values);
 
   const form = useForm<CreateUserInput>({
     resolver: zodResolver(createUserBody),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      role: "USER",
+      ...user,
+      password: user.password as string,
     },
   });
 
   const { mutate, isLoading } = useMutation({
     mutationFn: updateUser,
     onSuccess: ({ data }) => {
-      handleCancelClick();
+      setDialogItem();
       toast({
-        title: "Updted",
+        title: "Updated",
         description: `User ${data.email} updated successfully!`,
       });
     },
@@ -281,20 +217,6 @@ function UpdateForm() {
   function onSubmit(data: CreateUserInput) {
     mutate({ id: user?._id as string, data });
   }
-
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        ...user,
-        password: user.password as string,
-      });
-    }
-  }, [user, form]);
 
   return (
     <Form {...form}>
@@ -381,14 +303,7 @@ function UpdateForm() {
           )}
         />
         <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
-            Cancel
-          </Button>
+          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
           <Button disabled={isLoading}>
             {isLoading ? (
               <Icons.spinner
@@ -407,10 +322,10 @@ function UpdateForm() {
   );
 }
 
-function DeleteForm() {
+export function DeleteUserForm({ user }: { user: User }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { user, setMode } = useBoundStore((state) => state.user);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteUser,
@@ -421,8 +336,7 @@ function DeleteForm() {
         }
         return items;
       });
-
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Deleted",
         description: `User ${user?._id} deleted successfully!`,
@@ -437,9 +351,6 @@ function DeleteForm() {
     mutate(user?._id ?? "");
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-  }
   return (
     <AlertDialogFooter>
       <Button
@@ -455,10 +366,7 @@ function DeleteForm() {
         )}
         Continue
       </Button>
-
-      <AlertDialogCancel disabled={isLoading} onClick={handleCancelClick}>
-        Cancel
-      </AlertDialogCancel>
+      <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
     </AlertDialogFooter>
   );
 }

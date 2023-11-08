@@ -20,7 +20,7 @@ const intitialState: AuthState = {
 };
 
 export const createAuthSlice: StateCreator<StoreState, [], [], AuthSlice> = (
-  set
+  set,
 ) => ({
   auth: {
     ...intitialState,

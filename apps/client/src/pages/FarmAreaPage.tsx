@@ -8,7 +8,7 @@ import {
 import { useAddressState } from "@/components/select/address-select";
 import { Shell } from "@/components/shells/shell";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { useMapDraw } from "@/hooks/useMapDraw";
 import { useUser } from "@/hooks/useUser";
@@ -99,7 +99,7 @@ function FarmAreaPage() {
           {
             message: "Title number already registered",
           },
-          { shouldFocus: true }
+          { shouldFocus: true },
         );
       }
     },
@@ -110,7 +110,7 @@ function FarmAreaPage() {
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates
+        e.features[0].geometry.coordinates,
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -176,7 +176,7 @@ function FarmAreaPage() {
                   className={cn(
                     buttonVariants({
                       size: "sm",
-                    })
+                    }),
                   )}
                 >
                   Edit

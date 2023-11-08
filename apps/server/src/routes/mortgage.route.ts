@@ -17,21 +17,21 @@ import {
 const router: Router = express.Router();
 
 router.get("/", requiredUser, getAllMortgageHandler);
-router.get("/:mortgageId", requiredUser, getMortgageHandler);
+router.get("/:id", requiredUser, getMortgageHandler);
 router.post(
   "/",
   [requiredUser, validateResource(createMortgageSchema)],
-  createMortgageHandler
+  createMortgageHandler,
 );
 router.put(
-  "/:mortgageId",
+  "/:id",
   [requiredUser, validateResource(updateMortgageSchema)],
-  updateMortgageHandler
+  updateMortgageHandler,
 );
 router.delete(
-  "/:mortgageId",
+  "/:id",
   [requiredUser, validateResource(getMortgageSchema)],
-  deleteMortgageHandler
+  deleteMortgageHandler,
 );
 
 export default router;

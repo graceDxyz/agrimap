@@ -59,7 +59,7 @@ export async function findDisbursement(query: FilterQuery<IDisbursement>) {
 export async function updateDisbursement(
   query: FilterQuery<IDisbursement>,
   update: UpdateQuery<IDisbursement>,
-  options: QueryOptions
+  options: QueryOptions,
 ) {
   return DisbursementModel.findByIdAndUpdate(query, update, options);
 }

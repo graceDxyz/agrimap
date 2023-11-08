@@ -28,7 +28,7 @@ export const mapLoader =
   };
 
 export function useGetRecentAdded(
-  options?: UseQueryOptions<RecentAdded, AxiosError>
+  options?: UseQueryOptions<RecentAdded, AxiosError>,
 ) {
   return useQuery({
     queryKey: [QUERY_STATISTICS_KEY, "recent"],
@@ -72,7 +72,7 @@ export function useGetStatistics({
 }
 
 export function useGetStatCount(
-  options?: UseQueryOptions<StatCount, AxiosError>
+  options?: UseQueryOptions<StatCount, AxiosError>,
 ) {
   return useQuery({
     queryKey: [QUERY_STATISTICS_KEY, "count"],

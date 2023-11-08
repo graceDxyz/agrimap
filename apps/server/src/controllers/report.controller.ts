@@ -156,11 +156,11 @@ export const getReportHandler = async (req: Request, res: Response) => {
     // Set the response headers for download
     res.setHeader(
       "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     );
     res.setHeader(
       "Content-Disposition",
-      `Report-${getCurrentDateFormatted()}.xlsx`
+      `Report-${getCurrentDateFormatted()}.xlsx`,
     );
 
     res.send(buffer);

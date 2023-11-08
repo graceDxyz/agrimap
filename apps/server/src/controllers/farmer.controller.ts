@@ -18,7 +18,7 @@ const getAllFarmerHandler = async (req: Request, res: Response) => {
 
 const getFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const id = req.params.id;
@@ -38,7 +38,7 @@ const getFarmerHandler = async (
 
 const createFarmerHandler = async (
   req: Request<{}, {}, CreateFarmerInput["body"]>,
-  res: Response
+  res: Response,
 ) => {
   try {
     const body = req.body;
@@ -56,7 +56,7 @@ const createFarmerHandler = async (
 
 const updateFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const id = req.params.id;
   const update = req.body;
@@ -81,7 +81,7 @@ const updateFarmerHandler = async (
 
 const deleteFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
-  res: Response
+  res: Response,
 ) => {
   const id = req.params.id;
   const farmer = await findFarmer({ _id: id });

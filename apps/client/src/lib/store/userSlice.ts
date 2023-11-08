@@ -30,7 +30,7 @@ const intitialState: State = {
 };
 
 export const createUserSlice: StateCreator<StoreState, [], [], UserSlice> = (
-  set
+  set,
 ) => ({
   user: {
     ...intitialState,

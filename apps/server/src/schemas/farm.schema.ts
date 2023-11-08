@@ -3,7 +3,7 @@ import * as z from "zod";
 import { params } from "./base.schema";
 
 export const coordinatesSchema = z.array(
-  z.array(z.tuple([z.number(), z.number()]))
+  z.array(z.tuple([z.number(), z.number()])),
 );
 
 const body = createFarmBody;

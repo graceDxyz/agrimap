@@ -15,6 +15,7 @@ import { useBoundStore } from "@/lib/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Disbursement, Farm, Farmer, Mortgage, User } from "schema";
+import { DeleteUserForm, UpdateUserForm } from "../forms/user-form";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,15 +24,23 @@ interface DataTableRowActionsProps<TData> {
 export function UserDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const { setMode } = useBoundStore((state) => state.user);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const original = row.original as object as User;
 
   function handleEditClick() {
-    setMode({ mode: "update", user: original });
+    setDialogItem({
+      title: "Update User",
+      description: "Update user information.",
+      form: <UpdateUserForm user={original} />,
+    });
   }
 
   function handleDeleteClick() {
-    setMode({ mode: "delete", user: original });
+    setDialogItem({
+      title: "Are you absolutely sure?",
+      description: "Delete user data (cannot be undone).",
+      form: <DeleteUserForm user={original} />,
+    });
   }
 
   return (
@@ -152,7 +161,7 @@ export function MortgageDataTableRowActions<TData>({
   function handleViewClick() {
     queryClient.setQueryData(
       [QUERY_FARM_KEY, original.farm._id],
-      original.farm
+      original.farm,
     );
     navigate(`/dashboard/farms/${original.farm._id}`);
   }
