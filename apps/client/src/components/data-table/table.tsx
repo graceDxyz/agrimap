@@ -26,6 +26,7 @@ import {
 
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { useSearchParams } from "react-router-dom";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,11 +47,13 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    []
   );
-
-  const [globalFilter, setGlobalFilter] = React.useState(undefined);
+  console.log(columnFilters);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const globalFilter = searchParams.get("filter");
 
   const table = useReactTable({
     data,
@@ -63,7 +66,9 @@ export function DataTable<TData, TValue>({
       globalFilter,
     },
     enableRowSelection: true,
-    onGlobalFilterChange: setGlobalFilter,
+    onGlobalFilterChange: (filter) => {
+      setSearchParams(filter ? { filter } : undefined);
+    },
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -96,7 +101,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -115,7 +120,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
