@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   archivedFarmHandler,
   createFarmHandler,
@@ -16,34 +16,34 @@ import {
   updateFarmSchema,
 } from "../schemas/farm.schema";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/", requiredUser, getAllFarmHandler);
 router.get("/crops", requiredUser, getAllFarmCropsHandler);
 router.get(
   "/:farmId",
   [requiredUser, validateResource(getFarmSchema)],
-  getFarmHandler,
+  getFarmHandler
 );
 router.post(
   "/",
   [requiredUser, validateResource(createFarmSchema)],
-  createFarmHandler,
+  createFarmHandler
 );
 router.put(
   "/:farmId",
   [requiredUser, validateResource(updateFarmSchema)],
-  updateFarmHandler,
+  updateFarmHandler
 );
 router.delete(
   "/:farmId",
   [requiredUser, validateResource(getFarmSchema)],
-  deleteFarmHandler,
+  deleteFarmHandler
 );
 router.post(
   "/:farmId/archived",
   [requiredUser, validateResource(getFarmSchema)],
-  archivedFarmHandler,
+  archivedFarmHandler
 );
 
 export default router;

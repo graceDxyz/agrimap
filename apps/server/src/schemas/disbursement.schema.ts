@@ -1,25 +1,19 @@
 import { createDisbursementBody } from "schema";
 import * as z from "zod";
+import { params } from "./base.schema";
 
-const payload = {
-  body: createDisbursementBody,
-};
+const body = createDisbursementBody;
 
-const params = {
-  params: z.object({
-    disbursementId: z.string({
-      required_error: "disbursementId is required",
-    }),
-  }),
-};
-
-const createDisbursementSchema = z.object({ ...payload });
-const updateDisbursementSchema = z.object({
-  ...payload,
-  ...params,
+const createDisbursementSchema = z.object({
+  body,
 });
 
-const getDisbursementSchema = z.object({ ...params });
+const updateDisbursementSchema = z.object({
+  body,
+  params,
+});
+
+const getDisbursementSchema = z.object({ params });
 
 export {
   createDisbursementSchema,

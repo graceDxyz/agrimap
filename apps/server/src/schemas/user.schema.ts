@@ -1,26 +1,17 @@
 import { createUserBody } from "schema";
 import * as z from "zod";
+import { params } from "./base.schema";
 
 export const Role = z.enum(["USER", "ADMIN"]);
 
-const payload = {
-  body: createUserBody,
-};
+const body = createUserBody;
 
-const params = {
-  params: z.object({
-    userId: z.string({
-      required_error: "userId is required",
-    }),
-  }),
-};
-
-const createUserSchema = z.object({ ...payload });
+const createUserSchema = z.object({ body });
 const updateUserSchema = z.object({
-  ...payload,
-  ...params,
+  body,
+  params,
 });
 
-const getUserSchema = z.object({ ...params });
+const getUserSchema = z.object({ params });
 
 export { createUserSchema, getUserSchema, updateUserSchema };

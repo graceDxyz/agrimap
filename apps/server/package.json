@@ -7,13 +7,17 @@
     "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
     "build": "tsup && npm run copy:sqlite",
     "clean": "rm -rf dist node_modules",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "db:generate": "drizzle-kit generate:sqlite",
     "db:push": "drizzle-kit push:sqlite",
     "db:introspect": "drizzle-kit introspect:sqlite",
     "db:studio": "drizzle-kit studio --port 5001 --verbose",
+    "copy:sqlite": "cp ./sqlite.db ./dist/sqlite.db",
     "typecheck": "tsc --noEmit",
-    "copy:sqlite": "cp ./sqlite.db ./dist/sqlite.db"
+    "lint": "eslint src/",
+    "test": "jest --detectOpenHandles"
+  },
+  "jest": {
+    "preset": "jest-presets/jest/node"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.7.1",
@@ -29,6 +33,7 @@
     "exceljs": "^4.3.0",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
+    "jest": "^29.7.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
     "mongoose": "^7.5.1",
@@ -50,10 +55,13 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.6.0",
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
+    "@types/supertest": "^2.0.16",
     "drizzle-kit": "^0.19.13",
-    "eslint": "^8.49.0",
+    "eslint-config-custom": "workspace:*",
+    "jest-presets": "workspace:*",
+    "mongodb-memory-server": "^9.0.1",
+    "supertest": "^6.3.3",
+    "tsconfig": "workspace:*",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2"
   }

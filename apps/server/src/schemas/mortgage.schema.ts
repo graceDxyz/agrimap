@@ -1,28 +1,19 @@
 import { createMortgageBody } from "schema";
 import * as z from "zod";
+import { params } from "./base.schema";
 
 export const coordinatesSchema = z.array(
   z.array(z.tuple([z.number(), z.number()]))
 );
 
-const payload = {
-  body: createMortgageBody,
-};
+const body = createMortgageBody;
 
-const params = {
-  params: z.object({
-    mortgageId: z.string({
-      required_error: "mortgageId is required",
-    }),
-  }),
-};
-
-const createMortgageSchema = z.object({ ...payload });
+const createMortgageSchema = z.object({ body });
 const updateMortgageSchema = z.object({
-  ...payload,
-  ...params,
+  body,
+  params,
 });
 
-const getMortgageSchema = z.object({ ...params });
+const getMortgageSchema = z.object({ params });
 
 export { createMortgageSchema, getMortgageSchema, updateMortgageSchema };

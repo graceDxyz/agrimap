@@ -8,11 +8,7 @@ import {
   updateFarmer,
 } from "../services/farmer.service";
 import { deleteMortgages } from "../services/mortgage.service";
-import {
-  CreateFarmerInput,
-  GetFarmerInput,
-  UpdateFarmerInput,
-} from "../types/farmer.types";
+import { CreateFarmerInput, GetFarmerInput } from "../types/farmer.types";
 import logger from "../utils/logger";
 
 const getAllFarmerHandler = async (req: Request, res: Response) => {
@@ -25,9 +21,9 @@ const getFarmerHandler = async (
   res: Response
 ) => {
   try {
-    const farmerId = req.params.farmerId;
+    const id = req.params.id;
 
-    const farmer = await findFarmer({ _id: farmerId });
+    const farmer = await findFarmer({ _id: id });
 
     if (!farmer) {
       return res.sendStatus(404);
@@ -59,20 +55,20 @@ const createFarmerHandler = async (
 };
 
 const updateFarmerHandler = async (
-  req: Request<UpdateFarmerInput["params"]>,
+  req: Request<GetFarmerInput["params"]>,
   res: Response
 ) => {
-  const farmerId = req.params?.farmerId ?? "";
+  const id = req.params.id;
   const update = req.body;
 
-  const farmer = await findFarmer({ _id: farmerId });
+  const farmer = await findFarmer({ _id: id });
 
   if (!farmer) {
     return res.sendStatus(404);
   }
 
   try {
-    const updatedFarmer = await updateFarmer({ _id: farmerId }, update, {
+    const updatedFarmer = await updateFarmer({ _id: id }, update, {
       new: true,
     });
 
@@ -87,17 +83,17 @@ const deleteFarmerHandler = async (
   req: Request<GetFarmerInput["params"]>,
   res: Response
 ) => {
-  const farmerId = req.params.farmerId;
-  const farmer = await findFarmer({ _id: farmerId });
+  const id = req.params.id;
+  const farmer = await findFarmer({ _id: id });
 
   if (!farmer) {
     return res.sendStatus(404);
   }
 
   try {
-    await deleteFarmer({ _id: farmerId });
-    await deleteFarms({ owner: farmerId });
-    await deleteMortgages({ mortgageTo: farmerId });
+    await deleteFarmer({ _id: id });
+    await deleteFarms({ owner: id });
+    await deleteMortgages({ mortgageTo: id });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);

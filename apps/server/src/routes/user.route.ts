@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Router } from "express";
 import {
   createUserHandler,
   deleteUserHandler,
@@ -14,24 +14,24 @@ import {
   updateUserSchema,
 } from "../schemas/user.schema";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/", requiredAdmin, getAllUserHandler);
 router.get("/:userId", requiredAdmin, getUserHandler);
 router.post(
   "/",
   [requiredAdmin, validateResource(createUserSchema)],
-  createUserHandler,
+  createUserHandler
 );
 router.put(
   "/:userId",
   [requiredAdmin, validateResource(updateUserSchema)],
-  updateUserHandler,
+  updateUserHandler
 );
 router.delete(
   "/:userId",
   [requiredAdmin, validateResource(getUserSchema)],
-  deleteUserHandler,
+  deleteUserHandler
 );
 
 export default router;

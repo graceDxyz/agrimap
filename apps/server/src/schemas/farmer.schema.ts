@@ -1,5 +1,6 @@
 import { createFarmerBody } from "schema";
 import * as z from "zod";
+import { params } from "./base.schema";
 
 export const addressSchema = z.object({
   streetAddress: z.string(),
@@ -9,24 +10,13 @@ export const addressSchema = z.object({
   zipcode: z.string(),
 });
 
-const payload = {
-  body: createFarmerBody,
-};
-
-const params = {
-  params: z.object({
-    farmerId: z.string({
-      required_error: "farmerId is required",
-    }),
-  }),
-};
-
-const createFarmerSchema = z.object({ ...payload });
+const body = createFarmerBody;
+const createFarmerSchema = z.object({ body });
 const updateFarmerSchema = z.object({
-  ...payload,
-  ...params,
+  body,
+  params,
 });
 
-const getFarmerSchema = z.object({ ...params });
+const getFarmerSchema = z.object({ params });
 
 export { createFarmerSchema, getFarmerSchema, updateFarmerSchema };

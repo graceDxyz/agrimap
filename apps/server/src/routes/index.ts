@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import addressRoutes from "./address.route";
 import disbursementRoutes from "./disbursement.route";
 import farmRoutes from "./farm.route";
@@ -9,7 +9,7 @@ import sessionRoutes from "./session.route";
 import statisticRoutes from "./statistic.route";
 import userRoutes from "./user.route";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/ping", (req: Request, res: Response) => {
   const userAgent = req.get("user-agent") || "";

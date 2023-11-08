@@ -12,7 +12,6 @@ import { deleteMortgages } from "../services/mortgage.service";
 import {
   CreateDisbursementInput,
   GetDisbursementInput,
-  UpdateDisbursementInput,
 } from "../types/disbursement.types";
 import logger from "../utils/logger";
 
@@ -28,12 +27,12 @@ const getAllAssistancesHandler = async (req: Request, res: Response) => {
 
 const getDisbursementHandler = async (
   req: Request<GetDisbursementInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
-    const disbursementId = req.params.disbursementId;
+    const id = req.params.id;
 
-    const disbursement = await findDisbursement({ _id: disbursementId });
+    const disbursement = await findDisbursement({ _id: id });
 
     if (!disbursement) {
       return res.sendStatus(404);
@@ -48,7 +47,7 @@ const getDisbursementHandler = async (
 
 const createDisbursementHandler = async (
   req: Request<{}, {}, CreateDisbursementInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -65,26 +64,22 @@ const createDisbursementHandler = async (
 };
 
 const updateDisbursementHandler = async (
-  req: Request<UpdateDisbursementInput["params"]>,
-  res: Response,
+  req: Request<GetDisbursementInput["params"]>,
+  res: Response
 ) => {
-  const disbursementId = req.params?.disbursementId ?? "";
+  const id = req.params.id;
   const update = req.body;
 
-  const disbursement = await findDisbursement({ _id: disbursementId });
+  const disbursement = await findDisbursement({ _id: id });
 
   if (!disbursement) {
     return res.sendStatus(404);
   }
 
   try {
-    const updatedDisbursement = await updateDisbursement(
-      { _id: disbursementId },
-      update,
-      {
-        new: true,
-      },
-    );
+    const updatedDisbursement = await updateDisbursement({ _id: id }, update, {
+      new: true,
+    });
 
     return res.send(updatedDisbursement);
   } catch (error: any) {
@@ -95,19 +90,19 @@ const updateDisbursementHandler = async (
 
 const deleteDisbursementHandler = async (
   req: Request<GetDisbursementInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
-  const disbursementId = req.params.disbursementId;
-  const disbursement = await findDisbursement({ _id: disbursementId });
+  const id = req.params.id;
+  const disbursement = await findDisbursement({ _id: id });
 
   if (!disbursement) {
     return res.sendStatus(404);
   }
 
   try {
-    await deleteDisbursement({ _id: disbursementId });
-    await deleteFarms({ owner: disbursementId });
-    await deleteMortgages({ mortgageTo: disbursementId });
+    await deleteDisbursement({ _id: id });
+    await deleteFarms({ owner: id });
+    await deleteMortgages({ mortgageTo: id });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);

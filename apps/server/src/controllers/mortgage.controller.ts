@@ -6,11 +6,7 @@ import {
   getAllMortgage,
   updateMortgage,
 } from "../services/mortgage.service";
-import {
-  CreateMortgageInput,
-  GetMortgageInput,
-  UpdateMortgageInput,
-} from "../types/mortgage.types";
+import { CreateMortgageInput, GetMortgageInput } from "../types/mortgage.types";
 import logger from "../utils/logger";
 
 const getAllMortgageHandler = async (req: Request, res: Response) => {
@@ -23,9 +19,9 @@ const getMortgageHandler = async (
   res: Response
 ) => {
   try {
-    const mortgageId = req.params.mortgageId;
+    const id = req.params.id;
 
-    const mortgage = await findMortgage({ _id: mortgageId });
+    const mortgage = await findMortgage({ _id: id });
 
     if (!mortgage) {
       return res.sendStatus(404);
@@ -59,13 +55,13 @@ const createMortgageHandler = async (
 };
 
 const updateMortgageHandler = async (
-  req: Request<UpdateMortgageInput["params"]>,
+  req: Request<GetMortgageInput["params"]>,
   res: Response
 ) => {
-  const mortgageId = req.params.mortgageId;
+  const id = req.params.id;
   const update = req.body;
 
-  const mortgage = await findMortgage({ _id: mortgageId });
+  const mortgage = await findMortgage({ _id: id });
 
   if (!mortgage) {
     return res.sendStatus(404);
@@ -73,7 +69,7 @@ const updateMortgageHandler = async (
 
   try {
     const updatedMortgage = await updateMortgage(
-      { _id: mortgageId },
+      { _id: id },
       { ...update, farm: update.farmId, mortgageTo: update.mortgageToId },
       {
         new: true,
@@ -92,15 +88,15 @@ const deleteMortgageHandler = async (
   req: Request<GetMortgageInput["params"]>,
   res: Response
 ) => {
-  const mortgageId = req.params.mortgageId;
-  const mortgage = await findMortgage({ _id: mortgageId });
+  const id = req.params.id;
+  const mortgage = await findMortgage({ _id: id });
 
   if (!mortgage) {
     return res.sendStatus(404);
   }
 
   try {
-    await deleteMortgage({ _id: mortgageId });
+    await deleteMortgage({ _id: id });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);

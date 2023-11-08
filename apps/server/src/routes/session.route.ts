@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   createUserSessionHandler,
   deleteSessionHandler,
@@ -8,12 +8,12 @@ import requireUser from "../middlewares/requireUser";
 import validateResource from "../middlewares/validateResource";
 import { createSessionSchema } from "../schemas/session.schema";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post(
   "/",
   validateResource(createSessionSchema),
-  createUserSessionHandler,
+  createUserSessionHandler
 );
 router.get("/current", getUserSessionHandler);
 router.post("/current", requireUser, deleteSessionHandler);

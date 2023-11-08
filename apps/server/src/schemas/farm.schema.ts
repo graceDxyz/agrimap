@@ -1,28 +1,19 @@
 import { createFarmBody } from "schema";
 import * as z from "zod";
+import { params } from "./base.schema";
 
 export const coordinatesSchema = z.array(
   z.array(z.tuple([z.number(), z.number()]))
 );
 
-const payload = {
-  body: createFarmBody,
-};
+const body = createFarmBody;
 
-const params = {
-  params: z.object({
-    farmId: z.string({
-      required_error: "farmId is required",
-    }),
-  }),
-};
-
-const createFarmSchema = z.object({ ...payload });
+const createFarmSchema = z.object({ body });
 const updateFarmSchema = z.object({
-  ...payload,
-  ...params,
+  body,
+  params,
 });
 
-const getFarmSchema = z.object({ ...params });
+const getFarmSchema = z.object({ params });
 
 export { createFarmSchema, getFarmSchema, updateFarmSchema };

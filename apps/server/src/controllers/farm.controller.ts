@@ -8,11 +8,7 @@ import {
   updateFarm,
 } from "../services/farm.service";
 import { deleteMortgages } from "../services/mortgage.service";
-import {
-  CreateFarmInput,
-  GetFarmInput,
-  UpdateFarmInput,
-} from "../types/farm.types";
+import { CreateFarmInput, GetFarmInput } from "../types/farm.types";
 import logger from "../utils/logger";
 
 const getAllFarmHandler = async (req: Request, res: Response) => {
@@ -27,12 +23,12 @@ const getAllFarmCropsHandler = async (req: Request, res: Response) => {
 
 const getFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
-    const farmId = req.params.farmId;
+    const id = req.params.id;
 
-    const farm = await findFarm({ _id: farmId });
+    const farm = await findFarm({ _id: id });
 
     if (!farm) {
       return res.sendStatus(404);
@@ -46,7 +42,7 @@ const getFarmHandler = async (
 
 const createFarmHandler = async (
   req: Request<{}, {}, CreateFarmInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -64,20 +60,20 @@ const createFarmHandler = async (
 };
 
 const updateFarmHandler = async (
-  req: Request<UpdateFarmInput["params"]>,
-  res: Response,
+  req: Request<GetFarmInput["params"]>,
+  res: Response
 ) => {
-  const farmId = req.params?.farmId ?? "";
+  const id = req.params.id;
   const update = req.body;
 
-  const farm = await findFarm({ _id: farmId });
+  const farm = await findFarm({ _id: id });
 
   if (!farm) {
     return res.sendStatus(404);
   }
 
   try {
-    const updatedFarm = await updateFarm({ _id: farmId }, update, {
+    const updatedFarm = await updateFarm({ _id: id }, update, {
       new: true,
       populate: "owner",
     });
@@ -91,18 +87,18 @@ const updateFarmHandler = async (
 
 const deleteFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
-  const farmId = req.params.farmId;
-  const farm = await findFarm({ _id: farmId });
+  const id = req.params.id;
+  const farm = await findFarm({ _id: id });
 
   if (!farm) {
     return res.sendStatus(404);
   }
 
   try {
-    await deleteFarm({ _id: farmId });
-    await deleteMortgages({ farm: farmId });
+    await deleteFarm({ _id: id });
+    await deleteMortgages({ farm: id });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);
@@ -112,10 +108,10 @@ const deleteFarmHandler = async (
 
 const archivedFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
-  const farmId = req.params.farmId;
-  const farm = await findFarm({ _id: farmId });
+  const id = req.params.id;
+  const farm = await findFarm({ _id: id });
 
   if (!farm) {
     return res.sendStatus(404);
@@ -123,14 +119,14 @@ const archivedFarmHandler = async (
 
   try {
     const updatedFarm = await updateFarm(
-      { _id: farmId },
+      { _id: id },
       {
         $set: { isArchived: !farm.isArchived },
       },
       {
         new: true,
         populate: "owner",
-      },
+      }
     );
 
     return res.send(updatedFarm);

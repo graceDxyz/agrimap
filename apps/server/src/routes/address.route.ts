@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   getAddressHandler,
   getBarangaysHandler,
@@ -9,7 +9,7 @@ import {
   seedAddressHandler,
 } from "../controllers/address.controller";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/", getAddressHandler);
 router.get("/province", getProvincesHandler);

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   createMortgageHandler,
   deleteMortgageHandler,
@@ -14,24 +14,24 @@ import {
   updateMortgageSchema,
 } from "../schemas/mortgage.schema";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/", requiredUser, getAllMortgageHandler);
 router.get("/:mortgageId", requiredUser, getMortgageHandler);
 router.post(
   "/",
   [requiredUser, validateResource(createMortgageSchema)],
-  createMortgageHandler,
+  createMortgageHandler
 );
 router.put(
   "/:mortgageId",
   [requiredUser, validateResource(updateMortgageSchema)],
-  updateMortgageHandler,
+  updateMortgageHandler
 );
 router.delete(
   "/:mortgageId",
   [requiredUser, validateResource(getMortgageSchema)],
-  deleteMortgageHandler,
+  deleteMortgageHandler
 );
 
 export default router;

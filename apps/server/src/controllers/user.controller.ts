@@ -6,11 +6,7 @@ import {
   getAllUser,
   updateUser,
 } from "../services/user.service";
-import {
-  CreateUserInput,
-  GetUserInput,
-  UpdateUserInput,
-} from "../types/user.types";
+import { CreateUserInput, GetUserInput } from "../types/user.types";
 import logger from "../utils/logger";
 
 const getAllUserHandler = async (req: Request, res: Response) => {
@@ -23,9 +19,9 @@ const getUserHandler = async (
   res: Response
 ) => {
   try {
-    const userId = req.params.userId;
+    const id = req.params.id;
 
-    const user = await findUser({ _id: userId });
+    const user = await findUser({ _id: id });
 
     if (!user) {
       return res.sendStatus(404);
@@ -57,20 +53,20 @@ const createUserHandler = async (
 };
 
 const updateUserHandler = async (
-  req: Request<UpdateUserInput["params"]>,
+  req: Request<GetUserInput["params"]>,
   res: Response
 ) => {
-  const userId = req.params.userId;
+  const id = req.params.id;
   const update = req.body;
 
-  const user = await findUser({ _id: userId });
+  const user = await findUser({ _id: id });
 
   if (!user) {
     return res.sendStatus(404);
   }
 
   try {
-    const updatedUser = await updateUser({ _id: userId }, update, {
+    const updatedUser = await updateUser({ _id: id }, update, {
       new: true,
     });
 
@@ -85,15 +81,15 @@ const deleteUserHandler = async (
   req: Request<GetUserInput["params"]>,
   res: Response
 ) => {
-  const userId = req.params.userId;
-  const user = await findUser({ _id: userId });
+  const id = req.params.id;
+  const user = await findUser({ _id: id });
 
   if (!user) {
     return res.sendStatus(404);
   }
 
   try {
-    await deleteUser({ _id: userId });
+    await deleteUser({ _id: id });
     return res.sendStatus(200);
   } catch (error: any) {
     logger.error(error);

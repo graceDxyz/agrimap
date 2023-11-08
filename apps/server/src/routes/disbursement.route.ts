@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   createDisbursementHandler,
   deleteDisbursementHandler,
@@ -15,25 +15,29 @@ import {
   updateDisbursementSchema,
 } from "../schemas/disbursement.schema";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.get("/", requiredUser, getAllDisbursementHandler);
 router.get("/assistances", requiredUser, getAllAssistancesHandler);
-router.get("/:disbursementId", requiredUser, getDisbursementHandler);
+router.get(
+  "/:id",
+  [requiredUser, validateResource(getDisbursementSchema)],
+  getDisbursementHandler
+);
 router.post(
   "/",
   [requiredUser, validateResource(createDisbursementSchema)],
-  createDisbursementHandler,
+  createDisbursementHandler
 );
 router.put(
-  "/:disbursementId",
+  "/:id",
   [requiredUser, validateResource(updateDisbursementSchema)],
-  updateDisbursementHandler,
+  updateDisbursementHandler
 );
 router.delete(
-  "/:disbursementId",
+  "/:id",
   [requiredUser, validateResource(getDisbursementSchema)],
-  deleteDisbursementHandler,
+  deleteDisbursementHandler
 );
 
 export default router;
