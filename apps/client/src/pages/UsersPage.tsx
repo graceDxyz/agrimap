@@ -1,6 +1,6 @@
 import { userColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { CreateUserForm } from "@/components/forms/user-form";
+import { AddUserForm } from "@/components/forms/user-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -23,7 +23,7 @@ function UsersPage() {
     setDialogItem({
       title: "Add User",
       description: "Create a new user.",
-      form: <CreateUserForm />,
+      form: <AddUserForm />,
     });
   }
   return (

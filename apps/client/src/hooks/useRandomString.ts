@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function useRandomString(length: number): [string, () => string] {
+function useRandomString(length: number) {
   const charset =
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -15,15 +15,15 @@ function useRandomString(length: number): [string, () => string] {
 
   const initialString = generateRandomString();
 
-  const [randomString, setRandomString] = useState<string>(initialString);
+  const [randString, setRandomString] = useState<string>(initialString);
 
-  const regenerateRandomString = () => {
+  const getRandString = () => {
     const newRandomString = generateRandomString();
     setRandomString(newRandomString);
     return newRandomString;
   };
 
-  return [randomString, regenerateRandomString];
+  return { randString, getRandString };
 }
 
 export default useRandomString;
