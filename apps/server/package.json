@@ -13,7 +13,7 @@
     "db:studio": "drizzle-kit studio --port 5001 --verbose",
     "copy:sqlite": "cp ./sqlite.db ./dist/sqlite.db",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/",
+    "lint": "eslint .",
     "test": "jest --detectOpenHandles"
   },
   "jest": {
