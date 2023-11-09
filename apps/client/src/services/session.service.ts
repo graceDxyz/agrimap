@@ -31,8 +31,6 @@ export function useLogOutMutation() {
     },
     onMutate: () => {
       queryClient.setQueryData([QUERY_ACTIVE_USER_KEY], null);
-    },
-    onSettled: () => {
       auth.resetState();
     },
   });

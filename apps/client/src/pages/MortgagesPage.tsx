@@ -1,6 +1,6 @@
 import { landStatusColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { MortgageDialog } from "@/components/forms/mortgage-form";
+import { AddMortgageForm } from "@/components/forms/mortgage-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -21,10 +21,14 @@ function MortgagesPage() {
   const isAdmin = user?.role === "ADMIN";
   const { data, isLoading } = useGetMortgages({ initialData });
 
-  const { setMode } = useBoundStore((state) => state.mortgage);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   function handleCreateClick() {
-    setMode({ mode: "create" });
+    setDialogItem({
+      title: "Add Data",
+      description: "add a land status.",
+      form: <AddMortgageForm />,
+    });
   }
 
   const morgages = data?.filter((item) => !item.farm.isArchived) ?? [];
@@ -59,7 +63,6 @@ function MortgagesPage() {
           searchPlaceHolder="Filter status..."
           isLoading={isLoading}
         />
-        <MortgageDialog />
       </section>
     </Shell>
   );

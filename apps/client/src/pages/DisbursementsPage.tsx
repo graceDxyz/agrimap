@@ -1,6 +1,6 @@
 import { disbursementColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { DisbursementDialog } from "@/components/forms/disbursement-form";
+import { CreateDisbursemntForm } from "@/components/forms/disbursement-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -21,10 +21,14 @@ function DisbursementsPage() {
   >;
 
   const { data, isLoading } = useGetDisbursements({ initialData });
-  const { setMode } = useBoundStore((state) => state.disbursement);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   function handleCreateClick() {
-    setMode({ mode: "create" });
+    setDialogItem({
+      title: "Add Data",
+      description: "add a disbursement data.",
+      form: <CreateDisbursemntForm />,
+    });
   }
 
   return (
@@ -57,7 +61,6 @@ function DisbursementsPage() {
           isLoading={isLoading}
         />
       </section>
-      <DisbursementDialog />
     </Shell>
   );
 }

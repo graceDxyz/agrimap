@@ -3,13 +3,8 @@ import { AssistanceSelect } from "@/components/select/assistances-select";
 import DateSelect from "@/components/select/date-select";
 import { FarmerSelect } from "@/components/select/farmer-select";
 import {
-  AlertDialog,
   AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,73 +15,32 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/useToast";
+import { Input } from "@/components/ui/input";
 import { QUERY_DISBURSEMENTS_KEY } from "@/constant/query.constant";
+import { useToast } from "@/hooks/useToast";
 import { useBoundStore } from "@/lib/store";
 import {
   createDisbursement,
   deleteDisbursement,
   updateDisbursement,
 } from "@/services/disbursement.service";
-import { DialogContent, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
 import {
   CreateDisbursementInput,
   Disbursement,
   createDisbursementBody,
 } from "schema";
-import { Input } from "../ui/input";
 
-export function DisbursementDialog() {
-  const { mode } = useBoundStore((state) => state.disbursement);
-  const isOpen = mode !== "view";
-
-  const modeToTitle: Record<Mode, DialogContent> = {
-    view: {
-      title: "View Disbursement",
-      description: "View disbursement details.",
-    },
-    create: {
-      title: "Add Data",
-      description: "add a disbursement data.",
-      form: <CreateForm />,
-    },
-    update: {
-      title: "Update Data",
-      description: "update a disbursement data.",
-      form: <UpdateForm />,
-    },
-    delete: {
-      title: "Are you absolutely sure?",
-      description: "Delete disbursement data (cannot be undone).",
-      form: <DeleteForm />,
-    },
-  };
-
-  const { title, description, form } = modeToTitle[mode];
-
-  return (
-    <AlertDialog open={isOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description} </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Separator />
-        <div>{form}</div>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+interface MutationProps {
+  disbursement: Disbursement;
 }
 
-function CreateForm() {
+export function CreateDisbursemntForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode } = useBoundStore((state) => state.disbursement);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const form = useForm<CreateDisbursementInput>({
     resolver: zodResolver(createDisbursementBody),
@@ -101,7 +55,7 @@ function CreateForm() {
   const { mutate, isLoading } = useMutation({
     mutationFn: createDisbursement,
     onSuccess: ({ data }) => {
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Created",
         description: `Disbursement ${data._id} created successfully!`,
@@ -119,15 +73,9 @@ function CreateForm() {
     mutate(data);
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
   return (
-    <DisbursementGenericForm
+    <GenericForm
       form={form}
-      handleCancelClick={handleCancelClick}
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Add"
@@ -135,27 +83,23 @@ function CreateForm() {
   );
 }
 
-function UpdateForm() {
+export function UpdateDisbursemntForm({ disbursement }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode, disbursement } = useBoundStore(
-    (state) => state.disbursement,
-  );
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const form = useForm<CreateDisbursementInput>({
     resolver: zodResolver(createDisbursementBody),
     defaultValues: {
-      assistances: [],
-      size: 0,
-      farmer: "",
-      receivedDate: new Date().toString(),
+      ...disbursement,
+      farmer: disbursement.farmer._id,
     },
   });
 
   const { mutate, isLoading } = useMutation({
     mutationFn: updateDisbursement,
     onSuccess: ({ data }) => {
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Updated",
         description: `Disbursement ${data._id} updated successfully!`,
@@ -173,24 +117,9 @@ function UpdateForm() {
     mutate({ id: disbursement?._id as string, data });
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
-  useEffect(() => {
-    if (disbursement) {
-      form.reset({
-        ...disbursement,
-        farmer: disbursement.farmer._id,
-      });
-    }
-  }, [disbursement, form]);
-
   return (
-    <DisbursementGenericForm
+    <GenericForm
       form={form}
-      handleCancelClick={handleCancelClick}
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Update"
@@ -198,12 +127,10 @@ function UpdateForm() {
   );
 }
 
-function DeleteForm() {
+export function DeleteDisbursementForm({ disbursement }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { disbursement, setMode } = useBoundStore(
-    (state) => state.disbursement,
-  );
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteDisbursement,
@@ -218,7 +145,7 @@ function DeleteForm() {
         },
       );
 
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Deleted",
         description: `Disbursement ${disbursement?._id} deleted successfully!`,
@@ -233,9 +160,6 @@ function DeleteForm() {
     mutate(disbursement?._id ?? "");
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-  }
   return (
     <AlertDialogFooter>
       <Button
@@ -252,24 +176,22 @@ function DeleteForm() {
         Continue
       </Button>
 
-      <AlertDialogCancel disabled={isLoading} onClick={handleCancelClick}>
+      <AlertDialogCancel type="button" disabled={isLoading}>
         Cancel
       </AlertDialogCancel>
     </AlertDialogFooter>
   );
 }
 
-function DisbursementGenericForm({
+function GenericForm({
   form,
   isLoading,
   onSubmit,
-  handleCancelClick,
   buttonLabel,
 }: {
-  form: UseFormReturn<CreateDisbursementInput, any, undefined>;
+  form: UseFormReturn<CreateDisbursementInput, unknown, undefined>;
   isLoading: boolean;
   onSubmit(data: CreateDisbursementInput): void;
-  handleCancelClick(): void;
   buttonLabel: "Add" | "Update";
 }) {
   return (
@@ -343,14 +265,9 @@ function DisbursementGenericForm({
           )}
         />
         <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
+          <AlertDialogCancel type="button" disabled={isLoading}>
             Cancel
-          </Button>
+          </AlertDialogCancel>
           <Button disabled={isLoading}>
             {isLoading ? (
               <Icons.spinner

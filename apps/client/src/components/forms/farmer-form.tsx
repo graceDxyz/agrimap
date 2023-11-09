@@ -1,12 +1,13 @@
 import { Icons } from "@/components/icons";
 import {
-  AlertDialog,
+  BarangaySelect,
+  CitySelect,
+  ProvinceSelect,
+  useAddressState,
+} from "@/components/select/address-select";
+import {
   AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,24 +19,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/useToast";
 import {
   QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
   QUERY_MORTGAGES_KEY,
   QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
+import { useToast } from "@/hooks/useToast";
 import { useBoundStore } from "@/lib/store";
 import {
   createFarmer,
   deleteFarmer,
   updateFarmer,
 } from "@/services/farmer.service";
-import { DialogContent, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
 import {
   CreateFarmerInput,
@@ -44,60 +42,16 @@ import {
   createFarmerBody,
   farmerSchema,
 } from "schema";
-import {
-  BarangaySelect,
-  CitySelect,
-  ProvinceSelect,
-  useAddressState,
-} from "../select/address-select";
 
-export function FarmerDialog() {
-  const { mode } = useBoundStore((state) => state.farmer);
-  const isOpen = mode !== "view";
-
-  const modeToTitle: Record<Mode, DialogContent> = {
-    view: {
-      title: "View Farmer",
-      description: "View farmer details.",
-    },
-    create: {
-      title: "Add Farmer",
-      description: "add a new farmer.",
-      form: <CreateForm />,
-    },
-    update: {
-      title: "Update Farmer",
-      description: "Update farmer information.",
-      form: <UpdateForm />,
-    },
-    delete: {
-      title: "Are you absolutely sure?",
-      description: "Delete farmer data (cannot be undone).",
-      form: <DeleteForm />,
-    },
-  };
-
-  const { title, description, form } = modeToTitle[mode];
-
-  return (
-    <AlertDialog open={isOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description} </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Separator />
-        <div>{form}</div>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+interface MutationProps {
+  farmer: Farmer;
 }
 
-function CreateForm() {
+export function AddFarmerForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { resetState } = useAddressState();
-  const { setMode } = useBoundStore((state) => state.farmer);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const form = useForm<CreateFarmerInput>({
     resolver: zodResolver(createFarmerBody),
@@ -138,11 +92,11 @@ function CreateForm() {
         }
         return items;
       });
-
-      handleCancelClick();
+      resetState();
+      setDialogItem();
       toast({
-        title: "Created",
-        description: `Farmer ${data.lastname} created successfully!`,
+        title: "Add",
+        description: `Farmer ${data.lastname} add successfully!`,
       });
     },
     onError: (error) => {
@@ -154,16 +108,9 @@ function CreateForm() {
     mutate(data);
   }
 
-  function handleCancelClick() {
-    resetState();
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
   return (
-    <FarmerGenericForm
+    <GenericForm
       form={form}
-      handleCancelClick={handleCancelClick}
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Add"
@@ -171,26 +118,17 @@ function CreateForm() {
   );
 }
 
-function UpdateForm() {
+export function UpdateFarmerForm({ farmer }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { resetState } = useAddressState();
-  const { setMode, farmer } = useBoundStore((state) => state.farmer);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const form = useForm<CreateFarmerInput>({
     resolver: zodResolver(createFarmerBody),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      middleInitial: "",
-      address: {
-        streetAddress: "",
-        cityOrProvince: "",
-        municipality: "",
-        barangay: "",
-        zipcode: "",
-      },
-      phoneNumber: "",
+      ...farmer,
+      middleInitial: farmer.middleInitial ?? "",
     },
   });
 
@@ -209,7 +147,8 @@ function UpdateForm() {
         }
         return items;
       });
-      handleCancelClick();
+      resetState();
+      setDialogItem();
       toast({
         title: "Updated",
         description: `Farmer ${data.lastname} updated successfully!`,
@@ -224,25 +163,9 @@ function UpdateForm() {
     mutate({ id: farmer?._id as string, data });
   }
 
-  function handleCancelClick() {
-    resetState();
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
-  useEffect(() => {
-    if (farmer) {
-      form.reset({
-        ...farmer,
-        middleInitial: farmer.middleInitial ?? "",
-      });
-    }
-  }, [farmer, form]);
-
   return (
-    <FarmerGenericForm
+    <GenericForm
       form={form}
-      handleCancelClick={handleCancelClick}
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Update"
@@ -250,10 +173,10 @@ function UpdateForm() {
   );
 }
 
-function DeleteForm() {
+export function DeleteFarmerForm({ farmer }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { farmer, setMode } = useBoundStore((state) => state.farmer);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteFarmer,
@@ -268,7 +191,7 @@ function DeleteForm() {
       queryClient.invalidateQueries([QUERY_FARMS_KEY]);
       queryClient.invalidateQueries([QUERY_STATISTICS_KEY, "recent"]);
 
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Deleted",
         description: `Farmer ${farmer?._id} deleted successfully!`,
@@ -283,9 +206,6 @@ function DeleteForm() {
     mutate(farmer?._id ?? "");
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-  }
   return (
     <AlertDialogFooter>
       <Button
@@ -301,25 +221,22 @@ function DeleteForm() {
         )}
         Continue
       </Button>
-
-      <AlertDialogCancel disabled={isLoading} onClick={handleCancelClick}>
+      <AlertDialogCancel type="button" disabled={isLoading}>
         Cancel
       </AlertDialogCancel>
     </AlertDialogFooter>
   );
 }
 
-function FarmerGenericForm({
+function GenericForm({
   form,
   isLoading,
   onSubmit,
-  handleCancelClick,
   buttonLabel,
 }: {
   form: UseFormReturn<CreateFarmerInput, any, undefined>;
   isLoading: boolean;
   onSubmit(data: CreateFarmerInput): void;
-  handleCancelClick(): void;
   buttonLabel: "Add" | "Update";
 }) {
   return (
@@ -461,14 +378,9 @@ function FarmerGenericForm({
           />
         </div>
         <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
+          <AlertDialogCancel type="button" disabled={isLoading}>
             Cancel
-          </Button>
+          </AlertDialogCancel>
           <Button disabled={isLoading}>
             {isLoading ? (
               <Icons.spinner

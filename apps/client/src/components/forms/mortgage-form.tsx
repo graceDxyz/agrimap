@@ -1,12 +1,8 @@
+import { CalendarDateRangePicker } from "@/components/date-range-picker";
 import { Icons } from "@/components/icons";
 import {
-  AlertDialog,
   AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,31 +20,32 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/useToast";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   QUERY_FARMERS_KEY,
   QUERY_FARMS_KEY,
   QUERY_MORTGAGES_KEY,
   QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
+import { useToast } from "@/hooks/useToast";
 import { useBoundStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
 import { useGetFarms } from "@/services/farm.service";
+import { useGetFarmers } from "@/services/farmer.service";
 import {
   createMortgage,
   deleteMortgage,
   updateMortgage,
 } from "@/services/mortgage.service";
-import { DialogContent, Mode } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { UseFormReturn, useForm } from "react-hook-form";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-
-import { cn } from "@/lib/utils";
-import { useGetFarmers } from "@/services/farmer.service";
 import { addMonths } from "date-fns";
+import { useState } from "react";
+import { UseFormReturn, useForm } from "react-hook-form";
 import {
   CreateMortgageInput,
   Farm,
@@ -57,54 +54,15 @@ import {
   createMortgageBody,
   mortgageSchema,
 } from "schema";
-import { CalendarDateRangePicker } from "../date-range-picker";
 
-export function MortgageDialog() {
-  const { mode } = useBoundStore((state) => state.mortgage);
-  const isOpen = mode !== "view";
-
-  const modeToTitle: Record<Mode, DialogContent> = {
-    view: {
-      title: "View Mortgage",
-      description: "View mortgage details.",
-    },
-    create: {
-      title: "Add Data",
-      description: "add a land status.",
-      form: <CreateForm />,
-    },
-    update: {
-      title: "Update Data",
-      description: "update a land status.",
-      form: <UpdateForm />,
-    },
-    delete: {
-      title: "Are you absolutely sure?",
-      description: "Delete land status (cannot be undone).",
-      form: <DeleteForm />,
-    },
-  };
-
-  const { title, description, form } = modeToTitle[mode];
-
-  return (
-    <AlertDialog open={isOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description} </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Separator />
-        <div>{form}</div>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+interface MutationProps {
+  mortgage: Mortgage;
 }
 
-function CreateForm() {
+export function AddMortgageForm() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode } = useBoundStore((state) => state.mortgage);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const form = useForm<CreateMortgageInput>({
     resolver: zodResolver(createMortgageBody),
@@ -167,7 +125,7 @@ function CreateForm() {
 
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       queryClient.refetchQueries([QUERY_STATISTICS_KEY, "count"]);
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Created",
         description: `Mortgage ${data._id} created successfully!`,
@@ -182,15 +140,9 @@ function CreateForm() {
     mutate(data);
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
   return (
     <MortgageGenericForm
       form={form}
-      handleCancelClick={handleCancelClick}
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Add"
@@ -198,22 +150,17 @@ function CreateForm() {
   );
 }
 
-function UpdateForm() {
+export function UpdateMortgageForm({ mortgage }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { setMode, mortgage } = useBoundStore((state) => state.mortgage);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const form = useForm<CreateMortgageInput>({
     resolver: zodResolver(createMortgageBody),
     defaultValues: {
-      status: "Active",
-      farmId: "",
-      mortgageToId: "",
-      mortgageAmount: 0,
-      mortgageDate: {
-        from: new Date().toString(),
-        to: addMonths(new Date(), 1).toString(),
-      },
+      ...mortgage,
+      farmId: mortgage.farm._id,
+      mortgageToId: mortgage.mortgageTo._id,
     },
   });
 
@@ -235,7 +182,7 @@ function UpdateForm() {
       });
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       queryClient.refetchQueries([QUERY_STATISTICS_KEY, "count"]);
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Updated",
         description: `Mortgage ${data._id} updated successfully!`,
@@ -250,25 +197,9 @@ function UpdateForm() {
     mutate({ id: mortgage?._id as string, data });
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-    form.reset();
-  }
-
-  useEffect(() => {
-    if (mortgage) {
-      form.reset({
-        ...mortgage,
-        farmId: mortgage.farm._id,
-        mortgageToId: mortgage.mortgageTo._id,
-      });
-    }
-  }, [mortgage, form]);
-
   return (
     <MortgageGenericForm
       form={form}
-      handleCancelClick={handleCancelClick}
       isLoading={isLoading}
       onSubmit={onSubmit}
       buttonLabel="Update"
@@ -276,10 +207,10 @@ function UpdateForm() {
   );
 }
 
-function DeleteForm() {
+export function DeleteMortgageForm({ mortgage }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { mortgage, setMode } = useBoundStore((state) => state.mortgage);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: deleteMortgage,
@@ -304,7 +235,7 @@ function DeleteForm() {
 
       queryClient.invalidateQueries([QUERY_FARMERS_KEY]);
       queryClient.refetchQueries([QUERY_STATISTICS_KEY, "count"]);
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: "Deleted",
         description: `Mortgage ${mortgage?._id} deleted successfully!`,
@@ -319,9 +250,6 @@ function DeleteForm() {
     mutate(mortgage?._id ?? "");
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-  }
   return (
     <AlertDialogFooter>
       <Button
@@ -338,7 +266,7 @@ function DeleteForm() {
         Continue
       </Button>
 
-      <AlertDialogCancel disabled={isLoading} onClick={handleCancelClick}>
+      <AlertDialogCancel type="button" disabled={isLoading}>
         Cancel
       </AlertDialogCancel>
     </AlertDialogFooter>
@@ -349,13 +277,11 @@ function MortgageGenericForm({
   form,
   isLoading,
   onSubmit,
-  handleCancelClick,
   buttonLabel,
 }: {
   form: UseFormReturn<CreateMortgageInput, any, undefined>;
   isLoading: boolean;
   onSubmit(data: CreateMortgageInput): void;
-  handleCancelClick(): void;
   buttonLabel: "Add" | "Update";
 }) {
   const [isFarmOpen, setIsFarmOpen] = useState(false);
@@ -561,14 +487,9 @@ function MortgageGenericForm({
           />
         </FormItem>
         <AlertDialogFooter>
-          <Button
-            type="button"
-            disabled={isLoading}
-            variant={"outline"}
-            onClick={handleCancelClick}
-          >
+          <AlertDialogCancel type="button" disabled={isLoading}>
             Cancel
-          </Button>
+          </AlertDialogCancel>
           <Button disabled={isLoading}>
             {isLoading ? (
               <Icons.spinner

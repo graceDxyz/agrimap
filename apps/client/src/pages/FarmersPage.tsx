@@ -1,6 +1,6 @@
 import { farmerColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { FarmerDialog } from "@/components/forms/farmer-form";
+import { AddFarmerForm } from "@/components/forms/farmer-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -18,10 +18,14 @@ function FarmersPage() {
   >;
 
   const { data, isLoading } = useGetFarmers({ initialData });
-  const { setMode } = useBoundStore((state) => state.farmer);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   function handleCreateClick() {
-    setMode({ mode: "create" });
+    setDialogItem({
+      title: "Add Farmer",
+      description: "add a new farmer.",
+      form: <AddFarmerForm />,
+    });
   }
 
   return (
@@ -53,7 +57,6 @@ function FarmersPage() {
           isLoading={isLoading}
         />
       </section>
-      <FarmerDialog />
     </Shell>
   );
 }

@@ -1,7 +1,6 @@
 import { farmColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
 import { useFarmVisibleFilter } from "@/components/farm-visible-select";
-import { FarmDialog } from "@/components/forms/farm-form";
 import {
   PageHeader,
   PageHeaderDescription,
@@ -61,7 +60,6 @@ function FarmsPage() {
           facetFilter
         />
       </section>
-      <FarmDialog />
     </Shell>
   );
 }

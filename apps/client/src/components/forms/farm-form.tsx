@@ -1,45 +1,22 @@
 import { Icons } from "@/components/icons";
-import { CropSelect } from "@/components/select/crops-select";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/useToast";
-import {
-  QUERY_FARMERS_KEY,
-  QUERY_FARMS_KEY,
-  QUERY_MORTGAGES_KEY,
-} from "@/constant/query.constant";
-import { useBoundStore } from "@/lib/store";
-import { UploadButton } from "@/lib/uploadthing";
-import { cn } from "@/lib/utils";
-import { archivedFarm } from "@/services/farm.service";
-import { useGetFarmers } from "@/services/farmer.service";
-import { DialogContent, Mode } from "@/types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { UseFormReturn } from "react-hook-form";
-import { CreateFarmInput, Farm, farmSchema } from "schema";
 import {
   BarangaySelect,
   CitySelect,
   ProvinceSelect,
-} from "../select/address-select";
+} from "@/components/select/address-select";
+import { CropSelect } from "@/components/select/crops-select";
+import {
+  AlertDialogCancel,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "../ui/command";
+} from "@/components/ui/command";
 import {
   Form,
   FormControl,
@@ -47,56 +24,39 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import {
+  QUERY_FARMERS_KEY,
+  QUERY_FARMS_KEY,
+  QUERY_MORTGAGES_KEY,
+} from "@/constant/query.constant";
+import { useToast } from "@/hooks/useToast";
+import { useBoundStore } from "@/lib/store";
+import { UploadButton } from "@/lib/uploadthing";
+import { cn } from "@/lib/utils";
+import { archivedFarm } from "@/services/farm.service";
+import { useGetFarmers } from "@/services/farmer.service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { CreateFarmInput, Farm, farmSchema } from "schema";
 
-export function FarmDialog() {
-  const { mode, farm } = useBoundStore((state) => state.farm);
-  const isOpen = mode !== "view";
-
-  const modeToTitle: Record<Mode, DialogContent> = {
-    view: {
-      title: "View Farm",
-      description: "View farm details.",
-    },
-    create: {
-      title: "Add Farm",
-      description: "add a new farm.",
-    },
-    update: {
-      title: "Update Farm",
-      description: "Update farm information.",
-    },
-    delete: {
-      title: "Are you absolutely sure?",
-      description: `${
-        farm?.isArchived ? "Unarchived" : "Archived"
-      } farm data (reversible action).`,
-      form: <ArchivedForm />,
-    },
-  };
-
-  const { title, description, form } = modeToTitle[mode];
-
-  return (
-    <AlertDialog open={isOpen}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>{description} </AlertDialogDescription>
-        </AlertDialogHeader>
-        <Separator />
-        <div>{form}</div>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+interface MutationProps {
+  farm: Farm;
 }
 
-function ArchivedForm() {
+export function ArchivedFarmForm({ farm }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const { farm, setMode } = useBoundStore((state) => state.farm);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: archivedFarm,
@@ -115,7 +75,7 @@ function ArchivedForm() {
         }
         return items;
       });
-      handleCancelClick();
+      setDialogItem();
       toast({
         title: farm?.isArchived ? "Unarchived" : "Archived",
         description: `Farm ${farm?._id} ${
@@ -132,9 +92,6 @@ function ArchivedForm() {
     mutate(farm?._id ?? "");
   }
 
-  function handleCancelClick() {
-    setMode({ mode: "view" });
-  }
   return (
     <AlertDialogFooter>
       <Button
@@ -151,7 +108,7 @@ function ArchivedForm() {
         Continue
       </Button>
 
-      <AlertDialogCancel disabled={isLoading} onClick={handleCancelClick}>
+      <AlertDialogCancel type="button" disabled={isLoading}>
         Cancel
       </AlertDialogCancel>
     </AlertDialogFooter>

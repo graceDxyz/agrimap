@@ -1,5 +1,17 @@
-import { Row } from "@tanstack/react-table";
-
+import {
+  DeleteDisbursementForm,
+  UpdateDisbursemntForm,
+} from "@/components/forms/disbursement-form";
+import { ArchivedFarmForm } from "@/components/forms/farm-form";
+import {
+  DeleteFarmerForm,
+  UpdateFarmerForm,
+} from "@/components/forms/farmer-form";
+import {
+  DeleteMortgageForm,
+  UpdateMortgageForm,
+} from "@/components/forms/mortgage-form";
+import { DeleteUserForm, UpdateUserForm } from "@/components/forms/user-form";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,9 +25,9 @@ import {
 import { QUERY_FARM_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { useQueryClient } from "@tanstack/react-query";
+import { Row } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import { Disbursement, Farm, Farmer, Mortgage, User } from "schema";
-import { DeleteUserForm, UpdateUserForm } from "../forms/user-form";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -69,15 +81,23 @@ export function UserDataTableRowActions<TData>({
 export function FarmerDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const { setMode } = useBoundStore((state) => state.farmer);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const original = row.original as object as Farmer;
 
   function handleEditClick() {
-    setMode({ mode: "update", farmer: original });
+    setDialogItem({
+      title: "Update Farmer",
+      description: "Update farmer information.",
+      form: <UpdateFarmerForm farmer={original} />,
+    });
   }
 
   function handleDeleteClick() {
-    setMode({ mode: "delete", farmer: original });
+    setDialogItem({
+      title: "Are you absolutely sure?",
+      description: "Delete farmer data (cannot be undone).",
+      form: <DeleteFarmerForm farmer={original} />,
+    });
   }
 
   return (
@@ -108,8 +128,9 @@ export function FarmDataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { setMode } = useBoundStore((state) => state.farm);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const original = row.original as object as Farm;
+  const stateLabel = original.isArchived ? "Unarchived" : "Archived";
 
   function handleViewClick() {
     queryClient.setQueryData([QUERY_FARM_KEY, original._id], original);
@@ -121,8 +142,12 @@ export function FarmDataTableRowActions<TData>({
     navigate(`/dashboard/farms/${original._id}/edit`);
   }
 
-  function handleDeleteClick() {
-    setMode({ mode: "delete", farm: original });
+  function handleArchivedClick() {
+    setDialogItem({
+      title: "Are you absolutely sure?",
+      description: `${stateLabel} farm data (reversible action).`,
+      form: <ArchivedFarmForm farm={original} />,
+    });
   }
 
   return (
@@ -140,8 +165,8 @@ export function FarmDataTableRowActions<TData>({
         <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleDeleteClick}>
-          {original.isArchived ? "Unarchived" : "Archived"}
+        <DropdownMenuItem onClick={handleArchivedClick}>
+          {stateLabel}
           <DropdownMenuShortcut></DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -153,7 +178,7 @@ export function MortgageDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const { user } = useBoundStore((state) => state.auth);
-  const { setMode } = useBoundStore((state) => state.mortgage);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const original = row.original as object as Mortgage;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -167,57 +192,73 @@ export function MortgageDataTableRowActions<TData>({
   }
 
   function handleEditClick() {
-    setMode({ mode: "update", mortgage: original });
+    setDialogItem({
+      title: "Update Data",
+      description: "update a land status.",
+      form: <UpdateMortgageForm mortgage={original} />,
+    });
   }
 
   function handleDeleteClick() {
-    setMode({ mode: "delete", mortgage: original });
+    setDialogItem({
+      title: "Are you absolutely sure?",
+      description: "Delete land status (cannot be undone).",
+      form: <DeleteMortgageForm mortgage={original} />,
+    });
   }
 
-  if (user?.role === "USER") {
+  if (user?.role === "ADMIN") {
     return (
-      <Button onClick={handleViewClick} size={"sm"}>
-        View
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          >
+            <Icons.horizontalThreeDots className="h-4 w-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[160px]">
+          <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={handleDeleteClick}>
+            Delete
+            <DropdownMenuShortcut></DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <Icons.horizontalThreeDots className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleDeleteClick}>
-          Delete
-          <DropdownMenuShortcut></DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Button onClick={handleViewClick} size={"sm"}>
+      View
+    </Button>
   );
 }
 
 export function DisbursementDataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const { setMode } = useBoundStore((state) => state.disbursement);
+  const { setDialogItem } = useBoundStore((state) => state.dialog);
   const original = row.original as object as Disbursement;
 
   function handleEditClick() {
-    setMode({ mode: "update", disbursement: original });
+    setDialogItem({
+      title: "Update Data",
+      description: "update a disbursement data.",
+      form: <UpdateDisbursemntForm disbursement={original} />,
+    });
   }
 
   function handleDeleteClick() {
-    setMode({ mode: "delete", disbursement: original });
+    setDialogItem({
+      title: "Are you absolutely sure?",
+      description: "Delete disbursement data (cannot be undone).",
+      form: <DeleteDisbursementForm disbursement={original} />,
+    });
   }
 
   return (

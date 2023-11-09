@@ -263,7 +263,7 @@ export const disbursementColumns: ColumnDef<Disbursement>[] = [
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">
-        {row.getValue<String[]>("assistances").join(", ")}
+        {row.getValue<string[]>("assistances").join(", ")}
       </div>
     ),
   },

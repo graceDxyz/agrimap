@@ -1,4 +1,4 @@
-import { FarmDialog, FarmGenericForm } from "@/components/forms/farm-form";
+import { FarmGenericForm } from "@/components/forms/farm-form";
 import { Icons } from "@/components/icons";
 import {
   PageHeader,
@@ -8,9 +8,9 @@ import {
 import { useAddressState } from "@/components/select/address-select";
 import { Shell } from "@/components/shells/shell";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useToast } from "@/hooks/useToast";
 import { QUERY_FARMERS_KEY, QUERY_FARMS_KEY } from "@/constant/query.constant";
 import { useMapDraw } from "@/hooks/useMapDraw";
+import { useToast } from "@/hooks/useToast";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { farmLoader, updateFarm } from "@/services/farm.service";
@@ -200,7 +200,6 @@ function FarmAreaPage() {
         />
         <FarmGenericForm form={form} isEditMode={isEditMode} />
       </section>
-      <FarmDialog />
     </Shell>
   );
 }

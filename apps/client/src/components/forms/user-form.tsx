@@ -20,15 +20,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/useToast";
 import { QUERY_USERS_KEY } from "@/constant/query.constant";
 import useRandomString from "@/hooks/useRandomString";
+import { useToast } from "@/hooks/useToast";
 import { useBoundStore } from "@/lib/store";
 import { createUser, deleteUser, updateUser } from "@/services/user.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { CreateUserInput, User, createUserBody, roleSchema } from "schema";
+
+interface MutationProps {
+  user: User;
+}
 
 export function AddUserForm() {
   const queryClient = useQueryClient();
@@ -76,7 +80,7 @@ export function AddUserForm() {
   );
 }
 
-export function UpdateUserForm({ user }: { user: User }) {
+export function UpdateUserForm({ user }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setDialogItem } = useBoundStore((state) => state.dialog);
@@ -122,7 +126,7 @@ export function UpdateUserForm({ user }: { user: User }) {
   );
 }
 
-export function DeleteUserForm({ user }: { user: User }) {
+export function DeleteUserForm({ user }: MutationProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setDialogItem } = useBoundStore((state) => state.dialog);
@@ -166,7 +170,9 @@ export function DeleteUserForm({ user }: { user: User }) {
         )}
         Continue
       </Button>
-      <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+      <AlertDialogCancel type="button" disabled={isLoading}>
+        Cancel
+      </AlertDialogCancel>
     </AlertDialogFooter>
   );
 }
@@ -283,7 +289,9 @@ function GenericForm({
           )}
         />
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel type="button" disabled={isLoading}>
+            Cancel
+          </AlertDialogCancel>
           <Button disabled={isLoading}>
             {isLoading ? (
               <Icons.spinner
