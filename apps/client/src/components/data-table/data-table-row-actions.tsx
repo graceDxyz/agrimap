@@ -164,11 +164,15 @@ export function FarmDataTableRowActions<TData>({
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleArchivedClick}>
-          {stateLabel}
-          <DropdownMenuShortcut></DropdownMenuShortcut>
-        </DropdownMenuItem>
+        {!original.isMortgage ? (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleArchivedClick}>
+              {stateLabel}
+              <DropdownMenuShortcut></DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </>
+        ) : undefined}
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -186,7 +190,7 @@ export function MortgageDataTableRowActions<TData>({
   function handleViewClick() {
     queryClient.setQueryData(
       [QUERY_FARM_KEY, original.farm._id],
-      original.farm,
+      original.farm
     );
     navigate(`/dashboard/farms/${original.farm._id}`);
   }
