@@ -25,14 +25,14 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "mortgages",
-        let: { userId: "$_id" },
+        let: { farmerId: "$_id" },
         pipeline: [
           {
             $match: {
               $expr: {
                 $and: [
                   {
-                    $eq: ["$mortgageTo", "$$userId"],
+                    $eq: ["$mortgageTo", "$$farmerId"],
                   },
                   { $eq: ["$status", "Active"] },
                 ],
@@ -46,19 +46,8 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        let: { farmId: "$mortgagesIn.farm" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$_id", "$$farmId"] },
-                  { $eq: ["$isArchive", false] },
-                ],
-              },
-            },
-          },
-        ],
+        localField: "mortgagesIn.farm",
+        foreignField: "_id",
         as: "morgageInfarms",
       },
     },
@@ -73,19 +62,8 @@ export async function getAllFarmer() {
     {
       $lookup: {
         from: "farms",
-        let: { farmId: "$mortgagesOut.farm" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$_id", "$$farmId"] },
-                  { $eq: ["$isArchive", false] },
-                ],
-              },
-            },
-          },
-        ],
+        localField: "mortgagesOut.farm",
+        foreignField: "_id",
         as: "mortgagesOutfarms",
       },
     },
@@ -101,6 +79,8 @@ export async function getAllFarmer() {
         phoneNumber: 1,
         createdAt: 1,
         updatedAt: 1,
+        mortgagesOut: 1,
+        mortgagesOutfarms: 1,
         ownedArea: { $sum: "$farms.size" },
         mortInSize: {
           $sum: "$morgageInfarms.size",
@@ -145,7 +125,7 @@ export async function findFarmer(query: FilterQuery<IFarmer>) {
 export async function updateFarmer(
   query: FilterQuery<IFarmer>,
   update: UpdateQuery<IFarmer>,
-  options: QueryOptions,
+  options: QueryOptions
 ) {
   return FarmerModel.findByIdAndUpdate(query, update, options);
 }
