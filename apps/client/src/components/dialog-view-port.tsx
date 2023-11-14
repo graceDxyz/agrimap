@@ -8,9 +8,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useBoundStore } from "@/lib/store";
 
-export default function DialogContainer() {
+export function DialogViewPort() {
   const { item, setDialogItem } = useBoundStore((state) => state.dialog);
-  const isOpen = Boolean(item);
 
   function onOpenChange() {
     setDialogItem(undefined);
@@ -18,7 +17,7 @@ export default function DialogContainer() {
 
   if (item) {
     return (
-      <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
+      <AlertDialog open={Boolean(item)} onOpenChange={onOpenChange}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{item.title}</AlertDialogTitle>

@@ -11,14 +11,14 @@ import { farmLoader, farmsLoader } from "@/services/farm.service";
 import { farmersLoader } from "@/services/farmer.service";
 import { mortgagesLoader } from "@/services/mortgage.service";
 import { mapLoader } from "@/services/statistic.service";
+import { useGetSession } from "@/services/session.service";
 import { usersLoader } from "@/services/user.service";
 
 import ErrorElement from "@/components/elements/ErrorElement";
 import LoaderElement from "@/components/elements/LoaderElement";
 import { DashboardShell } from "@/components/shells/layout-shell";
 import { Toaster } from "@/components/ui/toaster";
-import { useGetSession } from "./services/session.service";
-import DialogContainer from "./components/dialog-container";
+import { DialogViewPort } from "@/components/dialog-view-port";
 
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
@@ -159,7 +159,7 @@ function App() {
     <>
       <RouterProvider router={routes} />
       <Toaster />
-      <DialogContainer />
+      <DialogViewPort />
     </>
   );
 }
