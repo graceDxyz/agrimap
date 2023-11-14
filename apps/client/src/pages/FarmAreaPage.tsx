@@ -132,7 +132,7 @@ function FarmAreaPage() {
 
   useEffect(() => {
     resetState();
-  }, []);
+  }, [resetState]);
 
   return (
     <Shell variant="sidebar">

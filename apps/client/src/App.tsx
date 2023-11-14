@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import {
   createBrowserRouter,
   Navigate,
@@ -23,8 +23,9 @@ import { DialogViewPort } from "@/components/dialog-view-port";
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
 const FarmAreaPage = lazy(() => import("@/pages/FarmAreaPage"));
+const FarmStatusPage = lazy(() => import("@/pages/FarmStatusPage"));
 const FarmersPage = lazy(() => import("@/pages/FarmersPage"));
-const FarmPage = lazy(() => import("@/pages/FarmPage"));
+const FarmsPage = lazy(() => import("@/pages/FarmsPage"));
 const MortgagesPage = lazy(() => import("@/pages/MortgagesPage"));
 const SignInPage = lazy(() => import("@/pages/SignInPage"));
 const UsersPage = lazy(() => import("@/pages/UsersPage"));
@@ -83,41 +84,58 @@ function App() {
           },
           {
             path: "farms",
-            loader: farmsLoader({ queryClient }),
-            errorElement: <ErrorElement />,
-            element: (
-              <Suspense fallback={<LoaderElement heading="Farms" />}>
-                <FarmPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "farms/add",
-            element: (
-              <Suspense fallback={<LoaderElement heading="Farms" />}>
-                <FarmAddPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "farms/:farmId",
-            loader: farmLoader({ queryClient }),
-            errorElement: <ErrorElement />,
-            element: (
-              <Suspense fallback={<LoaderElement heading="Farms" />}>
-                <FarmAreaPage />
-              </Suspense>
-            ),
-          },
-          {
-            path: "farms/:farmId/edit",
-            loader: farmLoader({ queryClient }),
-            errorElement: <ErrorElement />,
-            element: (
-              <Suspense fallback={<LoaderElement heading="Farms" />}>
-                <FarmAreaPage />
-              </Suspense>
-            ),
+            children: [
+              {
+                index: true,
+                loader: farmsLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense fallback={<LoaderElement heading="Farms" />}>
+                    <FarmsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "add",
+                element: (
+                  <Suspense fallback={<LoaderElement heading="Farms" />}>
+                    <FarmAddPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":farmId",
+                loader: farmLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense fallback={<LoaderElement heading="Farms" />}>
+                    <FarmAreaPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":farmId/edit",
+                loader: farmLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense fallback={<LoaderElement heading="Farms" />}>
+                    <FarmAreaPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":farmId/mortgage",
+                loader: farmLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense
+                    fallback={<LoaderElement heading="Mortgage Farm" />}
+                  >
+                    <FarmStatusPage />
+                  </Suspense>
+                ),
+              },
+            ],
           },
           {
             path: "land-status",
@@ -156,11 +174,11 @@ function App() {
   );
 
   return (
-    <>
+    <React.Fragment>
       <RouterProvider router={routes} />
       <Toaster />
       <DialogViewPort />
-    </>
+    </React.Fragment>
   );
 }
 

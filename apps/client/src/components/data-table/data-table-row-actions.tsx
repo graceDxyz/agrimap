@@ -150,6 +150,11 @@ export function FarmDataTableRowActions<TData>({
     });
   }
 
+  function handleMortgageClick() {
+    queryClient.setQueryData([QUERY_FARM_KEY, original._id], original);
+    navigate(`/dashboard/farms/${original._id}/mortgage`);
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -164,6 +169,11 @@ export function FarmDataTableRowActions<TData>({
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem onClick={handleViewClick}>View</DropdownMenuItem>
         <DropdownMenuItem onClick={handleEditClick}>Edit</DropdownMenuItem>
+        {!original.isArchived ? (
+          <DropdownMenuItem onClick={handleMortgageClick}>
+            Mortgage
+          </DropdownMenuItem>
+        ) : undefined}
         {!original.isMortgage ? (
           <>
             <DropdownMenuSeparator />
@@ -190,7 +200,7 @@ export function MortgageDataTableRowActions<TData>({
   function handleViewClick() {
     queryClient.setQueryData(
       [QUERY_FARM_KEY, original.farm._id],
-      original.farm
+      original.farm,
     );
     navigate(`/dashboard/farms/${original.farm._id}`);
   }
