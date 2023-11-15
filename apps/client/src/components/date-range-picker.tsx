@@ -14,9 +14,10 @@ import { DateRange } from "react-day-picker";
 interface Props {
   date: DateRange | undefined;
   onSelect: (newDate: DateRange | undefined) => void; // Add onSelect prop
+  disabled?: boolean;
 }
 
-export function CalendarDateRangePicker({ date, onSelect }: Props) {
+export function CalendarDateRangePicker({ date, onSelect, disabled }: Props) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -24,9 +25,10 @@ export function CalendarDateRangePicker({ date, onSelect }: Props) {
           id="date"
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            "w-full justify-start text-left font-normal disabled:opacity-100",
+            !date && "text-muted-foreground"
           )}
+          disabled={disabled}
         >
           <Icons.calendar className="mr-2 h-4 w-4" />
           {date?.from ? (

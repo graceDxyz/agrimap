@@ -1,5 +1,6 @@
 import { FilterQuery, QueryOptions, UpdateQuery } from "mongoose";
 import FarmModel, { FarmInput, IFarm } from "../models/farm.model";
+import MortgageModel from "../models/mortgage.model";
 
 export async function getAllFarm() {
   return FarmModel.aggregate([
@@ -8,7 +9,31 @@ export async function getAllFarm() {
         from: "mortgages",
         localField: "_id",
         foreignField: "farm",
-        as: "activeMortgages",
+        as: "mortgages",
+        pipeline: [
+          {
+            $lookup: {
+              from: "farmers",
+              localField: "mortgageTo",
+              foreignField: "_id",
+              as: "mortgageTo",
+            },
+          },
+          {
+            $lookup: {
+              from: "farms",
+              localField: "farm",
+              foreignField: "_id",
+              as: "farm",
+            },
+          },
+          {
+            $addFields: {
+              mortgageTo: { $arrayElemAt: ["$mortgageTo", 0] },
+              farm: { $arrayElemAt: ["$farm", 0] },
+            },
+          },
+        ],
       },
     },
     {
@@ -23,14 +48,26 @@ export async function getAllFarm() {
       $addFields: {
         owner: { $arrayElemAt: ["$owner", 0] },
         isMortgage: {
-          $in: ["Active", "$activeMortgages.status"],
+          $in: ["Active", "$mortgages.status"],
         },
+        mortgages: "$mortgages",
       },
     },
     {
       $sort: { titleNumber: 1 },
     },
   ]);
+}
+
+export async function findFarm(query: FilterQuery<IFarm>) {
+  const farm = await FarmModel.findOne(query).populate("owner").lean();
+  if (!farm) return farm;
+
+  const mortgages = await MortgageModel.find({ farm: query._id })
+    .populate(["farm", "mortgageTo"])
+    .lean();
+
+  return { ...farm, mortgages };
 }
 
 export async function createFarm(input: FarmInput) {
@@ -42,10 +79,6 @@ export async function createFarm(input: FarmInput) {
   } catch (e: any) {
     throw new Error(e);
   }
-}
-
-export async function findFarm(query: FilterQuery<IFarm>) {
-  return FarmModel.findOne(query).populate("owner").lean();
 }
 
 export async function updateFarm(

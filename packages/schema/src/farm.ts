@@ -11,6 +11,20 @@ export const fileSchema = z.object({
   fileUrl: z.string(),
 });
 
+export const farmMortgageSchema = z.object({
+  _id: z.string(),
+  mortgageTo: farmerSchema,
+  mortgageAmount: z.number(),
+  mortgageDate: z.object({
+    from: z.string(),
+    to: z.string(),
+  }),
+  status: z.string(),
+  size: z.number(),
+  coordinates: coordinatesSchema,
+  proofFiles: z.array(fileSchema),
+});
+
 export const farmSchema = z
   .object({
     _id: z.string(),
@@ -24,6 +38,7 @@ export const farmSchema = z
     ownerName: z.string().nullish(),
     isArchived: z.boolean(),
     crops: z.array(z.string()),
+    mortgages: z.array(farmMortgageSchema),
   })
   .transform((obj) => ({
     ...obj,
@@ -54,5 +69,6 @@ export const createFarmBody = z.object({
 
 export type Coordinates = z.infer<typeof coordinatesSchema>;
 export type Farm = z.infer<typeof farmSchema>;
+export type FarmMortgage = z.infer<typeof farmMortgageSchema>;
 export type Farms = z.infer<typeof farmsSchema>;
 export type CreateFarmInput = z.infer<typeof createFarmBody>;

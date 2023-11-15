@@ -1,6 +1,6 @@
 import { PageHeader, PageHeaderHeading } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
-import { useMapView } from "@/hooks/useMapDraw";
+import { useMapView } from "@/hooks/useMapView";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
 import { useGetMortgages } from "@/services/mortgage.service";
@@ -33,8 +33,7 @@ function MapPage() {
 
   const farms =
     farmsData?.filter(
-      (farm) =>
-        !farm.isArchived && (!farmer || farmer.value === farm.owner._id),
+      (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
     ) || [];
 
   const mapRef = useMapView({ farms, mortgages: mortgageData ?? [] });

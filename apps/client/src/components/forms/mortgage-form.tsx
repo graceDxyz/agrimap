@@ -279,7 +279,7 @@ function MortgageGenericForm({
   onSubmit,
   buttonLabel,
 }: {
-  form: UseFormReturn<CreateMortgageInput, any, undefined>;
+  form: UseFormReturn<CreateMortgageInput, unknown, undefined>;
   isLoading: boolean;
   onSubmit(data: CreateMortgageInput): void;
   buttonLabel: "Add" | "Update";
@@ -291,18 +291,18 @@ function MortgageGenericForm({
   const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({});
 
   const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId"),
+    (item) => item._id === form.getValues("farmId")
   );
 
   const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId"),
+    (item) => item._id === form.getValues("mortgageToId")
   );
 
   const filteredFarm = farmData
     ?.filter((farm) => !farm.isArchived)
     .filter(
       (farm) =>
-        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId"),
+        !farm.isMortgage && farm.owner._id !== form.getValues("mortgageToId")
     );
 
   const filteredFarmer = farmersData?.filter((farmer) => {
@@ -366,7 +366,7 @@ function MortgageGenericForm({
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -432,7 +432,7 @@ function MortgageGenericForm({
                               "ml-auto h-4 w-4",
                               field.value === item._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
@@ -478,7 +478,7 @@ function MortgageGenericForm({
           />
         </FormItem>
         <FormItem>
-          <FormLabel>Size (Hectars)</FormLabel>
+          <FormLabel>Size (square meter)</FormLabel>
           <Input
             placeholder="size"
             disabled

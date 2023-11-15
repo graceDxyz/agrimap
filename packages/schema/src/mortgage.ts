@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import * as z from "zod";
-import { farmSchema } from "./farm";
+import { coordinatesSchema, farmSchema, fileSchema } from "./farm";
 import { farmerSchema } from "./farmer";
 
 export const statusSchema = z.enum(["Active", "Paid Off", "Defaulted"]);
@@ -16,6 +16,9 @@ export const mortgageSchema = z
       to: z.string(),
     }),
     status: statusSchema,
+    size: z.number(),
+    coordinates: coordinatesSchema,
+    proofFiles: z.array(fileSchema),
     farmTitle: z.string().nullish(),
     farmerName: z.string().nullish(),
     farmSize: z.number().nullish(),
@@ -30,7 +33,7 @@ export const mortgageSchema = z
     mortgageToName: obj.mortgageTo.fullName,
     mortgageDateRange: `${format(
       new Date(obj.mortgageDate.from),
-      "LLL dd, y",
+      "LLL dd, y"
     )} - ${format(new Date(obj.mortgageDate.to), "LLL dd, y")}`,
   }));
 
@@ -47,6 +50,13 @@ export const createMortgageBody = z.object({
     to: z.string(),
   }),
   status: statusSchema,
+  size: z.coerce
+    .number()
+    .nonnegative({ message: "Size must be greater than or equal to 0" }),
+  coordinates: coordinatesSchema.min(1, {
+    message: "Please select map coordinates on the map",
+  }),
+  proofFiles: z.array(fileSchema),
 });
 
 export type Status = z.infer<typeof statusSchema>;

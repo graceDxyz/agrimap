@@ -12,6 +12,7 @@ import { CreateFarmInput, Farm, farmSchema, farmsSchema } from "schema";
 
 export async function fetchFarms() {
   const res = await api.get("/farms");
+
   return farmsSchema.parse({ farms: res.data }).farms;
 }
 

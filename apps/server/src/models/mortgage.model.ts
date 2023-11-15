@@ -11,6 +11,13 @@ export interface MortgageInput {
     to: string;
   };
   status?: "Active" | "Paid Off" | "Defaulted";
+  size: number;
+  coordinates: [number, number][][];
+  proofFiles: {
+    fileKey: string;
+    fileName: string;
+    fileUrl: string;
+  }[];
 }
 
 export interface IMortgage extends MortgageInput, mongoose.Document {
@@ -47,6 +54,24 @@ const mortgageSchema = new mongoose.Schema(
       enum: ["Active", "Paid Off", "Defaulted"],
       default: "Active",
     },
+    size: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    coordinates: {
+      type: [[[Number]]],
+      required: true,
+    },
+    proofFiles: {
+      type: [
+        {
+          fileKey: { type: String },
+          fileName: { type: String },
+          fileUrl: { type: String },
+        },
+      ],
+    },
   },
   {
     timestamps: true,
@@ -54,7 +79,7 @@ const mortgageSchema = new mongoose.Schema(
       virtuals: true,
       versionKey: false,
     },
-  },
+  }
 );
 
 const MortgageModel = mongoose.model("Mortgage", mortgageSchema);

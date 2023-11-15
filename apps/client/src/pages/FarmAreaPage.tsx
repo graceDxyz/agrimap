@@ -106,7 +106,8 @@ function FarmAreaPage() {
   });
 
   const mapRef = useMapDraw({
-    coordinares: farmData?.coordinates ?? form.getValues("coordinates"),
+    coordinates: farmData?.coordinates ?? form.getValues("coordinates"),
+    farmMortgages: farmData.mortgages,
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
