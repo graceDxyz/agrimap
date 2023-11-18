@@ -217,13 +217,13 @@ export const landStatusColumns: ColumnDef<Mortgage>[] = [
     ),
   },
   {
-    accessorKey: "farmSize",
+    accessorKey: "size",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Size (square meter)" />
     ),
     cell: ({ row }) => (
       <div className="w-auto capitalize font-medium">
-        {row.getValue("farmSize")}
+        {row.getValue("size")}
       </div>
     ),
   },

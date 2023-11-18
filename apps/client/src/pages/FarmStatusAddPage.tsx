@@ -13,38 +13,36 @@ import {
   QUERY_MORTGAGES_KEY,
   QUERY_STATISTICS_KEY,
 } from "@/constant/query.constant";
-import { useMapDrawMulti } from "@/hooks/useMapDrawMulti";
 import { useToast } from "@/hooks/useToast";
-import { farmLoader } from "@/services/farm.service";
 import { createMortgage } from "@/services/mortgage.service";
-import { DrawEvent } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addMonths } from "date-fns";
 import { useForm } from "react-hook-form";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   CreateMortgageInput,
   Farm,
   Farmer,
   Mortgage,
-  coordinatesSchema,
   createMortgageBody,
+  farmMortgageSchema,
   mortgageSchema,
 } from "schema";
 
 function FarmStatusPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
-  const farmData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof farmLoader>>
-  >;
+
+  const initialData = location.state as Farm;
 
   const { mutate, isLoading } = useMutation({
     mutationFn: createMortgage,
     onSuccess: ({ data }) => {
       const newMortgage = mortgageSchema.parse(data);
+      const farmMortgage = farmMortgageSchema.parse(data);
       const farm = newMortgage.farm;
       const mortgageTo = newMortgage.mortgageTo;
 
@@ -59,7 +57,11 @@ function FarmStatusPage() {
         if (items) {
           return items.map((item) => {
             if (item._id === farm._id) {
-              return { ...item, isMortgage: true };
+              return {
+                ...item,
+                mortgages: [...item.mortgages, farmMortgage],
+                isMortgage: true,
+              };
             }
             return item;
           });
@@ -103,7 +105,7 @@ function FarmStatusPage() {
     resolver: zodResolver(createMortgageBody),
     defaultValues: {
       status: "Active",
-      farmId: farmData?._id,
+      farmId: initialData?._id ?? "",
       mortgageToId: "",
       mortgageAmount: 0,
       mortgageDate: {
@@ -113,23 +115,6 @@ function FarmStatusPage() {
       proofFiles: [],
       coordinates: [],
       size: 0,
-    },
-  });
-
-  const mapRef = useMapDrawMulti({
-    mode: "edit",
-    mainCoordinates: farmData?.coordinates,
-    activeCoordinates: form.getValues("coordinates"),
-    farmMortgages: farmData.mortgages,
-    onUpdateArea: (e: DrawEvent) => {
-      const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
-      );
-      form.reset((prev) => ({ ...prev, coordinates }));
-    },
-    onCalculateArea: (area: number) => {
-      const size = parseFloat(area.toFixed(2)); // parseFloat((area / 10000).toFixed(2));
-      form.reset((prev) => ({ ...prev, size }));
     },
   });
 
@@ -172,12 +157,20 @@ function FarmStatusPage() {
       <section
         id="dashboard-farms"
         aria-labelledby="dashboard-farms-heading"
-        className="grid grid-cols-5 gap-4"
+        className="grid grid-cols-5 gap-4 relative"
       >
-        <div
-          className="h-[calc(100vh-10rem)] col-span-3 overflow-hidden"
-          ref={mapRef}
-        />
+        <div className="absolute top-1 left-1 z-20 bg-white p-2 rounded-lg space-y-5">
+          <h3 className="font-semibold leading-none tracking-tight">Legend</h3>
+          <div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-[#42F56F] w-10 h-3"></div>Farm area
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-[#FFA500] w-10 h-3"></div>Mortgage area
+            </div>
+          </div>
+        </div>
+
         <FarmStatusGenericForm
           form={form}
           onSubmit={onSubmit}

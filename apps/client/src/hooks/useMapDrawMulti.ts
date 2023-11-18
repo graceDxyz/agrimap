@@ -7,21 +7,19 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 //@ts-ignore
 import * as turf from "@turf/turf";
 import { useEffect, useRef } from "react";
-import { Coordinates, FarmMortgage } from "schema";
+import { Coordinates, Farm } from "schema";
 
 interface UseMapContainerProps {
-  mainCoordinates?: Coordinates;
+  farm?: Farm;
   activeCoordinates?: Coordinates;
-  farmMortgages?: Array<FarmMortgage>;
   mode?: "view" | "edit";
   onUpdateArea?: (event: DrawEvent) => void;
   onCalculateArea?: (event: number) => void;
 }
 
 export function useMapDrawMulti({
-  mainCoordinates,
   activeCoordinates,
-  farmMortgages,
+  farm,
   mode,
   onUpdateArea,
   onCalculateArea,
@@ -31,7 +29,7 @@ export function useMapDrawMulti({
 
   useEffect(() => {
     if (ref.current) {
-      const map = newMap({ ref, coordinates: mainCoordinates });
+      const map = newMap({ ref, coordinates: farm?.coordinates });
 
       const draw = new MapboxDraw({
         displayControlsDefault: false,
@@ -58,7 +56,7 @@ export function useMapDrawMulti({
           if (onCalculateArea) onCalculateArea(turf.area(draw.getAll()));
         }
 
-        if (mainCoordinates) {
+        if (farm?.coordinates) {
           target.addLayer({
             id: MAP_POLYGON_KEY + "border",
             type: "line",
@@ -69,7 +67,7 @@ export function useMapDrawMulti({
                 properties: {},
                 geometry: {
                   type: "Polygon",
-                  coordinates: mainCoordinates,
+                  coordinates: farm.coordinates,
                 },
               },
             },
@@ -80,8 +78,8 @@ export function useMapDrawMulti({
           });
         }
 
-        if (farmMortgages) {
-          mortgageAreaPolygon({ target, mortgages: farmMortgages });
+        if (farm?.mortgages) {
+          mortgageAreaPolygon({ target, mortgages: farm.mortgages });
         }
 
         if (mode === "edit" && activeCoordinates) {
@@ -111,7 +109,7 @@ export function useMapDrawMulti({
         map.remove();
       };
     }
-  }, [ref, mainCoordinates, mode]);
+  }, [ref, farm, mode]);
 
   return ref;
 }

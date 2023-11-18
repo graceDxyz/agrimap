@@ -1,17 +1,16 @@
 import { landStatusColumns } from "@/components/data-table/columns";
 import { DataTable } from "@/components/data-table/table";
-import { AddMortgageForm } from "@/components/forms/mortgage-form";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header";
 import { Shell } from "@/components/shells/shell";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
-import { useBoundStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
 import { mortgagesLoader, useGetMortgages } from "@/services/mortgage.service";
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 function MortgagesPage() {
   const initialData = useLoaderData() as Awaited<
@@ -20,16 +19,6 @@ function MortgagesPage() {
   const { user } = useUser();
   const isAdmin = user?.role === "ADMIN";
   const { data, isLoading } = useGetMortgages({ initialData });
-
-  const { setDialogItem } = useBoundStore((state) => state.dialog);
-
-  function handleCreateClick() {
-    setDialogItem({
-      title: "Add Data",
-      description: "add a land status.",
-      form: <AddMortgageForm />,
-    });
-  }
 
   const morgages = data?.filter((item) => !item.farm.isArchived) ?? [];
 
@@ -44,9 +33,17 @@ function MortgagesPage() {
             Land status
           </PageHeaderHeading>
           {isAdmin ? (
-            <Button size="sm" onClick={handleCreateClick}>
-              Add data
-            </Button>
+            <Link
+              aria-label="Add Data"
+              to={"add"}
+              className={cn(
+                buttonVariants({
+                  size: "sm",
+                }),
+              )}
+            >
+              Add farm
+            </Link>
           ) : undefined}
         </div>
         <PageHeaderDescription size="sm">

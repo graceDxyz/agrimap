@@ -24,6 +24,7 @@ const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
 const FarmAreaPage = lazy(() => import("@/pages/FarmAreaPage"));
 const FarmStatusPage = lazy(() => import("@/pages/FarmStatusPage"));
+const FarmStatusAddPage = lazy(() => import("@/pages/FarmStatusAddPage"));
 const FarmersPage = lazy(() => import("@/pages/FarmersPage"));
 const FarmsPage = lazy(() => import("@/pages/FarmsPage"));
 const MortgagesPage = lazy(() => import("@/pages/MortgagesPage"));
@@ -123,29 +124,30 @@ function App() {
                   </Suspense>
                 ),
               },
-              {
-                path: ":farmId/mortgage",
-                loader: farmLoader({ queryClient }),
-                errorElement: <ErrorElement />,
-                element: (
-                  <Suspense
-                    fallback={<LoaderElement heading="Mortgage Farm" />}
-                  >
-                    <FarmStatusPage />
-                  </Suspense>
-                ),
-              },
             ],
           },
           {
             path: "land-status",
-            loader: mortgagesLoader({ queryClient }),
-            errorElement: <ErrorElement />,
-            element: (
-              <Suspense fallback={<LoaderElement heading="Land status" />}>
-                <MortgagesPage />
-              </Suspense>
-            ),
+            children: [
+              {
+                index: true,
+                loader: mortgagesLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense fallback={<LoaderElement heading="Land status" />}>
+                    <MortgagesPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "add",
+                element: (
+                  <Suspense fallback={<LoaderElement heading="Add Mortgage" />}>
+                    <FarmStatusAddPage />
+                  </Suspense>
+                ),
+              },
+            ],
           },
           {
             path: "disbursements",

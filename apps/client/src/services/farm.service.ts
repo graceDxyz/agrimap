@@ -37,9 +37,13 @@ export const getFarmQuery = ({ farmId }: { farmId: string }) => ({
   },
 });
 
-export function useGetFarm(farmId: string) {
+export function useGetFarm(
+  farmId: string,
+  options?: UseQueryOptions<Farm, AxiosError>,
+) {
   return useQuery({
     ...getFarmQuery({ farmId }),
+    ...options,
   });
 }
 

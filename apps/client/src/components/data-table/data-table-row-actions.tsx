@@ -151,8 +151,9 @@ export function FarmDataTableRowActions<TData>({
   }
 
   function handleMortgageClick() {
-    queryClient.setQueryData([QUERY_FARM_KEY, original._id], original);
-    navigate(`/dashboard/farms/${original._id}/mortgage`);
+    navigate(`/dashboard/land-status/add`, {
+      state: original,
+    });
   }
 
   return (

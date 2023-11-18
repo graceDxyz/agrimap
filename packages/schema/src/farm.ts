@@ -2,7 +2,7 @@ import * as z from "zod";
 import { addressSchema, farmerSchema } from "./farmer";
 
 export const coordinatesSchema = z.array(
-  z.array(z.tuple([z.number(), z.number()])),
+  z.array(z.tuple([z.number(), z.number()]))
 );
 
 export const fileSchema = z.object({

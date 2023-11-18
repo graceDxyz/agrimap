@@ -107,7 +107,7 @@ function FarmAreaPage() {
 
   const mapRef = useMapDraw({
     coordinates: farmData?.coordinates ?? form.getValues("coordinates"),
-    farmMortgages: farmData.mortgages,
+    farmMortgages: farmData?.mortgages,
     mode: isEditMode ? "edit" : "view",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
@@ -145,9 +145,26 @@ function FarmAreaPage() {
           <PageHeaderHeading size="sm" className="flex-1">
             Farms
           </PageHeaderHeading>
-          <Button onClick={() => navigate(-1)} variant={"outline"} size={"sm"}>
+          <Button
+            onClick={() => navigate("/dashboard/farms")}
+            variant={"outline"}
+            size={"sm"}
+          >
             {isEditMode ? "Cancel" : "Back"}
           </Button>
+          <Link
+            aria-label="cancel add"
+            to={`/dashboard/land-status/add`}
+            state={farmData}
+            className={cn(
+              buttonVariants({
+                variant: "secondary",
+                size: "sm",
+              }),
+            )}
+          >
+            Mortgage
+          </Link>
           {isAdmin ? (
             <>
               {isEditMode ? (
@@ -193,8 +210,25 @@ function FarmAreaPage() {
       <section
         id="dashboard-farms"
         aria-labelledby="dashboard-farms-heading"
-        className="grid grid-cols-5 gap-4"
+        className="grid grid-cols-5 gap-4 relative"
       >
+        <div className="absolute top-1 left-1 z-20 bg-white p-2 rounded-lg space-y-5">
+          <h3 className="font-semibold leading-none tracking-tight">Legend</h3>
+          <div>
+            <div className="flex gap-2 items-center">
+              <div
+                className={cn(
+                  " w-10 h-3",
+                  isEditMode ? "bg-[#03a5fc]" : "bg-[#42F56F]",
+                )}
+              ></div>
+              Farm area
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-[#FFA500] w-10 h-3"></div>Mortgage area
+            </div>
+          </div>
+        </div>
         <div
           className="h-[calc(100vh-10rem)] col-span-3 overflow-hidden"
           ref={mapRef}

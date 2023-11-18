@@ -37,7 +37,7 @@ function FarmsPage() {
           </PageHeaderHeading>
           <Link
             aria-label="Add farm"
-            to={"/dashboard/farms/add"}
+            to={"add"}
             className={cn(
               buttonVariants({
                 size: "sm",
