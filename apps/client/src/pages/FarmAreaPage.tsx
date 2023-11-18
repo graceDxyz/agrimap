@@ -146,25 +146,17 @@ function FarmAreaPage() {
             Farms
           </PageHeaderHeading>
           <Button
-            onClick={() => navigate("/dashboard/farms")}
+            onClick={() =>
+              navigate(
+                `/dashboard/farms${isEditMode ? `/${farmData?._id}` : ""}`,
+              )
+            }
             variant={"outline"}
             size={"sm"}
           >
             {isEditMode ? "Cancel" : "Back"}
           </Button>
-          <Link
-            aria-label="cancel add"
-            to={`/dashboard/land-status/add`}
-            state={farmData}
-            className={cn(
-              buttonVariants({
-                variant: "secondary",
-                size: "sm",
-              }),
-            )}
-          >
-            Mortgage
-          </Link>
+
           {isAdmin ? (
             <>
               {isEditMode ? (
@@ -188,17 +180,33 @@ function FarmAreaPage() {
                   <span className="sr-only">Update</span>
                 </Button>
               ) : (
-                <Link
-                  aria-label="cancel add"
-                  to={`/dashboard/farms/${farmData?._id}/edit`}
-                  className={cn(
-                    buttonVariants({
-                      size: "sm",
-                    }),
-                  )}
-                >
-                  Edit
-                </Link>
+                <>
+                  {" "}
+                  <Link
+                    aria-label="cancel add"
+                    to={`/dashboard/land-status/add`}
+                    state={farmData}
+                    className={cn(
+                      buttonVariants({
+                        variant: "secondary",
+                        size: "sm",
+                      }),
+                    )}
+                  >
+                    Mortgage
+                  </Link>
+                  <Link
+                    aria-label="cancel add"
+                    to={`/dashboard/farms/${farmData?._id}/edit`}
+                    className={cn(
+                      buttonVariants({
+                        size: "sm",
+                      }),
+                    )}
+                  >
+                    Edit
+                  </Link>
+                </>
               )}
             </>
           ) : undefined}

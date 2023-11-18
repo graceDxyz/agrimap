@@ -158,11 +158,14 @@ export function addPolygon({
 export function mortgageAreaPolygon({
   target,
   mortgages,
+  activeId,
 }: {
   target: mapboxgl.Map;
   mortgages: Array<FarmMortgage>;
+  activeId?: string;
 }) {
   mortgages.forEach((data) => {
+    const isActive = data._id === activeId;
     target.addLayer({
       id: MAP_POLYGON_KEY + data._id + "-fill",
       type: "fill", // Change the type to "fill"
@@ -178,7 +181,7 @@ export function mortgageAreaPolygon({
         },
       },
       paint: {
-        "fill-color": "#FFA500", // Fill color
+        "fill-color": isActive ? "#77aff7" : "#FFA500", // Fill color
         "fill-opacity": 0.15, // Fill opacity (adjust as needed)
       },
     });
@@ -197,7 +200,7 @@ export function mortgageAreaPolygon({
         },
       },
       paint: {
-        "line-color": "#FFA500",
+        "line-color": isActive ? "#77aff7" : "#FFA500",
         "line-width": 4,
       },
     });

@@ -9,7 +9,7 @@ import {
 import { disbursementsLoader } from "@/services/disbursement.service";
 import { farmLoader, farmsLoader } from "@/services/farm.service";
 import { farmersLoader } from "@/services/farmer.service";
-import { mortgagesLoader } from "@/services/mortgage.service";
+import { mortgageLoader, mortgagesLoader } from "@/services/mortgage.service";
 import { mapLoader } from "@/services/statistic.service";
 import { useGetSession } from "@/services/session.service";
 import { usersLoader } from "@/services/user.service";
@@ -23,8 +23,8 @@ import { DialogViewPort } from "@/components/dialog-view-port";
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const FarmAddPage = lazy(() => import("@/pages/FarmAddPage"));
 const FarmAreaPage = lazy(() => import("@/pages/FarmAreaPage"));
-const FarmStatusPage = lazy(() => import("@/pages/FarmStatusPage"));
 const FarmStatusAddPage = lazy(() => import("@/pages/FarmStatusAddPage"));
+const FarmStatusPage = lazy(() => import("@/pages/FarmStatusPage"));
 const FarmersPage = lazy(() => import("@/pages/FarmersPage"));
 const FarmsPage = lazy(() => import("@/pages/FarmsPage"));
 const MortgagesPage = lazy(() => import("@/pages/MortgagesPage"));
@@ -144,6 +144,30 @@ function App() {
                 element: (
                   <Suspense fallback={<LoaderElement heading="Add Mortgage" />}>
                     <FarmStatusAddPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":mortgageId",
+                loader: mortgageLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense
+                    fallback={<LoaderElement heading="Edit Mortgage" />}
+                  >
+                    <FarmStatusPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":mortgageId/edit",
+                loader: mortgageLoader({ queryClient }),
+                errorElement: <ErrorElement />,
+                element: (
+                  <Suspense
+                    fallback={<LoaderElement heading="Edit Mortgage" />}
+                  >
+                    <FarmStatusPage />
                   </Suspense>
                 ),
               },

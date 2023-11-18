@@ -46,6 +46,7 @@ import { DrawEvent } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { CreateMortgageInput, Farm, Mortgage, coordinatesSchema } from "schema";
 
 interface MutationProps {
@@ -127,8 +128,10 @@ export function FarmStatusGenericForm({
   isEditMode?: boolean;
   onSubmit(data: CreateMortgageInput): void;
 }) {
+  const params = useParams();
   const [isFarmOpen, setIsFarmOpen] = useState(false);
   const [isFarmerOpen, setIsFarmerOpen] = useState(false);
+  const isFarmDisabled = !isEditMode || Boolean(params.mortgageId);
 
   const { data: farmData, isLoading: isFarmLoading } = useGetFarms({});
   const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({});
@@ -153,8 +156,9 @@ export function FarmStatusGenericForm({
   });
 
   const mapRef = useMapDrawMulti({
-    mode: "edit",
+    mode: isEditMode ? "edit" : "view",
     farm: selectedFarm,
+    activeId: params.mortgageId,
     activeCoordinates: form.getValues("coordinates"),
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
@@ -168,6 +172,7 @@ export function FarmStatusGenericForm({
     },
   });
 
+  console.log(form.getValues());
   return (
     <>
       <div
@@ -203,7 +208,7 @@ export function FarmStatusGenericForm({
                         aria-label="Load a preset..."
                         aria-expanded={isFarmOpen}
                         className="flex-1 justify-between w-full disabled:opacity-100 disabled:cursor-not-allowed"
-                        disabled={!isEditMode}
+                        disabled={isFarmDisabled}
                       >
                         {isFarmLoading ? (
                           "Loading ..."
@@ -216,7 +221,7 @@ export function FarmStatusGenericForm({
                             )}
                           </>
                         )}
-                        {isEditMode ? (
+                        {!isFarmDisabled ? (
                           <Icons.chevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         ) : (
                           <></>

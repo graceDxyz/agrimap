@@ -42,7 +42,7 @@ function MortgagesPage() {
                 }),
               )}
             >
-              Add farm
+              Add Data
             </Link>
           ) : undefined}
         </div>

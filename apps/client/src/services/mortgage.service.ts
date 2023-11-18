@@ -6,6 +6,7 @@ import api from "@/lib/api";
 import { LoaderType, Message } from "@/types";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { LoaderFunctionArgs } from "react-router-dom";
 import {
   CreateMortgageInput,
   Mortgage,
@@ -24,7 +25,7 @@ export const getMortgagesQuery = () => ({
 });
 
 export function useGetMortgages(
-  options?: UseQueryOptions<Mortgage[], AxiosError>
+  options?: UseQueryOptions<Mortgage[], AxiosError>,
 ) {
   return useQuery({
     ...getMortgagesQuery(),
@@ -32,14 +33,22 @@ export function useGetMortgages(
   });
 }
 
-export function useGetMortgage({ mortgageId }: { mortgageId: string }) {
-  return useQuery({
-    queryKey: [QUERY_MORTGAGE_KEY, mortgageId],
-    queryFn: async () => {
-      const res = await api.get(`/mortgages/${mortgageId}`);
+export const getMortgageQuery = ({ mortgageId }: { mortgageId: string }) => ({
+  queryKey: [QUERY_MORTGAGE_KEY, mortgageId],
+  queryFn: async () => {
+    const res = await api.get(`/mortgages/${mortgageId}`);
 
-      return mortgageSchema.parse(res.data);
-    },
+    return mortgageSchema.parse(res.data);
+  },
+});
+
+export function useGetMortgage(
+  mortgageId: string,
+  options?: UseQueryOptions<Mortgage, AxiosError>,
+) {
+  return useQuery({
+    ...getMortgageQuery({ mortgageId }),
+    ...options,
   });
 }
 
@@ -51,6 +60,17 @@ export const mortgagesLoader =
       queryClient.getQueryData<Mortgage[]>(query.queryKey) ??
       (await queryClient.fetchQuery(query))
     );
+  };
+
+export const mortgageLoader =
+  ({ queryClient }: LoaderType) =>
+  async ({ params }: LoaderFunctionArgs) => {
+    const mortgageId = params.mortgageId ?? "";
+    const query = getMortgageQuery({ mortgageId });
+    const mortgage =
+      queryClient.getQueryData<Mortgage>(query.queryKey) ??
+      (await queryClient.fetchQuery(query));
+    return mortgage;
   };
 
 export async function createMortgage(data: CreateMortgageInput) {

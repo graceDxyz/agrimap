@@ -30,12 +30,11 @@ import {
   mortgageSchema,
 } from "schema";
 
-function FarmStatusPage() {
+function FarmStatusAddPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-
   const initialData = location.state as Farm;
 
   const { mutate, isLoading } = useMutation({
@@ -130,7 +129,7 @@ function FarmStatusPage() {
       >
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
-            Mortgage Farm
+            Land status
           </PageHeaderHeading>
           <Button onClick={() => navigate(-1)} variant={"outline"} size={"sm"}>
             Cancel
@@ -152,7 +151,9 @@ function FarmStatusPage() {
             <span className="sr-only">Add</span>
           </Button>
         </div>
-        <PageHeaderDescription size="sm">Mortgage a farm</PageHeaderDescription>
+        <PageHeaderDescription size="sm">
+          Add mortgage a farm
+        </PageHeaderDescription>
       </PageHeader>
       <section
         id="dashboard-farms"
@@ -170,15 +171,10 @@ function FarmStatusPage() {
             </div>
           </div>
         </div>
-
-        <FarmStatusGenericForm
-          form={form}
-          onSubmit={onSubmit}
-          isEditMode={true}
-        />
+        <FarmStatusGenericForm form={form} onSubmit={onSubmit} isEditMode />
       </section>
     </Shell>
   );
 }
 
-export default FarmStatusPage;
+export default FarmStatusAddPage;

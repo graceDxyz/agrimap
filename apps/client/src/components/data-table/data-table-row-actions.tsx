@@ -7,10 +7,7 @@ import {
   DeleteFarmerForm,
   UpdateFarmerForm,
 } from "@/components/forms/farmer-form";
-import {
-  DeleteMortgageForm,
-  UpdateMortgageForm,
-} from "@/components/forms/mortgage-form";
+import { DeleteMortgageForm } from "@/components/forms/mortgage-form";
 import { DeleteUserForm, UpdateUserForm } from "@/components/forms/user-form";
 import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
@@ -22,7 +19,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { QUERY_FARM_KEY } from "@/constant/query.constant";
+import { QUERY_FARM_KEY, QUERY_MORTGAGE_KEY } from "@/constant/query.constant";
 import { useBoundStore } from "@/lib/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { Row } from "@tanstack/react-table";
@@ -199,19 +196,13 @@ export function MortgageDataTableRowActions<TData>({
   const navigate = useNavigate();
 
   function handleViewClick() {
-    queryClient.setQueryData(
-      [QUERY_FARM_KEY, original.farm._id],
-      original.farm,
-    );
-    navigate(`/dashboard/farms/${original.farm._id}`);
+    queryClient.setQueryData([QUERY_MORTGAGE_KEY, original._id], original);
+    navigate(`/dashboard/land-status/${original._id}`);
   }
 
   function handleEditClick() {
-    setDialogItem({
-      title: "Update Data",
-      description: "update a land status.",
-      form: <UpdateMortgageForm mortgage={original} />,
-    });
+    queryClient.setQueryData([QUERY_MORTGAGE_KEY, original._id], original);
+    navigate(`/dashboard/land-status/${original._id}/edit`);
   }
 
   function handleDeleteClick() {

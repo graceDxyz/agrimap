@@ -11,6 +11,7 @@ import { Coordinates, Farm } from "schema";
 
 interface UseMapContainerProps {
   farm?: Farm;
+  activeId?: string;
   activeCoordinates?: Coordinates;
   mode?: "view" | "edit";
   onUpdateArea?: (event: DrawEvent) => void;
@@ -19,6 +20,7 @@ interface UseMapContainerProps {
 
 export function useMapDrawMulti({
   activeCoordinates,
+  activeId,
   farm,
   mode,
   onUpdateArea,
@@ -79,7 +81,13 @@ export function useMapDrawMulti({
         }
 
         if (farm?.mortgages) {
-          mortgageAreaPolygon({ target, mortgages: farm.mortgages });
+          mortgageAreaPolygon({
+            target,
+            mortgages: farm.mortgages.filter((item) =>
+              mode === "edit" ? item._id !== activeId : true,
+            ),
+            activeId,
+          });
         }
 
         if (mode === "edit" && activeCoordinates) {
