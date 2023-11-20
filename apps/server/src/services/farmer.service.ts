@@ -60,14 +60,6 @@ export async function getAllFarmer() {
       },
     },
     {
-      $lookup: {
-        from: "farms",
-        localField: "mortgagesOut.farm",
-        foreignField: "_id",
-        as: "mortgagesOutfarms",
-      },
-    },
-    {
       $project: {
         _id: 1,
         id: 1,
@@ -79,14 +71,12 @@ export async function getAllFarmer() {
         phoneNumber: 1,
         createdAt: 1,
         updatedAt: 1,
-        mortgagesOut: 1,
-        mortgagesOutfarms: 1,
         ownedArea: { $sum: "$farms.size" },
         mortInSize: {
           $sum: "$morgageInfarms.size",
         },
         mortOutSize: {
-          $sum: "$mortgagesOutfarms.size",
+          $sum: "$mortgagesOut.size",
         },
         totalSize: {
           $subtract: [
@@ -99,7 +89,7 @@ export async function getAllFarmer() {
               ],
             },
             {
-              $sum: "$mortgagesOutfarms.size",
+              $sum: "$mortgagesOut.size",
             },
           ],
         },
