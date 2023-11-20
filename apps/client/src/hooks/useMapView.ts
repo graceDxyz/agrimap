@@ -1,14 +1,13 @@
 import mapApi, { addPolygon } from "@/lib/map";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import { useEffect, useRef } from "react";
-import { Farm, Mortgage } from "schema";
+import { Farm } from "schema";
 
 interface UseMapViewProps {
   farms?: Farm[];
-  mortgages: Mortgage[];
 }
 
-export function useMapView({ farms, mortgages }: UseMapViewProps) {
+export function useMapView({ farms }: UseMapViewProps) {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -27,9 +26,6 @@ export function useMapView({ farms, mortgages }: UseMapViewProps) {
           addPolygon({
             target,
             farm,
-            mortage: mortgages?.find(
-              (item) => item.farm._id === farm._id && item.status === "Active"
-            ),
           })
         );
       });

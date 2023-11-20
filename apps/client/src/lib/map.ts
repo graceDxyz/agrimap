@@ -1,9 +1,9 @@
-import { Coordinates, Farm, Mortgage, FarmMortgage } from "schema";
+import { MAP_POLYGON_KEY } from "@/constant/map.constant";
+import { Coordinates, Farm, FarmMortgage } from "schema";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import * as turf from "@turf/turf";
 import mapboxgl from "mapbox-gl";
-import { MAP_POLYGON_KEY } from "@/constant/map.constant";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYnJpeDEwMSIsImEiOiJjbDlvOHRnMGUwZmlrM3VsN21hcTU3M2IyIn0.OR9unKhFFMKUmDz7Vsz4TQ";
@@ -41,17 +41,16 @@ export function findCenter(coordinates: Coordinates): {
 export function addPolygon({
   target,
   farm,
-  mortage,
 }: {
   target: mapboxgl.Map;
   farm: Farm;
-  mortage?: Mortgage;
 }) {
   const coordinates = farm.coordinates;
   const farmId = farm._id;
 
   const layerId = farmId + "-layer";
   const crops = farm.crops.join(", ");
+
   // Add the combined source to the target
   target.addSource(farmId, {
     type: "geojson",
@@ -75,7 +74,7 @@ export function addPolygon({
         "case",
         ["boolean", ["feature-state", "clicked"], false], // Set this to false
         "#3246a8",
-        "#FFA500",
+        "#42F56F",
       ],
       "fill-opacity": 0.15, // Fill opacity (adjust as needed)
     },
@@ -87,7 +86,7 @@ export function addPolygon({
     type: "line",
     source: farmId, // Use the combined source
     paint: {
-      "line-color": "#FFA500",
+      "line-color": "#42F56F",
       "line-width": 4,
     },
   });
@@ -104,7 +103,7 @@ export function addPolygon({
         },
         {
           clicked: true,
-        },
+        }
       );
 
       new mapboxgl.Popup({ closeButton: false })
@@ -113,31 +112,17 @@ export function addPolygon({
           `<table>
                   <tr>
                       <td class="p-2 text-gray-600 text-right font-bold">Title no.:</td>
-                      <td class="p-2 text-gray-600 text-left">${
-                        farm.titleNumber
-                      }</td>
+                      <td class="p-2 text-gray-600 text-left">${farm.titleNumber}</td>
                   </tr>
                   <tr>
                       <td class="p-2 text-gray-600 text-right font-bold">Owner:</td>
-                      <td class="p-2 text-gray-600 text-left">${
-                        farm.ownerName
-                      }</td>
+                      <td class="p-2 text-gray-600 text-left">${farm.ownerName}</td>
                   </tr>
                   <tr>
                       <td class="p-2 text-gray-600 text-right font-bold">Crops:</td>
-                      <td class="p-2 text-gray-600 text-left capitalize">${
-                        farm.crops
-                      }</td>
+                      <td class="p-2 text-gray-600 text-left capitalize">${farm.crops}</td>
                   </tr>
-                  ${
-                    mortage
-                      ? `<tr>
-                      <td class="p-2 text-gray-600 text-right font-bold">Mortgage to:</td>
-                      <td class="p-2 text-gray-600 text-left">${mortage.mortgageToName}</td>
-                    </tr>`
-                      : ""
-                  }
-              </table>`,
+              </table>`
         )
         .setMaxWidth("400px") // Set the maximum width of the popup
         .addTo(target);
@@ -153,6 +138,13 @@ export function addPolygon({
   target.on("mouseleave", layerId, () => {
     target.getCanvas().style.cursor = "";
   });
+
+  if (farm.mortgages) {
+    mortgageAreaPolygon({
+      target,
+      mortgages: farm.mortgages,
+    });
+  }
 }
 
 export function mortgageAreaPolygon({
@@ -166,8 +158,10 @@ export function mortgageAreaPolygon({
 }) {
   mortgages.forEach((data) => {
     const isActive = data._id === activeId;
+    const layerId = MAP_POLYGON_KEY + data._id + "-fill";
+
     target.addLayer({
-      id: MAP_POLYGON_KEY + data._id + "-fill",
+      id: layerId,
       type: "fill", // Change the type to "fill"
       source: {
         type: "geojson",
@@ -204,6 +198,50 @@ export function mortgageAreaPolygon({
         "line-width": 4,
       },
     });
+
+    if (!isActive) {
+      target.on("click", layerId, function (e: mapboxgl.MapLayerMouseEvent) {
+        const features = e.features ?? [];
+        if (features.length > 0) {
+          // const propFarm = features[0].properties as Farm;
+          // const activeLayerId = features[0].layer.id;
+          // target.setFeatureState(
+          //   {
+          //     source: farmId,
+          //     id: activeLayerId,
+          //   },
+          //   {
+          //     clicked: true,
+          //   }
+          // );
+          new mapboxgl.Popup({ closeButton: false })
+            .setLngLat(e.lngLat)
+            .setHTML(
+              `<table>
+                 <tr>
+                    <td class="p-2 text-gray-600 text-right font-bold">Mortgage to:</td>
+                    <td class="p-2 text-gray-600 text-left">${data.mortgageTo.fullName}</td>
+                  </tr>
+                 <tr>
+                    <td class="p-2 text-gray-600 text-right font-bold">Size (square meter):</td>
+                    <td class="p-2 text-gray-600 text-left">${data.size}</td>
+                  </tr>
+              </table>`
+            )
+            .setMaxWidth("400px") // Set the maximum width of the popup
+            .addTo(target);
+        }
+      });
+      target.on("mouseenter", layerId, () => {
+        target.getCanvas().style.cursor = "pointer";
+      });
+
+      // Change the cursor back to a pointer
+      // when it leaves the states layer.
+      target.on("mouseleave", layerId, () => {
+        target.getCanvas().style.cursor = "";
+      });
+    }
   });
 }
 

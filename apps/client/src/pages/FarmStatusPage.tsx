@@ -27,14 +27,12 @@ import {
 } from "react-router-dom";
 import {
   CreateMortgageInput,
-  Farm,
-  Farmer,
   Mortgage,
   createMortgageBody,
   mortgageSchema,
 } from "schema";
 
-function FarmStatusEditPage() {
+function FarmStatusPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -176,4 +174,4 @@ function FarmStatusEditPage() {
   );
 }
 
-export default FarmStatusEditPage;
+export default FarmStatusPage;

@@ -3,7 +3,6 @@ import { Shell } from "@/components/shells/shell";
 import { useMapView } from "@/hooks/useMapView";
 import { useGetFarms } from "@/services/farm.service";
 import { useGetFarmers } from "@/services/farmer.service";
-import { useGetMortgages } from "@/services/mortgage.service";
 import { mapLoader } from "@/services/statistic.service";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
@@ -22,8 +21,6 @@ function MapPage() {
   const { data: farmersData, isLoading: isFarmerLoading } = useGetFarmers({
     initialData: initFarmers,
   });
-  const { data: mortgageData } = useGetMortgages({ initialData: [] });
-
   const [farmer, setFarmer] = useState<Option | undefined>(undefined);
   const farmerOptions: Option[] =
     farmersData?.map((farmer) => ({
@@ -36,7 +33,7 @@ function MapPage() {
       (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
     ) || [];
 
-  const mapRef = useMapView({ farms, mortgages: mortgageData ?? [] });
+  const mapRef = useMapView({ farms });
 
   return (
     <Shell variant="sidebar">
@@ -66,6 +63,20 @@ function MapPage() {
               setFarmer(e as Option);
             }}
           />
+        </div>
+        <div className="absolute bottom-1 left-1 z-20 bg-white p-2 rounded-lg space-y-5">
+          <h3 className="font-semibold leading-none tracking-tight">Legend</h3>
+          <div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-[#42F56F] w-10 h-3"></div>Farm area
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-[#77aff7] w-10 h-3"></div>Mortgage area
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="bg-[#FFA500] w-10 h-3"></div>Other area
+            </div>
+          </div>
         </div>
         <div
           className="h-[calc(100vh-10rem)] col-span-3 overflow-hidden"
