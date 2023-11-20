@@ -136,25 +136,6 @@ export function getStatisticsCount() {
       },
     },
     {
-      $lookup: {
-        from: "farms",
-        let: { farmId: "$mortgagesOut.farm" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$_id", "$$farmId"] },
-                  { $eq: ["$isArchive", false] },
-                ],
-              },
-            },
-          },
-        ],
-        as: "mortgagesOutFarms",
-      },
-    },
-    {
       $project: {
         _id: 1,
         id: 1,
@@ -166,7 +147,7 @@ export function getStatisticsCount() {
         createdAt: 1,
         updatedAt: 1,
         totalFarmSize: { $sum: "$farms.size" },
-        totalMortgageFarmSize: { $sum: "$mortgageInFarms.size" },
+        totalMortgageFarmSize: { $sum: "$mortgagesOut.size" },
       },
     },
     {
