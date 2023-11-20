@@ -71,6 +71,8 @@ export async function getAllFarmer() {
         phoneNumber: 1,
         createdAt: 1,
         updatedAt: 1,
+        mortgagesOut: 1,
+        mortgagesOutfarms: 1,
         ownedArea: { $sum: "$farms.size" },
         mortInSize: {
           $sum: "$morgageInfarms.size",
