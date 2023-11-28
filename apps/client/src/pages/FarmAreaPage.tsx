@@ -220,7 +220,7 @@ function FarmAreaPage() {
         aria-labelledby="dashboard-farms-heading"
         className="grid grid-cols-5 gap-4 relative"
       >
-        <div className="absolute top-1 left-1 z-20 bg-white p-2 rounded-lg space-y-5">
+        <div className="absolute bottom-1 left-1 z-20 bg-white p-2 rounded-lg space-y-5">
           <h3 className="font-semibold leading-none tracking-tight">Legend</h3>
           <div>
             <div className="flex gap-2 items-center">

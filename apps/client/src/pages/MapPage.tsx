@@ -30,7 +30,8 @@ function MapPage() {
 
   const farms =
     farmsData?.filter(
-      (farm) => !farm.isArchived && (!farmer || farmer.value === farm.owner._id)
+      (farm) =>
+        !farm.isArchived && (!farmer || farmer.value === farm.owner._id),
     ) || [];
 
   const mapRef = useMapView({ farms });
@@ -70,11 +71,11 @@ function MapPage() {
             <div className="flex gap-2 items-center">
               <div className="bg-[#42F56F] w-10 h-3"></div>Farm area
             </div>
+            {/* <div className="flex gap-2 items-center"> */}
+            {/*   <div className="bg-[#77aff7] w-10 h-3"></div>Mortgage area */}
+            {/* </div> */}
             <div className="flex gap-2 items-center">
-              <div className="bg-[#77aff7] w-10 h-3"></div>Mortgage area
-            </div>
-            <div className="flex gap-2 items-center">
-              <div className="bg-[#FFA500] w-10 h-3"></div>Other area
+              <div className="bg-[#FFA500] w-10 h-3"></div>Mortgage area
             </div>
           </div>
         </div>

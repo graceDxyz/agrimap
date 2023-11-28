@@ -57,7 +57,7 @@ function FarmAddPage() {
     mode: "edit",
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates
+        e.features[0].geometry.coordinates,
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -83,7 +83,7 @@ function FarmAddPage() {
         }
         return items;
       });
-      navigate("/dashboard/farms");
+      navigate(`/dashboard/farms/${newFarm._id}`);
     },
     onError: (error: AxiosError) => {
       const message = error.response?.data as string;
@@ -93,7 +93,7 @@ function FarmAddPage() {
           {
             message: "Title number already registered",
           },
-          { shouldFocus: true }
+          { shouldFocus: true },
         );
       }
     },
@@ -124,7 +124,7 @@ function FarmAddPage() {
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              })
+              }),
             )}
           >
             Cancel

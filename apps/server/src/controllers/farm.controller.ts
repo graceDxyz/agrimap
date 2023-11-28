@@ -23,7 +23,7 @@ const getAllFarmCropsHandler = async (req: Request, res: Response) => {
 
 const getFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const id = req.params.id;
@@ -42,7 +42,7 @@ const getFarmHandler = async (
 
 const createFarmHandler = async (
   req: Request<{}, {}, CreateFarmInput["body"]>,
-  res: Response,
+  res: Response
 ) => {
   try {
     const body = req.body;
@@ -52,7 +52,7 @@ const createFarmHandler = async (
       owner: body.ownerId,
     });
 
-    return res.send(farm);
+    return res.send({ ...farm, mortgages: [] });
   } catch (error: any) {
     logger.error(error);
     return res.status(409).send(error.message);
@@ -61,7 +61,7 @@ const createFarmHandler = async (
 
 const updateFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const id = req.params.id;
   const update = req.body;
@@ -87,7 +87,7 @@ const updateFarmHandler = async (
 
 const deleteFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const id = req.params.id;
   const farm = await findFarm({ _id: id });
@@ -108,7 +108,7 @@ const deleteFarmHandler = async (
 
 const archivedFarmHandler = async (
   req: Request<GetFarmInput["params"]>,
-  res: Response,
+  res: Response
 ) => {
   const id = req.params.id;
   const farm = await findFarm({ _id: id });
@@ -126,7 +126,7 @@ const archivedFarmHandler = async (
       {
         new: true,
         populate: "owner",
-      },
+      }
     );
 
     return res.send(updatedFarm);

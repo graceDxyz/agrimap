@@ -137,11 +137,11 @@ export function FarmStatusGenericForm({
   const { data: farmersData, isLoading: isFarmersLoading } = useGetFarmers({});
 
   const selectedFarm = farmData?.find(
-    (item) => item._id === form.getValues("farmId"),
+    (item) => item._id === form.getValues("farmId")
   );
 
   const selectedFarmers = farmersData?.find(
-    (item) => item._id === form.getValues("mortgageToId"),
+    (item) => item._id === form.getValues("mortgageToId")
   );
 
   const filteredFarm = farmData
@@ -162,7 +162,7 @@ export function FarmStatusGenericForm({
     activeCoordinates: form.getValues("coordinates"),
     onUpdateArea: (e: DrawEvent) => {
       const coordinates = coordinatesSchema.parse(
-        e.features[0].geometry.coordinates,
+        e.features[0].geometry.coordinates
       );
       form.reset((prev) => ({ ...prev, coordinates }));
     },
@@ -172,7 +172,6 @@ export function FarmStatusGenericForm({
     },
   });
 
-  console.log(form.getValues());
   return (
     <>
       <div
@@ -247,7 +246,7 @@ export function FarmStatusGenericForm({
                                   "ml-auto h-4 w-4",
                                   field.value === item._id
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </CommandItem>
@@ -338,7 +337,7 @@ export function FarmStatusGenericForm({
                                   "ml-auto h-4 w-4",
                                   field.value === item._id
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </CommandItem>
@@ -438,7 +437,7 @@ export function FarmStatusGenericForm({
                                   size: "sm",
                                   variant: "link",
                                 }),
-                                "w-full justify-start",
+                                "w-full justify-start"
                               )}
                             >
                               {item.fileName}
@@ -451,8 +450,8 @@ export function FarmStatusGenericForm({
                               onClick={() => {
                                 field.onChange(
                                   field.value.filter(
-                                    (file) => file.fileKey !== item.fileKey,
-                                  ),
+                                    (file) => file.fileKey !== item.fileKey
+                                  )
                                 );
                               }}
                             >
