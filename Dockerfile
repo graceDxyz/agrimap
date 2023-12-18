@@ -6,7 +6,7 @@ RUN corepack enable
 FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=s/2274a069-dbb0-401a-915c-6856a11dd41c-/root/local/share/pnpm/store/v3,target=/root/.local/share/pnpm/store/v3 pnpm i --frozen-lockfile
 RUN pnpm run -r build
 RUN pnpm deploy --filter=server --prod /prod/server
 RUN pnpm deploy --filter=client --prod /prod/client
