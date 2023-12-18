@@ -186,7 +186,7 @@ export const getDisbursementReportHandler = async (
     logger.info("1111111111111");
     // Launch a headless browser
     const browser = await puppeteer.launch({
-      headless: "new",
+      headless: true,
     });
 
     logger.info("22222222222222");
