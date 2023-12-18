@@ -333,7 +333,7 @@ export const getDisbursementReportHandler = async (
     res.setHeader("Content-Disposition", "disbursement-report.pdf");
     res.send(pdfBuffer);
   } catch (error) {
-    logger.error("Error generating Excel file:", error);
+    logger.error("Error generating pdf file:", error);
     res.status(500).send("Internal Server Error");
   }
 };
