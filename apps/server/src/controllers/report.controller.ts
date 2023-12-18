@@ -185,7 +185,7 @@ export const getDisbursementReportHandler = async (
 
     // Launch a headless browser
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       ignoreDefaultArgs: ["--disable-extensions"],
     });
