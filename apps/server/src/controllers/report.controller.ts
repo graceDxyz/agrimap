@@ -183,13 +183,11 @@ export const getDisbursementReportHandler = async (
 
     const disbursements = await getAllDisbursementRange({ from, to });
 
-    logger.info("1111111111111");
     // Launch a headless browser
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
     });
 
-    logger.info("22222222222222");
     const page = await browser.newPage();
 
     // Create an HTML template with dynamic data
@@ -328,11 +326,9 @@ export const getDisbursementReportHandler = async (
     // Generate PDF
     const pdfBuffer = await page.pdf({ format: "A4" });
 
-    logger.info("33333333333333");
     // Close the browser
     await browser.close();
 
-    logger.info("44444444444444");
     // Send the PDF as a response
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "disbursement-report.pdf");
