@@ -58,25 +58,23 @@ cp .env.example .env
 
 ### 2. Configure Environment Variables
 
-Open the newly created .env file in a text editor and set the necessary configuration variables. Some variables may already have default values in the .env.example file. Review and modify the values as needed.
+1. Open the newly created `.env` file in a text editor of your choice.
 
-```dotenv
-# .env
+2. Set the necessary configuration variables. Some variables may already have default values in the `.env.example` file. Review and modify the values as needed.
 
-# Example variables (modify or add as needed)
-NODE_ENV=development
-DATABASE_URL=mongodb://localhost:27017/mydatabase
+   ```dotenv
+   # .env
 
-# Add your additional configuration variables below this line
-# VARIABLE_NAME=variable_value
-# ANOTHER_VARIABLE=another_value
+   NODE_ENV="development"
+   DB_CONNECTION="mongodb://root:example@localhost:27017/"
 
-# Ensure you set the following variables based on your project requirements
-# MISSING_VARIABLE_1=
-# MISSING_VARIABLE_2=
-```
+   UPLOADTHING_APP_ID=""
+   UPLOADTHING_SECRET=""
 
-> Note: Replace VARIABLE_NAME, ANOTHER_VARIABLE, MISSING_VARIABLE_1, MISSING_VARIABLE_2, etc., with the actual names of the variables your project uses. Leave MISSING_VARIABLE_1 and MISSING_VARIABLE_2 blank, and developers can fill in the appropriate values.
+   ....
+   ```
+
+   > Note: Please ensure to obtain the missing Uploadthing environment variables from the developer.
 
 ### 3. Install Project Dependencies
 
