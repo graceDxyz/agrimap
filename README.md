@@ -73,8 +73,8 @@ cp .env.example .env
 
    ....
    ```
-
-   > Note: Please ensure to obtain the missing Uploadthing environment variables from the developer.
+   > [!NOTE]
+   > Please ensure to obtain the missing Uploadthing environment variables from the developer.
 
 ### 3. Install Project Dependencies
 
