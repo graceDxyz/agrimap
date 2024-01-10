@@ -159,11 +159,11 @@ export const getReportHandler = async (req: Request, res: Response) => {
     // Set the response headers for download
     res.setHeader(
       "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     );
     res.setHeader(
       "Content-Disposition",
-      `Report-${getCurrentDateFormatted()}.xlsx`
+      `Report-${getCurrentDateFormatted()}.xlsx`,
     );
 
     res.send(buffer);
@@ -174,12 +174,14 @@ export const getReportHandler = async (req: Request, res: Response) => {
 };
 
 export const getDisbursementReportHandler = async (
-  req: Request<{}, {}, {}, { from: Date; to: Date }>,
-  res: Response
+  req: Request<{}, {}, {}, { from: Date; to: Date; userName?: string }>,
+  res: Response,
 ) => {
   try {
     const from = req.query.from;
     const to = req.query.to;
+    const userName = req.query.userName ?? "Edgar Cantones";
+    const name = userName.length >= 1 ? userName : "Edgar Cantones";
 
     const disbursements = await getAllDisbursementRange({ from, to });
 
@@ -294,13 +296,13 @@ export const getDisbursementReportHandler = async (
                     item.farmer.middleInitial
                   }</td>
                   <td style="border: 1px solid #000">${item.assistances.join(
-                    ", "
+                    ", ",
                   )}</td>
                   <td style="border: 1px solid #000">${dayjs(
-                    item.createdAt
+                    item.createdAt,
                   ).format("MM/DD/YY")}</td>
                   </tr>
-                  `
+                  `,
               )
               .join("")}
             </tbody>
@@ -313,7 +315,7 @@ export const getDisbursementReportHandler = async (
         <p
           style="font-size: 16px; font-weight: bold; text-decoration: underline"
         >
-          John Vincent Beldad
+          ${name}
         </p>
         <span style="14px">Department of Agriculture</span>
       </div>

@@ -10,13 +10,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useUser } from "@/hooks/useUser";
 import { useGetDisbursementReport } from "@/services/report.service";
 import { subYears } from "date-fns";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 function DisbursementReport() {
   const [open, setOpen] = React.useState(false);
+  const { user } = useUser();
+  const [userName, setUserName] = useState<string>("");
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: subYears(new Date(), 1),
     to: new Date(),
@@ -24,9 +28,15 @@ function DisbursementReport() {
 
   const { mutate, isLoading: isDownloadLoading } = useGetDisbursementReport();
 
+  useEffect(() => {
+    if (open && user) {
+      setUserName(user?.firstname + " " + user?.lastname);
+    }
+  }, [open, user]);
+
   function handleSubmit() {
     setOpen(false);
-    mutate(date);
+    mutate({ userName, date });
   }
 
   return (
@@ -55,15 +65,27 @@ function DisbursementReport() {
               download when you're done.
             </DialogDescription>
           </DialogHeader>
-          <div className="w-full flex justify-center">
-            <Calendar
-              initialFocus
-              mode="range"
-              defaultMonth={date?.to}
-              selected={date}
-              onSelect={setDate}
-              numberOfMonths={2}
-            />
+          <div className="flex flex-col px-10 gap-5">
+            <div className="">
+              <label>Name</label>
+              <Input
+                placeholder="Name"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </div>
+
+            <div className="w-full flex justify-center flex-col">
+              <label>Date</label>
+              <Calendar
+                initialFocus
+                mode="range"
+                defaultMonth={date?.to}
+                selected={date}
+                onSelect={setDate}
+                numberOfMonths={2}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button type="button" onClick={handleSubmit}>

@@ -41,10 +41,14 @@ export function useGetExcelReport() {
 export function useGetDisbursementReport() {
   return useMutation({
     mutationKey: [QUERY_REPORT_KEY, "disbursement"],
-    mutationFn: async (dateRange?: DateRange) => {
+    mutationFn: async (reportParams: {
+      userName: string;
+      date?: DateRange;
+    }) => {
+      console.log(reportParams);
       const response = await api.get("/report/disbursement", {
         responseType: "blob",
-        params: dateRange,
+        params: { ...reportParams.date, userName: reportParams.userName },
       });
 
       const contentType = response.headers["Content-Type"] ?? "application/pdf";
